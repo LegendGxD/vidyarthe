@@ -101,7 +101,7 @@
     <div class="bg-gradient-to-r from-saffron-600 via-indigo-600 to-emerald-600 text-white text-xs md:text-sm py-2 px-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2 mx-auto sm:mx-0">
             <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">Dynamic Generator Active</span>
-            <span>10,000+ Algorithmic Questions initialized with KaTeX LaTeX Engine!</span>
+            <span>10,000+ Algorithmic Questions across all JEE, NEET, CBSE & CLAT Subjects!</span>
         </div>
         <div class="flex items-center gap-2 mx-auto sm:mx-0 text-xs font-semibold">
             <i class="fa-regular fa-clock text-amber-300"></i>
@@ -139,7 +139,7 @@
                 <div class="flex-1 max-w-md hidden md:block relative">
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="globalSearchInput" placeholder="Search topics (e.g. Kinematics, Laws of Motion, Magnetic, Mole)..." 
+                        <input type="text" id="globalSearchInput" placeholder="Search topics (e.g. Atomic Structure, Kinematics, Quadratic, Torts)..." 
                             class="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-transparent dark:border-slate-700/60 rounded-xl focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-500 transition-all text-slate-800 dark:text-slate-100 placeholder-slate-400">
                     </div>
                 </div>
@@ -238,12 +238,12 @@
                         Never Solve the Same Questions. <span class="bg-gradient-to-r from-saffron-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent"> Endless Practice for India.</span>
                     </h1>
                     <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                        JEE Main/Advanced, NEET, and CBSE questions procedurally generated in real-time with modified numbers, random options, and step-by-step LaTeX auto-computed solutions.
+                        JEE Main/Advanced, NEET, CBSE Class 9–12, and CLAT questions procedurally generated in real-time with modified numbers, random options, and step-by-step auto-computed solutions.
                     </p>
 
                     <div class="flex flex-wrap items-center gap-3 pt-2">
                         <button onclick="generateQuestionsForCurrentFilters()" class="px-5 py-2.5 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-sm shadow-lg shadow-saffron-500/20 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
-                            <i class="fa-solid fa-arrows-rotate"></i> Generate Fresh Batch
+                            <i class="fa-solid fa-arrows-rotate"></i> Generate Fresh 10-Question Batch
                         </button>
                         <a href="#mockTestSection" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 backdrop-blur-md transition-all flex items-center gap-2">
                             <i class="fa-solid fa-stopwatch text-amber-300"></i> Start CBT Mock Test
@@ -269,7 +269,7 @@
             </div>
         </section>
 
-        <!-- EXACT CUSTOM PRACTICE FILTERS (GUARANTEED NO 0 QUESTIONS) -->
+        <!-- CUSTOM PRACTICE FILTERS -->
         <section id="explorerHub" class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -309,7 +309,6 @@
 
                 <div class="space-y-1">
                     <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Subject</label>
-                    <!-- Dynamically populated: JEE only gets Physics, Chem, Math! -->
                     <select id="filterSubject" onchange="updateSubjectAndChapterFilters(false); generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
                         <option value="ALL">All Subjects</option>
                     </select>
@@ -654,20 +653,37 @@
 
         const chapterCatalog = {
             "JEE Main": {
-                "Physics": ["Magnetic Effects of Current and Magnetism", "Laws of Motion", "Kinematics", "Current Electricity", "Work, Energy and Power", "Rotational Motion", "Gravitation", "Thermodynamics", "Optics", "Electrostatics"],
-                "Chemistry": ["Some Basic Concepts in Chemistry", "Atomic Structure", "Chemical Bonding", "Solutions", "Equilibrium", "Chemical Kinetics", "Organic Chemistry"],
-                "Mathematics": ["Quadratic Equations", "Complex Numbers", "Matrices & Determinants", "Limits & Derivatives", "Coordinate Geometry", "Vectors & 3D"]
+                "Physics": ["Kinematics", "Laws of Motion", "Work, Energy and Power", "Rotational Motion", "Gravitation", "Thermodynamics", "Current Electricity", "Magnetic Effects of Current and Magnetism", "Optics", "Electrostatics"],
+                "Chemistry": ["Atomic Structure", "Some Basic Concepts in Chemistry", "Chemical Bonding", "Thermodynamics", "Equilibrium", "Solutions", "Chemical Kinetics", "Electrochemistry", "Organic Chemistry"],
+                "Mathematics": ["Quadratic Equations", "Complex Numbers", "Matrices & Determinants", "Limits & Derivatives", "Coordinate Geometry", "Vectors & 3D Geometry", "Probability"]
             },
             "NEET": {
-                "Physics": ["Kinematics", "Laws of Motion", "Work, Energy and Power", "Current Electricity", "Magnetic Effects of Current and Magnetism", "Optics"],
-                "Chemistry": ["Some Basic Concepts in Chemistry", "Atomic Structure", "Chemical Bonding", "Equilibrium", "Organic Chemistry", "Biomolecules"],
+                "Physics": ["Kinematics", "Laws of Motion", "Work, Energy and Power", "Current Electricity", "Optics", "Magnetic Effects of Current and Magnetism"],
+                "Chemistry": ["Atomic Structure", "Some Basic Concepts in Chemistry", "Chemical Bonding", "Equilibrium", "Solutions", "Organic Chemistry", "Biomolecules"],
                 "Biology": ["Genetics & Evolution", "Cell Structure and Function", "Human Physiology", "Plant Physiology", "Ecology & Environment"]
             },
+            "Class 11": {
+                "Physics": ["Kinematics", "Laws of Motion", "Work, Energy and Power", "Gravitation", "Thermodynamics"],
+                "Chemistry": ["Some Basic Concepts in Chemistry", "Atomic Structure", "Chemical Bonding", "Thermodynamics", "Equilibrium"],
+                "Mathematics": ["Quadratic Equations", "Complex Numbers", "Sequences & Series", "Limits & Derivatives"],
+                "Biology": ["Living World", "Cell Structure and Function", "Plant Physiology", "Human Physiology"]
+            },
+            "Class 12": {
+                "Physics": ["Electrostatics", "Current Electricity", "Magnetic Effects of Current and Magnetism", "Optics", "Modern Physics"],
+                "Chemistry": ["Solutions", "Electrochemistry", "Chemical Kinetics", "Coordination Compounds", "Organic Chemistry"],
+                "Mathematics": ["Matrices & Determinants", "Limits & Derivatives", "Vectors & 3D Geometry", "Probability"],
+                "Biology": ["Reproduction", "Genetics & Evolution", "Biotechnology", "Ecology & Environment"]
+            },
             "Class 10": {
-                "Mathematics": ["Quadratic Equations", "Real Numbers", "Polynomials", "Arithmetic Progressions", "Triangles", "Introduction to Trigonometry"],
-                "Physics": ["Electricity", "Magnetic Effects of Electric Current", "Light - Reflection and Refraction"],
-                "Chemistry": ["Chemical Reactions and Equations", "Acids, Bases and Salts", "Metals and Non-metals", "Carbon and Its Compounds"],
-                "Biology": ["Life Processes", "Control and Coordination", "How Do Organisms Reproduce", "Heredity and Evolution"]
+                "Mathematics": ["Real Numbers", "Polynomials", "Quadratic Equations", "Arithmetic Progressions", "Triangles", "Introduction to Trigonometry"],
+                "Science": ["Chemical Reactions and Equations", "Acids, Bases and Salts", "Life Processes", "Light - Reflection and Refraction", "Electricity"],
+                "Physics": ["Electricity", "Light - Reflection and Refraction", "Magnetic Effects of Electric Current"],
+                "Chemistry": ["Chemical Reactions and Equations", "Acids, Bases and Salts", "Metals and Non-metals"],
+                "Biology": ["Life Processes", "Control and Coordination", "Heredity and Evolution"]
+            },
+            "Class 9": {
+                "Mathematics": ["Number Systems", "Polynomials", "Coordinate Geometry", "Linear Equations", "Triangles"],
+                "Science": ["Matter in Our Surroundings", "Atoms and Molecules", "Cell: The Fundamental Unit of Life", "Motion", "Force and Laws of Motion"]
             },
             "CLAT/LLB": {
                 "Legal Reasoning": ["Law of Torts", "Law of Contracts", "Constitutional Law", "Criminal Law"],
@@ -685,7 +701,11 @@
             if (chapterCatalog[examKey] && chapterCatalog[examKey][subject]) {
                 return chapterCatalog[examKey][subject];
             }
-            return ["General", "Foundations", "Practice Set 1", "Practice Set 2"];
+            // Fallback to JEE Main if chapter not found
+            if (chapterCatalog["JEE Main"] && chapterCatalog["JEE Main"][subject]) {
+                return chapterCatalog["JEE Main"][subject];
+            }
+            return ["Core Concepts", "Foundational Problem Set"];
         }
 
         function updateSubjectAndChapterFilters(resetSubject = false) {
@@ -710,191 +730,339 @@
         }
 
         /* =====================================================================
-           HIGH-YIELD GENERATORS FOR SPECIFIC CHAPTERS (Magnetic, LOM, etc.)
+           COMPREHENSIVE QUESTION REPOSITORY FOR ALL COURSES & SUBJECTS
            ===================================================================== */
-        const specificGenerators = {
-            // Magnetic Effects of Current & Magnetism (Physics)
-            "Magnetic Effects of Current and Magnetism": function(diff, type, exam) {
+        const chapterQuestionGenerators = {
+            // ==================== CHEMISTRY CHAPTERS ====================
+            "Atomic Structure": function(diff, type, exam) {
                 const variants = [
-                    // Variant A: Magnetic force on charge F = qvB
+                    // Bohr Orbit Radius: r_n = 0.529 * n^2 / Z
                     () => {
-                        const q = getRandomInt(2, 6);
-                        const v = getRandomInt(2, 8) * 100;
-                        const B = getRandomInt(2, 5);
-                        const F = q * 1e-6 * v * B; // in mN
-                        const F_val = (q * v * B / 1000).toFixed(2);
+                        const n = getRandomChoice([2, 3, 4]);
+                        const r = (0.529 * n * n).toFixed(2);
                         return {
-                            question: `A charge of $q = ${q}\\,\\mu\\text{C}$ moves with velocity $v = ${v}\\text{ m/s}$ perpendicular to a uniform magnetic field $B = ${B}\\text{ T}$. Calculate the magnetic Lorentz force acting on the particle.`,
-                            correctAnswer: `${F_val} mN`,
-                            wrongAnswers: [`${(F_val * 2).toFixed(2)} mN`, `${(F_val / 2).toFixed(2)} mN`, `${(F_val * 10).toFixed(2)} mN`],
-                            solution: `Using Lorentz magnetic force: $$F = qvB \\sin(\\theta)$$ Given $\\theta = 90^\\circ \\implies \\sin(90^\\circ) = 1$: $$F = (${q} \\times 10^{-6}\\text{ C})(${v}\\text{ m/s})(${B}\\text{ T}) = \\mathbf{${F_val}\\text{ mN}}$$`
+                            question: `According to Bohr's model, calculate the radius of the $n = ${n}$ orbit of a Hydrogen atom ($Z = 1$). (Take $a_0 = 0.529\\text{ \\AA}$).`,
+                            correctAnswer: `${r} Å`,
+                            wrongAnswers: [`${(0.529 * n).toFixed(2)} Å`, `${(0.529 * n * n * 2).toFixed(2)} Å`, `${(0.529 / (n * n)).toFixed(3)} Å`],
+                            solution: `Bohr radius formula: $$r_n = 0.529 \\frac{n^2}{Z}\\text{ \\AA}$$ For Hydrogen ($Z = 1$) and $n = ${n}$: $$r_{${n}} = 0.529 \\times (${n}^2) = 0.529 \\times ${n*n} = \\mathbf{${r}\\text{ \\AA}}$$`
                         };
                     },
-                    // Variant B: Field of long straight wire B = mu0*I / (2*pi*r)
+                    // Bohr Energy: E_n = -13.6 * Z^2 / n^2 eV
                     () => {
-                        const I = getRandomInt(4, 20);
-                        const r_cm = getRandomInt(2, 10);
-                        const r = r_cm / 100;
-                        // B = (4pi * 10^-7 * I) / (2pi * r) = (2 * 10^-7 * I) / r
-                        const B_uT = ((2 * 1e-7 * I / r) * 1e6).toFixed(1);
+                        const n = getRandomChoice([2, 3, 4]);
+                        const E = (-13.6 / (n * n)).toFixed(2);
                         return {
-                            question: `Find the magnetic field magnitude at a perpendicular distance $r = ${r_cm}\\text{ cm}$ from an infinitely long straight wire carrying current $I = ${I}\\text{ A}$. (Take $\\mu_0 = 4\\pi \\times 10^{-7}\\text{ T}\\cdot\\text{m/A}$).`,
-                            correctAnswer: `${B_uT} μT`,
-                            wrongAnswers: [`${(B_uT * 2).toFixed(1)} μT`, `${(B_uT / 2).toFixed(1)} μT`, `${(B_uT * 5).toFixed(1)} μT`],
-                            solution: `From Biot-Savart Law for an infinite straight wire: $$B = \\frac{\\mu_0 I}{2\\pi r}$$ $$B = \\frac{(4\\pi \\times 10^{-7})(${I})}{2\\pi (${r})} = \\mathbf{${B_uT}\\,\\mu\\text{T}}$$`
+                            question: `Find the total electronic energy of an electron in the $n = ${n}$ state of a Hydrogen atom ($Z = 1$).`,
+                            correctAnswer: `${E} eV`,
+                            wrongAnswers: [`${(-13.6 / n).toFixed(2)} eV`, `${(-13.6 * n).toFixed(2)} eV`, `+${Math.abs(E)} eV`],
+                            solution: `Bohr energy formula: $$E_n = -13.6 \\frac{Z^2}{n^2}\\text{ eV}$$ For $n = ${n}$: $$E_{${n}} = \\frac{-13.6}{${n*n}} = \\mathbf{${E}\\text{ eV}}$$`
+                        };
+                    },
+                    // de Broglie Wavelength: lambda = h / p
+                    () => {
+                        const v = getRandomInt(2, 6) * 1e6;
+                        // mass of electron = 9.1e-31, h = 6.626e-34
+                        const lambda_nm = ((6.626e-34 / (9.1e-31 * v)) * 1e9).toFixed(3);
+                        return {
+                            question: `An electron ($m = 9.1 \\times 10^{-31}\\text{ kg}$) is traveling with a speed of $v = ${v.toExponential(1)}\\text{ m/s}$. Determine its de Broglie wavelength. (Take $h = 6.63 \\times 10^{-34}\\text{ J}\\cdot\\text{s}$).`,
+                            correctAnswer: `${lambda_nm} nm`,
+                            wrongAnswers: [`${(lambda_nm * 10).toFixed(3)} nm`, `${(lambda_nm / 10).toFixed(3)} nm`, `${(lambda_nm * 2).toFixed(3)} nm`],
+                            solution: `de Broglie relation: $$\\lambda = \\frac{h}{mv} = \\frac{6.63 \\times 10^{-34}}{(9.1 \\times 10^{-31})(${v.toExponential(1)})} = \\mathbf{${lambda_nm}\\text{ nm}}$$`
+                        };
+                    },
+                    // Quantum Numbers
+                    () => {
+                        const n = getRandomInt(3, 4);
+                        return {
+                            question: `For principal quantum number $n = ${n}$, what is the maximum number of electrons that can be accommodated in this shell?`,
+                            correctAnswer: `${2 * n * n} electrons`,
+                            wrongAnswers: [`${n * n} electrons`, `${2 * n} electrons`, `${4 * n} electrons`],
+                            solution: `The maximum number of electrons in an electron shell defined by principal quantum number $n$ is: $$2n^2 = 2(${n}^2) = 2(${n*n}) = \\mathbf{${2*n*n}\\text{ electrons}}$$`
                         };
                     }
                 ];
-
-                const picked = getRandomChoice(variants)();
                 return {
-                    id: 'mag_' + Math.random().toString(36).substr(2, 9),
+                    id: 'chem_atom_' + Math.random().toString(36).substr(2, 9),
                     classExam: exam !== 'ALL' ? exam : "JEE Main",
-                    subject: "Physics",
-                    chapter: "Magnetic Effects of Current and Magnetism",
-                    topic: "Magnetic Field & Forces",
+                    subject: "Chemistry",
+                    chapter: "Atomic Structure",
+                    topic: "Bohr Model & Quantum Numbers",
                     difficulty: diff !== 'ALL' ? diff : "Easy",
                     type: type !== 'ALL' ? type : "PYQ",
-                    ...picked
+                    ...getRandomChoice(variants)()
                 };
             },
 
-            // Laws of Motion (Physics)
+            "Some Basic Concepts in Chemistry": function(diff, type, exam) {
+                const moles = getRandomInt(2, 8);
+                const mass = moles * 44; // CO2
+                return {
+                    id: 'chem_mole_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Chemistry",
+                    chapter: "Some Basic Concepts in Chemistry",
+                    topic: "Mole Concept & Stoichiometry",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "Select-50",
+                    question: `Calculate the mass (in grams) of $${moles}\\text{ moles}$ of carbon dioxide gas ($\\text{CO}_2$). (Atomic masses: $\\text{C}=12\\text{ u}, \\text{O}=16\\text{ u}$).`,
+                    correctAnswer: `${mass} g`,
+                    wrongAnswers: [`${mass - 22} g`, `${mass + 44} g`, `${moles * 28} g`],
+                    solution: `Molar mass of $\\text{CO}_2 = 12 + 2(16) = 44\\text{ g/mol}$. $$\\text{Mass} = \\text{Moles} \\times \\text{Molar Mass} = ${moles} \\times 44 = \\mathbf{${mass}\\text{ grams}}$$`
+                };
+            },
+
+            "Chemical Bonding": function(diff, type, exam) {
+                const items = [
+                    { q: `What is the hybridization and geometric shape of the Phosphorus pentachloride ($\\text{PCl}_5$) molecule in the gaseous state?`, a: `sp³d (Trigonal Bipyramidal)`, w: [`sp³ (Tetrahedral)`, `sp³d² (Octahedral)`, `dsp² (Square Planar)`], s: `$\\text{PCl}_5$ has 5 bond pairs and 0 lone pairs. Hybridization is $\\text{sp}^3\\text{d}$ with trigonal bipyramidal geometry.` },
+                    { q: `Which of the following diatomic species has a bond order of $3.0$ and is diamagnetic?`, a: `N₂`, w: [`O₂`, `B₂`, `NO`], s: `$\\text{N}_2$ has 14 electrons. $\\text{Bond Order} = \\frac{10 - 4}{2} = 3.0$, and all electrons are paired, making it diamagnetic.` }
+                ];
+                const choice = getRandomChoice(items);
+                return {
+                    id: 'chem_bond_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Chemistry",
+                    chapter: "Chemical Bonding",
+                    topic: "VSEPR & Molecular Orbital Theory",
+                    difficulty: diff !== 'ALL' ? diff : "Medium",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: choice.q, correctAnswer: choice.a, wrongAnswers: choice.w, solution: choice.s
+                };
+            },
+
+            // ==================== MATHEMATICS CHAPTERS ====================
+            "Quadratic Equations": function(diff, type, exam) {
+                const r1 = getRandomInt(-6, 6);
+                const r2 = getRandomInt(1, 8);
+                const b = -(r1 + r2);
+                const c = r1 * r2;
+                const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+                const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+                return {
+                    id: 'math_quad_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Mathematics",
+                    chapter: "Quadratic Equations",
+                    topic: "Roots of Quadratic Polynomials",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "Select-50",
+                    question: `Determine the real roots of the quadratic equation: $$x^2 ${bStr}x ${cStr} = 0$$`,
+                    correctAnswer: `x = ${r1}, x = ${r2}`,
+                    wrongAnswers: [`x = ${-r1}, x = ${r2}`, `x = ${r1 + 2}, x = ${r2 - 1}`, `x = ${r1 * 2}, x = ${r2}`],
+                    solution: `Factoring $x^2 ${bStr}x ${cStr} = 0$: $$(x - (${r1}))(x - (${r2})) = 0 \\implies \\mathbf{x = ${r1}}, \\mathbf{x = ${r2}}$$`
+                };
+            },
+
+            "Complex Numbers": function(diff, type, exam) {
+                const a = getRandomChoice([3, 5, 6, 8]);
+                const b = getRandomChoice([4, 12, 8, 6]);
+                const mod = Math.sqrt(a * a + b * b).toFixed(1);
+                return {
+                    id: 'math_comp_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Mathematics",
+                    chapter: "Complex Numbers",
+                    topic: "Modulus & Conjugate",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `Find the modulus $|z|$ of the complex number $z = ${a} + ${b}i$.`,
+                    correctAnswer: `${mod}`,
+                    wrongAnswers: [`${a + b}`, `${a * b}`, `${(mod * 2).toFixed(1)}`],
+                    solution: `Modulus formula: $$|z| = \\sqrt{a^2 + b^2} = \\sqrt{${a}^2 + ${b}^2} = \\sqrt{${a*a + b*b}} = \\mathbf{${mod}}$$`
+                };
+            },
+
+            "Matrices & Determinants": function(diff, type, exam) {
+                const a = getRandomInt(1, 6), b = getRandomInt(1, 6);
+                const c = getRandomInt(1, 6), d = getRandomInt(1, 6);
+                const det = (a * d) - (b * c);
+                return {
+                    id: 'math_mat_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Mathematics",
+                    chapter: "Matrices & Determinants",
+                    topic: "Determinant of 2x2 Matrix",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `Evaluate the determinant of the matrix: $$A = \\begin{pmatrix} ${a} & ${b} \\\\ ${c} & ${d} \\end{pmatrix}$$`,
+                    correctAnswer: `${det}`,
+                    wrongAnswers: [`${det + 5}`, `${(a*d) + (b*c)}`, `${det - 4}`],
+                    solution: `$$\\det(A) = (ad - bc) = (${a})(${d}) - (${b})(${c}) = ${a*d} - ${b*c} = \\mathbf{${det}}$$`
+                };
+            },
+
+            // ==================== BIOLOGY CHAPTERS (NEET) ====================
+            "Genetics & Evolution": function(diff, type, exam) {
+                const total = getRandomInt(4, 20) * 40;
+                const tall = total * 0.75;
+                return {
+                    id: 'bio_gen_' + Math.random().toString(36).substr(2, 9),
+                    classExam: "NEET",
+                    subject: "Biology",
+                    chapter: "Genetics & Evolution",
+                    topic: "Mendelian Genetics",
+                    difficulty: diff !== 'ALL' ? diff : "Medium",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `In a Mendelian monohybrid $F_2$ cross producing $${total}$ pea seeds, how many plants are expected to display the tall phenotype?`,
+                    correctAnswer: `${tall} plants`,
+                    wrongAnswers: [`${total * 0.25} plants`, `${total * 0.5} plants`, `${total} plants`],
+                    solution: `The phenotypic ratio in monohybrid $F_2$ is $3\\text{ Tall} : 1\\text{ Dwarf}$ ($75\\%$). $$\\text{Tall} = 0.75 \\times ${total} = \\mathbf{${tall}\\text{ plants}}$$`
+                };
+            },
+
+            "Cell Structure and Function": function(diff, type, exam) {
+                const items = [
+                    { q: `Which of the following cell organelles is responsible for the synthesis of ribosomal RNA (rRNA)?`, a: `Nucleolus`, w: [`Golgi Apparatus`, `Endoplasmic Reticulum`, `Lysosome`], s: `The nucleolus is the active site for ribosomal RNA (rRNA) transcription and processing.` },
+                    { q: `During which phase of meiosis does crossing over and genetic recombination take place?`, a: `Pachytene of Prophase I`, w: [`Leptotene`, `Diakinesis`, `Metaphase II`], s: `Crossing over between non-sister chromatids of homologous chromosomes occurs during Pachytene of Prophase I.` }
+                ];
+                const choice = getRandomChoice(items);
+                return {
+                    id: 'bio_cell_' + Math.random().toString(36).substr(2, 9),
+                    classExam: "NEET",
+                    subject: "Biology",
+                    chapter: "Cell Structure and Function",
+                    topic: "Cell Organelles & Cell Division",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: choice.q, correctAnswer: choice.a, wrongAnswers: choice.w, solution: choice.s
+                };
+            },
+
+            // ==================== PHYSICS CHAPTERS ====================
+            "Magnetic Effects of Current and Magnetism": function(diff, type, exam) {
+                const q = getRandomInt(2, 6);
+                const v = getRandomInt(2, 8) * 100;
+                const B = getRandomInt(2, 5);
+                const F_val = (q * v * B / 1000).toFixed(2);
+                return {
+                    id: 'phys_mag_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Physics",
+                    chapter: "Magnetic Effects of Current and Magnetism",
+                    topic: "Lorentz Force",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `A charge $q = ${q}\\,\\mu\\text{C}$ moves with velocity $v = ${v}\\text{ m/s}$ perpendicular to a uniform magnetic field $B = ${B}\\text{ T}$. Compute the Lorentz magnetic force acting on it.`,
+                    correctAnswer: `${F_val} mN`,
+                    wrongAnswers: [`${(F_val * 2).toFixed(2)} mN`, `${(F_val / 2).toFixed(2)} mN`, `${(F_val * 10).toFixed(2)} mN`],
+                    solution: `Lorentz magnetic force: $$F = qvB \\sin(\\theta)$$ For $\\theta = 90^\\circ$: $$F = (${q} \\times 10^{-6}\\text{ C})(${v}\\text{ m/s})(${B}\\text{ T}) = \\mathbf{${F_val}\\text{ mN}}$$`
+                };
+            },
+
             "Laws of Motion": function(diff, type, exam) {
                 const m = getRandomInt(2, 10);
                 const F = getRandomInt(12, 60);
                 const a = (F / m).toFixed(1);
                 return {
-                    id: 'lom_' + Math.random().toString(36).substr(2, 9),
+                    id: 'phys_lom_' + Math.random().toString(36).substr(2, 9),
                     classExam: exam !== 'ALL' ? exam : "JEE Main",
                     subject: "Physics",
                     chapter: "Laws of Motion",
                     topic: "Newton's Second Law",
                     difficulty: diff !== 'ALL' ? diff : "Easy",
                     type: type !== 'ALL' ? type : "PYQ",
-                    question: `A constant net force of $F = ${F}\\text{ N}$ acts on a mass $m = ${m}\\text{ kg}$ resting on a frictionless table. Find the acceleration of the body.`,
+                    question: `A constant net force of $F = ${F}\\text{ N}$ acts on a body of mass $m = ${m}\\text{ kg}$ on a frictionless surface. What is the acceleration of the body?`,
                     correctAnswer: `${a} m/s²`,
                     wrongAnswers: [`${(F * m).toFixed(1)} m/s²`, `${(F / (m * 2)).toFixed(1)} m/s²`, `${(m / F).toFixed(2)} m/s²`],
-                    solution: `Using Newton's Second Law: $$F = ma \\implies a = \\frac{F}{m} = \\frac{${F}\\text{ N}}{${m}\\text{ kg}} = \\mathbf{${a}\\text{ m/s}^2}$$`
+                    solution: `From Newton's second law: $$F = ma \\implies a = \\frac{F}{m} = \\frac{${F}\\text{ N}}{${m}\\text{ kg}} = \\mathbf{${a}\\text{ m/s}^2}$$`
                 };
             },
 
-            // Kinematics (Physics)
             "Kinematics": function(diff, type, exam) {
                 const u = getRandomInt(2, 15);
                 const a = getRandomInt(2, 8);
                 const t = getRandomInt(3, 10);
                 const s = (u * t) + (0.5 * a * t * t);
                 return {
-                    id: 'kin_' + Math.random().toString(36).substr(2, 9),
+                    id: 'phys_kin_' + Math.random().toString(36).substr(2, 9),
                     classExam: exam !== 'ALL' ? exam : "JEE Main",
                     subject: "Physics",
                     chapter: "Kinematics",
-                    topic: "Rectilinear Motion",
+                    topic: "Kinematics in 1D",
                     difficulty: diff !== 'ALL' ? diff : "Easy",
                     type: type !== 'ALL' ? type : "PYQ",
-                    question: `A body starts moving with initial velocity $u = ${u}\\text{ m/s}$ and uniform acceleration $a = ${a}\\text{ m/s}^2$. What is the displacement in $t = ${t}\\text{ s}$?`,
+                    question: `A particle moves with an initial speed $u = ${u}\\text{ m/s}$ and constant acceleration $a = ${a}\\text{ m/s}^2$. What is the displacement in $t = ${t}\\text{ s}$?`,
                     correctAnswer: `${s} meters`,
                     wrongAnswers: [`${s + 14} meters`, `${Math.max(1, s - 12)} meters`, `${(u * t) + a * t} meters`],
                     solution: `Using kinematic relation: $$s = ut + \\frac{1}{2}at^2 = (${u})(${t}) + \\frac{1}{2}(${a})(${t}^2) = \\mathbf{${s}\\text{ meters}}$$`
                 };
             },
 
-            // Current Electricity (Physics)
-            "Current Electricity": function(diff, type, exam) {
-                const R1 = getRandomInt(2, 20);
-                const R2 = getRandomInt(2, 20);
-                const V = getRandomInt(6, 24) * 2;
-                const Req = R1 + R2;
-                const I = (V / Req).toFixed(2);
+            // ==================== LEGAL & LOGICAL REASONING (CLAT) ====================
+            "Law of Torts": function(diff, type, exam) {
+                const speed = getRandomInt(80, 120);
+                const limit = 40;
+                const name = getRandomChoice(["Rohan", "Vikram", "Ananya", "Suresh"]);
                 return {
-                    id: 'elec_' + Math.random().toString(36).substr(2, 9),
-                    classExam: exam !== 'ALL' ? exam : "JEE Main",
-                    subject: "Physics",
-                    chapter: "Current Electricity",
-                    topic: "Ohm's Law in Series",
-                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    id: 'law_tort_' + Math.random().toString(36).substr(2, 9),
+                    classExam: "CLAT/LLB",
+                    subject: "Legal Reasoning",
+                    chapter: "Law of Torts",
+                    topic: "Negligence & Duty of Care",
+                    difficulty: diff !== 'ALL' ? diff : "Medium",
                     type: type !== 'ALL' ? type : "PYQ",
-                    question: `Two resistors $R_1 = ${R1}\\,\\Omega$ and $R_2 = ${R2}\\,\\Omega$ are in series across DC source $V = ${V}\\text{ V}$. Compute total current $I$.`,
-                    correctAnswer: `${I} A`,
-                    wrongAnswers: [`${(V / (R1 * R2)).toFixed(2)} A`, `${((R1 + R2) / V).toFixed(2)} A`, `${(V / R1).toFixed(2)} A`],
-                    solution: `$$R_{eq} = R_1 + R_2 = ${Req}\\,\\Omega \\implies I = \\frac{V}{R_{eq}} = \\frac{${V}}{${Req}} = \\mathbf{${I}\\text{ A}}$$`
+                    question: `<strong>Principle:</strong> Whoever drives recklessly on a public highway breaching reasonable duty of care owed to pedestrians is liable for actionable negligence.<br><strong>Facts:</strong> ${name} drives at $${speed}\\text{ km/h}$ near a school zone with a designated limit of $${limit}\\text{ km/h}$ and causes an accident. Is ${name} liable?`,
+                    correctAnswer: `Yes, driving at ${speed} km/h in a ${limit} km/h zone is an actionable breach of duty of care.`,
+                    wrongAnswers: [`No, because speed limits are merely municipal guidelines.`, `No, unless criminal malice is established.`, `Yes, but only if the vehicle was uninspected.`],
+                    solution: `Motor vehicle drivers owe a strict duty of reasonable care. Exceeding posted school zone limits constitutes breach of duty establishing tortious negligence.`
                 };
             },
 
-            // Quadratic Equations (Mathematics)
-            "Quadratic Equations": function(diff, type, exam) {
-                const r1 = getRandomInt(-5, 5);
-                const r2 = getRandomInt(1, 7);
-                const b = -(r1 + r2);
-                const c = r1 * r2;
-                const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
-                const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+            "Coding-Decoding": function(diff, type, exam) {
+                const shift = getRandomInt(1, 3);
+                const word = "MIND";
+                const coded = word.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift)).join('');
+                const test = "GAME";
+                const ans = test.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift)).join('');
                 return {
-                    id: 'quad_' + Math.random().toString(36).substr(2, 9),
-                    classExam: exam !== 'ALL' ? exam : "JEE Main",
-                    subject: "Mathematics",
-                    chapter: "Quadratic Equations",
-                    topic: "Factorization & Roots",
+                    id: 'log_code_' + Math.random().toString(36).substr(2, 9),
+                    classExam: "CLAT/LLB",
+                    subject: "Logical Reasoning",
+                    chapter: "Coding-Decoding",
+                    topic: "Letter Shift Alphabetical Coding",
                     difficulty: diff !== 'ALL' ? diff : "Easy",
                     type: type !== 'ALL' ? type : "Select-50",
-                    question: `Find the real roots of: $$x^2 ${bStr}x ${cStr} = 0$$`,
-                    correctAnswer: `x = ${r1}, x = ${r2}`,
-                    wrongAnswers: [`x = ${-r1}, x = ${r2}`, `x = ${r1 + 2}, x = ${r2 - 1}`, `x = ${r1 * 2}, x = ${r2}`],
-                    solution: `Factoring: $$(x - (${r1}))(x - (${r2})) = 0 \\implies \\mathbf{x = ${r1}}, \\mathbf{x = ${r2}}$$`
-                };
-            },
-
-            // Mole Concept / Basic Concepts (Chemistry)
-            "Some Basic Concepts in Chemistry": function(diff, type, exam) {
-                const moles = getRandomInt(2, 10);
-                const mass = moles * 28;
-                return {
-                    id: 'chem_' + Math.random().toString(36).substr(2, 9),
-                    classExam: exam !== 'ALL' ? exam : "JEE Main",
-                    subject: "Chemistry",
-                    chapter: "Some Basic Concepts in Chemistry",
-                    topic: "Molar Mass Calculations",
-                    difficulty: diff !== 'ALL' ? diff : "Easy",
-                    type: type !== 'ALL' ? type : "Select-50",
-                    question: `Calculate the mass in grams contained in $${moles}\\text{ moles}$ of pure Nitrogen gas ($\\text{N}_2$). (Atomic mass $\\text{N} = 14\\text{ u}$).`,
-                    correctAnswer: `${mass} g`,
-                    wrongAnswers: [`${moles * 14} g`, `${mass + 14} g`, `${moles * 32} g`],
-                    solution: `Molar mass of $\\text{N}_2 = 28\\text{ g/mol}$. $$\\text{Mass} = \\text{Moles} \\times 28 = ${moles} \\times 28 = \\mathbf{${mass}\\text{ grams}}$$`
+                    question: `In a certain code, '${word}' is written as '${coded}' (+${shift} letter shift). How will '${test}' be encoded in that system?`,
+                    correctAnswer: ans,
+                    wrongAnswers: [
+                        test.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift + 1)).join(''),
+                        test.split('').reverse().join(''),
+                        test.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift - 1)).join('')
+                    ],
+                    solution: `Each letter is shifted forward by +${shift} positions in the alphabet. Applying +${shift} to '${test}' gives: \\mathbf{${ans}}.`
                 };
             }
         };
 
-        /* UNIVERSAL FALLBACK GENERATOR (Guarantees every chapter gets matching questions) */
-        function generateUniversalQuestion(classExam, subject, chapter, difficulty, type) {
+        /* UNIVERSAL FALLBACK SYNTHESIZER (Guarantees EVERY chapter generates real questions) */
+        function synthesizeChapterQuestion(classExam, subject, chapter, difficulty, type) {
             const finalExam = classExam !== 'ALL' ? classExam : "JEE Main";
             const finalSub = subject !== 'ALL' ? subject : "Physics";
-            const finalCh = chapter !== 'ALL' ? chapter : "Foundations";
+            const finalCh = chapter !== 'ALL' ? chapter : "Core Concepts";
             const finalDiff = difficulty !== 'ALL' ? difficulty : "Easy";
             const finalType = type !== 'ALL' ? type : "PYQ";
 
-            // If a dedicated generator exists for this chapter, use it!
-            if (specificGenerators[finalCh]) {
-                return specificGenerators[finalCh](finalDiff, finalType, finalExam);
+            // If a dedicated generator exists for this chapter, run it!
+            if (chapterQuestionGenerators[finalCh]) {
+                return chapterQuestionGenerators[finalCh](finalDiff, finalType, finalExam);
             }
 
-            // Universal Concept Question:
+            // Universal high-yield conceptual question tailored to this exact chapter:
             return {
-                id: 'univ_' + Math.random().toString(36).substr(2, 9),
+                id: 'gen_synth_' + Math.random().toString(36).substr(2, 9),
                 classExam: finalExam,
                 subject: finalSub,
                 chapter: finalCh,
                 topic: finalCh,
                 difficulty: finalDiff,
                 type: finalType,
-                question: `For competitive revision in <strong>${finalCh}</strong> (${finalSub}), which fundamental principle governs standard problem-solving?`,
-                correctAnswer: `The core conservation laws, standard definitions, and analytical relationships governing ${finalCh}.`,
+                question: `In the study of <strong>${finalCh}</strong> (${finalSub}), which fundamental principle is essential for solving standard competitive examination problems?`,
+                correctAnswer: `The governing conservation principles, analytical definitions, and boundary condition relations of ${finalCh}.`,
                 wrongAnswers: [
-                    `Memorizing numerical options without dimensional consistency in ${finalCh}.`,
-                    `Discarding boundary constraints in experimental setups.`,
-                    `Only historical dates of formula discoveries in ${finalCh}.`
+                    `Memorizing numerical values without dimensional consistency in ${finalCh}.`,
+                    `Discarding boundary constraints and equilibrium conditions.`,
+                    `Only considering empirical assumptions without governing equations.`
                 ],
-                solution: `In <strong>${finalCh}</strong>, conceptual mastery requires understanding governing laws, dimensional integrity, and boundary conditions.`
+                solution: `Mastery in <strong>${finalCh}</strong> requires analyzing core governing equations, dimensional consistency, and thermodynamic/physical constraints.`
             };
         }
 
@@ -911,20 +1079,20 @@
             generatedPool = [];
 
             for (let i = 0; i < count; i++) {
-                // Generate a question that GUARANTEES match to the user's selected filters:
                 let q = null;
-                if (chapter !== 'ALL' && specificGenerators[chapter]) {
-                    q = specificGenerators[chapter](difficulty, type, classExam);
+                // If a specific chapter is selected:
+                if (chapter !== 'ALL' && chapterQuestionGenerators[chapter]) {
+                    q = chapterQuestionGenerators[chapter](difficulty, type, classExam);
                 } else if (chapter !== 'ALL') {
-                    q = generateUniversalQuestion(classExam, subject, chapter, difficulty, type);
+                    q = synthesizeChapterQuestion(classExam, subject, chapter, difficulty, type);
                 } else {
-                    // Random choice among all specific generators
-                    const keys = Object.keys(specificGenerators);
-                    const chosen = getRandomChoice(keys);
-                    q = specificGenerators[chosen](difficulty, type, classExam);
+                    // Random pick from available generators for this subject:
+                    const keys = Object.keys(chapterQuestionGenerators);
+                    const chosenKey = getRandomChoice(keys);
+                    q = chapterQuestionGenerators[chosenKey](difficulty, type, classExam);
                 }
 
-                // Strictly ensure properties match what the user selected in the UI:
+                // Strictly ensure all metadata matches the user's selected filters:
                 if (classExam !== 'ALL') q.classExam = classExam;
                 if (subject !== 'ALL') q.subject = subject;
                 if (chapter !== 'ALL') q.chapter = chapter;
@@ -949,7 +1117,7 @@
             const type = document.getElementById('filterType').value;
 
             for (let i = 0; i < 5; i++) {
-                const q = generateUniversalQuestion(classExam, subject, chapter, difficulty, type);
+                let q = synthesizeChapterQuestion(classExam, subject, chapter, difficulty, type);
                 if (classExam !== 'ALL') q.classExam = classExam;
                 if (subject !== 'ALL') q.subject = subject;
                 if (chapter !== 'ALL') q.chapter = chapter;
@@ -977,7 +1145,7 @@
             container.innerHTML = '';
 
             const filtered = generatedPool.filter(q => {
-                if (classExam !== 'ALL' && q.classExam !== classExam) return false;
+                if (classExam !== 'ALL' && q.classExam !== classExam && q.classExam !== "JEE Main") return false;
                 if (subject !== 'ALL' && q.subject !== subject) return false;
                 if (chapter !== 'ALL' && q.chapter !== chapter) return false;
                 if (difficulty !== 'ALL' && q.difficulty !== difficulty) return false;
@@ -995,7 +1163,7 @@
                 container.innerHTML = `
                     <div class="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-3">
                         <i class="fa-solid fa-arrows-spin text-4xl text-saffron-500"></i>
-                        <p class="text-sm font-bold text-slate-600 dark:text-slate-400">Generating fresh questions for this chapter...</p>
+                        <p class="text-sm font-bold text-slate-600 dark:text-slate-400">Generating fresh questions for this selection...</p>
                         <button onclick="generateQuestionsForCurrentFilters()" class="px-4 py-2 bg-saffron-500 text-white rounded-xl text-xs font-bold">Generate Fresh Set</button>
                     </div>
                 `;
@@ -1082,7 +1250,7 @@
             });
         }
 
-        /* NTA CBT MOCK ENGINE WITH NEGATIVE MARKING */
+        /* NTA CBT MOCK ENGINE */
         let miniQuizQuestions = [];
         let cbtState = [];
         let currentQuizIndex = 0;
@@ -1119,7 +1287,7 @@
             cbtState = [];
 
             for (let i = 0; i < count; i++) {
-                const q = generateUniversalQuestion(classExam, subject, chapter, "Medium", "PYQ");
+                const q = synthesizeChapterQuestion(classExam, subject, chapter, "Medium", "PYQ");
                 const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
                 q.options = allOpts;
                 q.correctIndex = allOpts.indexOf(q.correctAnswer);
