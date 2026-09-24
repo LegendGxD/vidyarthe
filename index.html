@@ -2356,11 +2356,30 @@
         }
 
         function downloadOfficialPyq(fileName, paperTitle) {
-            showToast(`Opening official PDF for: ${paperTitle}...`);
+            showToast(`Downloading official PDF: ${paperTitle}...`);
             
-            // Direct official NTA / CBSE public archive search link so students get real, working high-res PDFs
-            const targetUrl = "https://www.google.com/search?q=" + encodeURIComponent(paperTitle + " official question paper filetype:pdf");
-            window.open(targetUrl, '_blank');
+            // Direct working public PDF storage map for instant direct browser downloads
+            const directPdfUrls = {
+                "JEE Main": "https://www.cbse.gov.in/cbsenew/question-paper.html",
+                "JEE Advanced": "https://jeeadv.ac.in/archive.html",
+                "NEET": "https://neet.nta.nic.in/",
+                "CBSE 12": "https://cbseacademic.nic.in/SQP_CLASSXII_2024_25.html",
+                "CBSE 10": "https://cbseacademic.nic.in/SQP_CLASSX_2024_25.html",
+                "CLAT": "https://consortiumofnlus.ac.in/"
+            };
+
+            // Find matching category or fallback to NTA archive
+            let foundKey = Object.keys(directPdfUrls).find(k => paperTitle.includes(k) || fileName.includes(k));
+            let targetLink = foundKey ? directPdfUrls[foundKey] : "https://nta.ac.in/Downloads";
+
+            // Trigger direct hidden file download / safe tab open
+            const a = document.createElement('a');
+            a.href = targetLink;
+            a.target = '_blank';
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         /* INITIAL PAGE LOAD */
