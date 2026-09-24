@@ -120,6 +120,14 @@
                         <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
                     </button>
 
+                    <button id="leaderboardNavBtn" onclick="openLeaderboardModal()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Leaderboard">
+                        <i class="fa-solid fa-trophy text-lg"></i>
+                    </button>
+
+                    <button id="adminNavBtn" onclick="openAdminModal()" class="hidden p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Admin Dashboard">
+                        <i class="fa-solid fa-user-shield text-lg"></i>
+                    </button>
+
                     <!-- Logged-out state -->
                     <button id="loginNavBtn" onclick="openAuthModal('login')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-indigo-500/20">
                         <i class="fa-solid fa-right-to-bracket"></i>
@@ -239,6 +247,14 @@
                     </div>
                 </div>
 
+                <!-- Subject-wise Analytics -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-2"><i class="fa-solid fa-chart-simple text-indigo-500"></i> Subject-wise Accuracy</h4>
+                    <div id="subjectAnalytics" class="space-y-2">
+                        <p class="text-xs text-slate-400 text-center py-3">Answer some questions to see your subject breakdown.</p>
+                    </div>
+                </div>
+
                 <!-- Goals -->
                 <div>
                     <div class="flex items-center justify-between mb-2">
@@ -261,6 +277,59 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- ===================== LEADERBOARD MODAL ===================== -->
+    <div id="leaderboardModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div onclick="closeLeaderboardModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-5 flex items-center justify-between z-10">
+                <h3 class="font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500"></i> Leaderboard</h3>
+                <button onclick="closeLeaderboardModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5">
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">Ranked by accuracy (min. 5 questions attempted), then attempts.</p>
+                <div id="leaderboardList" class="space-y-2">
+                    <p class="text-xs text-slate-400 text-center py-8">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ADMIN DASHBOARD MODAL ===================== -->
+    <div id="adminModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div onclick="closeAdminModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-4xl max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-5 flex items-center justify-between z-10">
+                <h3 class="font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-user-shield text-indigo-500"></i> Admin Dashboard</h3>
+                <div class="flex items-center gap-3">
+                    <span id="adminUserCount" class="text-xs font-bold text-slate-500 dark:text-slate-400">0 students</span>
+                    <button onclick="closeAdminModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+            </div>
+            <div class="p-5 overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-left text-[10px] uppercase tracking-wide text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                            <th class="py-2 pr-3">Name</th>
+                            <th class="py-2 pr-3">Attempted</th>
+                            <th class="py-2 pr-3">Accuracy</th>
+                            <th class="py-2 pr-3">Streak</th>
+                            <th class="py-2 pr-3">Goals</th>
+                            <th class="py-2 pr-3">Last Active</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUserTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reminder banner for logged-in students who haven't practiced today -->
+    <div id="streakReminderBanner" class="hidden fixed bottom-5 left-5 z-50 max-w-xs bg-white dark:bg-slate-900 border border-saffron-300 dark:border-saffron-700 shadow-2xl rounded-xl p-4 text-xs">
+        <button onclick="dismissStreakReminder()" class="absolute top-2 right-2 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+        <p class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5"><i class="fa-solid fa-fire text-saffron-500"></i> Keep your streak alive!</p>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">You haven't practiced today yet. Answer a few questions to stay on track.</p>
     </div>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
@@ -417,8 +486,8 @@
                     <span class="px-3 py-1 rounded-full bg-saffron-500/20 text-saffron-300 text-xs font-bold uppercase tracking-wider border border-saffron-500/30">
                         <i class="fa-solid fa-bolt mr-1"></i> Instant Speed Test
                     </span>
-                    <h2 class="text-2xl sm:text-3xl font-black">Dynamic 5-Question Speed Test</h2>
-                    <p class="text-slate-300 text-xs sm:text-sm">Randomized variables test your true conceptual knowledge under 3-minute timer constraint.</p>
+                    <h2 class="text-2xl sm:text-3xl font-black">Dynamic Mock Test</h2>
+                    <p class="text-slate-300 text-xs sm:text-sm">Randomized variables test your true conceptual knowledge under a timer. Choose a quick 5-question check or a full-length paper.</p>
                 </div>
 
                 <div id="quizBox" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-md">
@@ -432,6 +501,15 @@
                             <p class="text-xs text-slate-400 mt-1">The mock test will use the same Class/Exam, Subject, Chapter, Difficulty, Type Mode and search/topic filter you selected above.</p>
                         </div>
                         <div id="quizFilterSummary" class="text-left text-[11px] leading-relaxed bg-slate-800/70 border border-slate-700 rounded-xl px-4 py-3 text-slate-300">Current filters: All</div>
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="text-[11px] text-slate-400 font-semibold">Test length:</span>
+                            <div id="quizLengthPicker" class="inline-flex bg-slate-800 border border-slate-700 rounded-lg p-1 gap-1">
+                                <button type="button" onclick="setQuizLength(5)" data-len="5" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-white bg-saffron-500">5</button>
+                                <button type="button" onclick="setQuizLength(25)" data-len="25" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-slate-300 hover:bg-slate-700">25</button>
+                                <button type="button" onclick="setQuizLength(50)" data-len="50" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-slate-300 hover:bg-slate-700">50</button>
+                                <button type="button" onclick="setQuizLength(90)" data-len="90" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-slate-300 hover:bg-slate-700">90 (Full)</button>
+                            </div>
+                        </div>
                         <button onclick="startMiniQuiz()" class="px-6 py-3 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-saffron-500/20">
                             Start Filtered Mock Test
                         </button>
@@ -554,6 +632,7 @@
         let currentProfile = null; // row from `profiles` table
         let authMode = 'login';   // 'login' | 'signup'
         let userGoals = [];
+        let subjectStats = {};    // { Physics: {attempted, correct}, Chemistry: {...}, ... }
 
         function requireSupabaseConfigured() {
             if (!supabaseClient) {
@@ -1585,7 +1664,8 @@
             if (!q) return;
 
             userStats.attempted++;
-            if (selectedIdx === q.correctIndex) {
+            const isCorrect = selectedIdx === q.correctIndex;
+            if (isCorrect) {
                 userStats.correct++;
                 userStats.streak++;
             } else {
@@ -1593,6 +1673,8 @@
             }
             localStorage.setItem('vidyarthe_stats', JSON.stringify(userStats));
             updateUserStatsUI();
+            recordSubjectAttempt(q.subject, isCorrect);
+            markActiveToday();
             syncProfileToCloud();
 
             q.options.forEach((_, idx) => {
@@ -1781,6 +1863,15 @@
         let quizTimerInterval = null;
         let quizTimeSeconds = 180;
         let quizTimeTaken = 0;
+        let quizLength = 5;
+
+        function setQuizLength(len) {
+            quizLength = len;
+            document.querySelectorAll('.quiz-len-btn').forEach(btn => {
+                const active = parseInt(btn.dataset.len, 10) === len;
+                btn.className = `quiz-len-btn px-3 py-1 rounded-md text-xs font-bold ${active ? 'text-white bg-saffron-500' : 'text-slate-300 hover:bg-slate-700'}`;
+            });
+        }
 
         function getCurrentQuizFilters() {
             return {
@@ -1845,7 +1936,8 @@
 
             // For broader filters, generate a larger temporary pool and keep only matching questions.
             if (candidates.length < count) {
-                for (let i = 0; i < 100 && candidates.length < count; i++) {
+                const attempts = Math.max(100, count + 60);
+                for (let i = 0; i < attempts && candidates.length < count; i++) {
                     const randomGen = getRandomChoice(questionGenerators);
                     const q = randomGen();
                     const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
@@ -1866,15 +1958,16 @@
         }
 
         function startMiniQuiz() {
-            const { filters, candidates } = buildMockCandidates(5);
+            const count = quizLength || 5;
+            const { filters, candidates } = buildMockCandidates(count);
 
-            if (candidates.length < 5) {
+            if (candidates.length < count) {
                 updateQuizFilterSummary();
                 showToast(`Only ${candidates.length} matching questions are available for these filters.`);
                 return;
             }
 
-            miniQuizQuestions = shuffleArray(candidates).slice(0, 5);
+            miniQuizQuestions = shuffleArray(candidates).slice(0, count);
             miniQuizQuestions.forEach(q => {
                 const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
                 q.options = allOpts;
@@ -1887,7 +1980,7 @@
 
             currentQuizIndex = 0;
             quizAnswers = {};
-            quizTimeSeconds = 180;
+            quizTimeSeconds = count * 36; // ~36 seconds per question, same pace as the original 5-question/3-minute test
             quizTimeTaken = 0;
 
             renderQuizQuestion();
@@ -1954,8 +2047,15 @@
 
             let correctCount = 0;
             miniQuizQuestions.forEach((q, idx) => {
-                if (quizAnswers[idx] === q.correctIndex) correctCount++;
+                const isCorrect = quizAnswers[idx] === q.correctIndex;
+                if (isCorrect) correctCount++;
+                userStats.attempted++;
+                if (isCorrect) { userStats.correct++; userStats.streak++; } else { userStats.streak = 0; }
+                recordSubjectAttempt(q.subject, isCorrect);
             });
+            localStorage.setItem('vidyarthe_stats', JSON.stringify(userStats));
+            updateUserStatsUI();
+            markActiveToday();
 
             const accuracy = Math.round((correctCount / miniQuizQuestions.length) * 100);
             document.getElementById('quizScoreText').textContent = `${correctCount}/${miniQuizQuestions.length}`;
@@ -1970,6 +2070,7 @@
                     accuracy,
                     time_taken: quizTimeTaken
                 });
+                syncProfileToCloud();
             }
         }
 
@@ -2079,6 +2180,8 @@
             const displayName = (profile && profile.full_name) || (user.user_metadata && user.user_metadata.full_name) || user.email.split('@')[0];
             document.getElementById('profileAvatarInitial').textContent = displayName.charAt(0).toUpperCase();
             document.getElementById('profileNavName').textContent = displayName;
+
+            document.getElementById('adminNavBtn').classList.toggle('hidden', !(profile && profile.is_admin));
         }
 
         function setLoggedOutUI() {
@@ -2086,6 +2189,8 @@
             const profileBtn = document.getElementById('profileNavBtn');
             profileBtn.classList.add('hidden');
             profileBtn.classList.remove('flex');
+            document.getElementById('adminNavBtn').classList.add('hidden');
+            document.getElementById('streakReminderBanner').classList.add('hidden');
         }
 
         /* =====================================================================
@@ -2132,12 +2237,14 @@
             currentProfile = profile;
             bookmarks = profile ? (profile.bookmarks || []) : [];
             userStats = profile ? { attempted: profile.attempted || 0, correct: profile.correct || 0, streak: profile.streak || 0 } : userStats;
+            subjectStats = (profile && profile.subject_stats) || {};
 
             setLoggedInUI(user, profile);
             updateBookmarkBadge();
             updateUserStatsUI();
             renderGeneratedQuestions();
             await loadGoals();
+            checkStreakReminder(profile);
         }
 
         function openProfileModal() {
@@ -2150,6 +2257,7 @@
             const accuracy = userStats.attempted > 0 ? Math.round((userStats.correct / userStats.attempted) * 100) : 0;
             document.getElementById('profileStatAccuracy').textContent = `${accuracy}%`;
             document.getElementById('profileStatStreak').textContent = `${userStats.streak} 🔥`;
+            renderSubjectAnalytics();
             renderGoalsList();
             document.getElementById('profileModal').classList.remove('hidden');
         }
@@ -2241,8 +2349,166 @@
                 bookmarks,
                 attempted: userStats.attempted,
                 correct: userStats.correct,
-                streak: userStats.streak
+                streak: userStats.streak,
+                subject_stats: subjectStats
             }).eq('id', currentUser.id);
+        }
+
+        /* =====================================================================
+           SUBJECT-WISE ANALYTICS
+           ===================================================================== */
+        function recordSubjectAttempt(subject, isCorrect) {
+            if (!subject) return;
+            if (!subjectStats[subject]) subjectStats[subject] = { attempted: 0, correct: 0 };
+            subjectStats[subject].attempted++;
+            if (isCorrect) subjectStats[subject].correct++;
+        }
+
+        function renderSubjectAnalytics() {
+            const box = document.getElementById('subjectAnalytics');
+            const subjects = Object.keys(subjectStats).filter(s => subjectStats[s].attempted > 0);
+            if (subjects.length === 0) {
+                box.innerHTML = `<p class="text-xs text-slate-400 text-center py-3">Answer some questions to see your subject breakdown.</p>`;
+                return;
+            }
+            subjects.sort((a, b) => subjectStats[b].attempted - subjectStats[a].attempted);
+            box.innerHTML = subjects.map(s => {
+                const st = subjectStats[s];
+                const acc = st.attempted > 0 ? Math.round((st.correct / st.attempted) * 100) : 0;
+                const barColor = acc >= 70 ? 'bg-emerald-500' : acc >= 40 ? 'bg-amber-500' : 'bg-red-500';
+                return `
+                    <div>
+                        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                            <span>${s} <span class="text-slate-400 font-normal">(${st.attempted} attempted)</span></span>
+                            <span>${acc}%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full ${barColor} rounded-full" style="width:${acc}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* =====================================================================
+           STREAK REMINDER
+           ===================================================================== */
+        function todayStr() {
+            return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        }
+
+        function checkStreakReminder(profile) {
+            const lastActive = profile && profile.last_active_date;
+            if (lastActive !== todayStr()) {
+                document.getElementById('streakReminderBanner').classList.remove('hidden');
+            } else {
+                document.getElementById('streakReminderBanner').classList.add('hidden');
+            }
+        }
+
+        function dismissStreakReminder() {
+            document.getElementById('streakReminderBanner').classList.add('hidden');
+        }
+
+        async function markActiveToday() {
+            if (!currentUser || !supabaseClient) return;
+            const today = todayStr();
+            if (currentProfile && currentProfile.last_active_date === today) return;
+            if (currentProfile) currentProfile.last_active_date = today;
+            document.getElementById('streakReminderBanner').classList.add('hidden');
+            await supabaseClient.from('profiles').update({ last_active_date: today }).eq('id', currentUser.id);
+        }
+
+        /* =====================================================================
+           LEADERBOARD
+           ===================================================================== */
+        async function openLeaderboardModal() {
+            if (!requireSupabaseConfigured()) return;
+            document.getElementById('leaderboardModal').classList.remove('hidden');
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Loading...</p>`;
+
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('full_name, attempted, correct, streak')
+                .gte('attempted', 5)
+                .order('attempted', { ascending: false })
+                .limit(200);
+
+            if (error || !data) {
+                list.innerHTML = `<p class="text-xs text-red-500 text-center py-8">Couldn't load the leaderboard.</p>`;
+                return;
+            }
+
+            const ranked = data
+                .map(p => ({ ...p, accuracy: p.attempted > 0 ? Math.round((p.correct / p.attempted) * 100) : 0 }))
+                .sort((a, b) => b.accuracy - a.accuracy || b.attempted - a.attempted)
+                .slice(0, 20);
+
+            if (ranked.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">No ranked students yet — attempt at least 5 questions to appear here.</p>`;
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            list.innerHTML = ranked.map((p, i) => `
+                <div class="flex items-center justify-between p-2.5 rounded-lg ${i < 3 ? 'bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900' : 'bg-slate-50 dark:bg-slate-800/50'}">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-6 text-center text-sm">${medals[i] || (i + 1)}</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">${(p.full_name || 'Student').replace(/[<>]/g, '')}</span>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs font-black text-emerald-600 dark:text-emerald-400">${p.accuracy}%</div>
+                        <div class="text-[10px] text-slate-400">${p.attempted} attempted • ${p.streak}🔥</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeLeaderboardModal() {
+            document.getElementById('leaderboardModal').classList.add('hidden');
+        }
+
+        /* =====================================================================
+           ADMIN DASHBOARD (visible only to profiles with is_admin = true)
+           ===================================================================== */
+        async function openAdminModal() {
+            if (!currentProfile || !currentProfile.is_admin) return;
+            document.getElementById('adminModal').classList.remove('hidden');
+            const tbody = document.getElementById('adminUserTableBody');
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-slate-400 py-6">Loading...</td></tr>`;
+
+            const [{ data: profiles, error: profileErr }, { data: goals }] = await Promise.all([
+                supabaseClient.from('profiles').select('id, full_name, attempted, correct, streak, last_active_date').order('attempted', { ascending: false }),
+                supabaseClient.from('goals').select('user_id')
+            ]);
+
+            if (profileErr || !profiles) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6">Couldn't load student data.</td></tr>`;
+                return;
+            }
+
+            const goalCounts = {};
+            (goals || []).forEach(g => { goalCounts[g.user_id] = (goalCounts[g.user_id] || 0) + 1; });
+
+            document.getElementById('adminUserCount').textContent = `${profiles.length} students`;
+            tbody.innerHTML = profiles.map(p => {
+                const acc = p.attempted > 0 ? Math.round((p.correct / p.attempted) * 100) : 0;
+                return `
+                    <tr class="border-b border-slate-100 dark:border-slate-800">
+                        <td class="py-2 pr-3 font-semibold text-slate-800 dark:text-slate-100">${(p.full_name || 'Student').replace(/[<>]/g, '')}</td>
+                        <td class="py-2 pr-3">${p.attempted || 0}</td>
+                        <td class="py-2 pr-3">${acc}%</td>
+                        <td class="py-2 pr-3">${p.streak || 0} 🔥</td>
+                        <td class="py-2 pr-3">${goalCounts[p.id] || 0}</td>
+                        <td class="py-2 pr-3 text-slate-400">${p.last_active_date || '—'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
         }
     </script>
 </body>
