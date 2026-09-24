@@ -101,7 +101,7 @@
     <div class="bg-gradient-to-r from-saffron-600 via-indigo-600 to-emerald-600 text-white text-xs md:text-sm py-2 px-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2 mx-auto sm:mx-0">
             <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">Dynamic Generator Active</span>
-            <span>10,000+ Algorithmic Questions across all JEE, NEET, CBSE & CLAT Subjects!</span>
+            <span>10,000+ Algorithmic Questions initialized with KaTeX LaTeX Engine!</span>
         </div>
         <div class="flex items-center gap-2 mx-auto sm:mx-0 text-xs font-semibold">
             <i class="fa-regular fa-clock text-amber-300"></i>
@@ -147,7 +147,7 @@
                 <!-- Header Actions -->
                 <div class="flex items-center gap-2 sm:gap-3">
                     <button onclick="generateQuestionsForCurrentFilters()" class="px-3.5 py-2 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-saffron-500/20">
-                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <i class="fa-solid fa-arrows-rotate animate-spin-hover"></i>
                         <span class="hidden sm:inline">Regenerate Set</span>
                     </button>
 
@@ -168,6 +168,23 @@
 
                     <button id="leaderboardNavBtn" onclick="openLeaderboardModal()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Leaderboard">
                         <i class="fa-solid fa-trophy text-lg"></i>
+                    </button>
+
+                    <!-- Admin Panel Shield Button (visible to admins) -->
+                    <button id="adminNavBtn" onclick="openAdminModal()" class="hidden p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Admin Dashboard">
+                        <i class="fa-solid fa-user-shield text-lg text-indigo-500"></i>
+                    </button>
+
+                    <!-- Logged-out state -->
+                    <button id="loginNavBtn" onclick="openAuthModal('login')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-indigo-500/20">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Login</span>
+                    </button>
+
+                    <!-- Logged-in state -->
+                    <button id="profileNavBtn" onclick="openProfileModal()" class="hidden items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                        <span id="profileAvatarInitial" class="w-7 h-7 rounded-lg bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-bold text-xs">S</span>
+                        <span id="profileNavName" class="text-xs font-bold text-slate-700 dark:text-slate-200 max-w-[90px] truncate hidden sm:inline">Student</span>
                     </button>
                 </div>
 
@@ -221,6 +238,174 @@
     </div>
     <div id="drawerOverlay" onclick="toggleBookmarkDrawer()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden"></div>
 
+    <!-- ===================== AUTH MODAL (Login / Sign Up) ===================== -->
+    <div id="authModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div onclick="closeAuthModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-black text-xl mb-3">V</div>
+                <h3 id="authModalTitle" class="text-lg font-black text-slate-800 dark:text-slate-100">Welcome back</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Log in to save your goals & progress</p>
+            </div>
+
+            <div id="authErrorBox" class="hidden mb-3 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg p-2.5"></div>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3">
+                <div id="authNameField" class="hidden">
+                    <label class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Full Name</label>
+                    <input type="text" id="authNameInput" placeholder="Your name" class="mt-1 w-full px-3 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-slate-100">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Email</label>
+                    <input type="email" id="authEmailInput" required placeholder="you@example.com" class="mt-1 w-full px-3 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-slate-100">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Password</label>
+                    <input type="password" id="authPasswordInput" required minlength="6" placeholder="At least 6 characters" class="mt-1 w-full px-3 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-slate-100">
+                </div>
+
+                <button id="authSubmitBtn" type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                    <span id="authSubmitText">Log In</span>
+                    <i id="authSubmitSpinner" class="hidden fa-solid fa-circle-notch animate-spin"></i>
+                </button>
+            </form>
+
+            <p class="text-xs text-center text-slate-500 dark:text-slate-400 mt-4">
+                <span id="authToggleLabel">Don't have an account?</span>
+                <button onclick="toggleAuthMode()" id="authToggleBtn" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Sign Up</button>
+            </p>
+        </div>
+    </div>
+
+    <!-- ===================== PROFILE MODAL (Stats, Analytics & Goals) ===================== -->
+    <div id="profileModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div onclick="closeProfileModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-lg max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+
+            <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-5 flex items-center justify-between z-10">
+                <div class="flex items-center gap-3">
+                    <span id="profileModalAvatar" class="w-11 h-11 rounded-xl bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-bold text-lg">S</span>
+                    <div>
+                        <h3 id="profileModalName" class="font-black text-slate-800 dark:text-slate-100">Student</h3>
+                        <p id="profileModalEmail" class="text-xs text-slate-500 dark:text-slate-400"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                    <button onclick="closeProfileModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-5 space-y-6">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 text-center">
+                        <p id="profileStatAttempted" class="text-lg font-black text-slate-800 dark:text-slate-100">0</p>
+                        <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Attempted</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 text-center">
+                        <p id="profileStatAccuracy" class="text-lg font-black text-emerald-600 dark:text-emerald-400">0%</p>
+                        <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Accuracy</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 text-center">
+                        <p id="profileStatStreak" class="text-lg font-black text-saffron-600 dark:text-saffron-400">0 🔥</p>
+                        <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Streak</p>
+                    </div>
+                </div>
+
+                <!-- Subject-wise Analytics -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-2"><i class="fa-solid fa-chart-simple text-indigo-500"></i> Subject-wise Accuracy</h4>
+                    <div id="subjectAnalytics" class="space-y-2">
+                        <p class="text-xs text-slate-400 text-center py-3">Answer some questions to see your subject breakdown.</p>
+                    </div>
+                </div>
+
+                <!-- Goals Section -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-bullseye text-saffron-500"></i> My Study Goals</h4>
+                    </div>
+
+                    <form onsubmit="handleAddGoal(event)" class="flex flex-col sm:flex-row gap-2 mb-3">
+                        <input type="text" id="newGoalText" required placeholder="e.g. Finish Atomic Structure by Sunday" class="flex-1 px-3 py-2 text-xs bg-slate-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-lg focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-slate-100">
+                        <div class="flex gap-2">
+                            <input type="date" id="newGoalDate" class="px-2 py-2 text-xs bg-slate-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-lg focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-slate-100">
+                            <button type="submit" class="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shrink-0">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="goalsList" class="space-y-2">
+                        <p class="text-xs text-slate-400 text-center py-4">No goals yet — add your first study goal above.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== LEADERBOARD MODAL ===================== -->
+    <div id="leaderboardModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div onclick="closeLeaderboardModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-5 flex items-center justify-between z-10">
+                <h3 class="font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500"></i> All India Leaderboard</h3>
+                <button onclick="closeLeaderboardModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5">
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">Ranked by accuracy (min. 5 questions attempted), then attempts.</p>
+                <div id="leaderboardList" class="space-y-2">
+                    <p class="text-xs text-slate-400 text-center py-8">Loading rankings...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ADMIN DASHBOARD MODAL ===================== -->
+    <div id="adminModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div onclick="closeAdminModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-4xl max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-5 flex items-center justify-between z-10">
+                <h3 class="font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-user-shield text-indigo-500"></i> Admin Student Overview</h3>
+                <div class="flex items-center gap-3">
+                    <span id="adminUserCount" class="text-xs font-bold text-slate-500 dark:text-slate-400">0 students</span>
+                    <button onclick="closeAdminModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+            </div>
+            <div class="p-5 overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-left text-[10px] uppercase tracking-wide text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                            <th class="py-2 pr-3">Name</th>
+                            <th class="py-2 pr-3">Attempted</th>
+                            <th class="py-2 pr-3">Accuracy</th>
+                            <th class="py-2 pr-3">Streak</th>
+                            <th class="py-2 pr-3">Goals</th>
+                            <th class="py-2 pr-3">Last Active</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUserTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Streak Reminder Banner -->
+    <div id="streakReminderBanner" class="hidden fixed bottom-5 left-5 z-50 max-w-xs bg-white dark:bg-slate-900 border border-saffron-300 dark:border-saffron-700 shadow-2xl rounded-xl p-4 text-xs">
+        <button onclick="dismissStreakReminder()" class="absolute top-2 right-2 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+        <p class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5"><i class="fa-solid fa-fire text-saffron-500"></i> Keep your streak alive!</p>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">You haven't practiced today yet. Solve a few questions to keep the streak going.</p>
+    </div>
+
     <!-- MAIN BODY CONTENT -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
 
@@ -238,7 +423,7 @@
                         Never Solve the Same Questions. <span class="bg-gradient-to-r from-saffron-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent"> Endless Practice for India.</span>
                     </h1>
                     <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                        JEE Main/Advanced, NEET, CBSE Class 9–12, and CLAT questions procedurally generated in real-time with modified numbers, random options, and step-by-step auto-computed solutions.
+                        Class 9–12, JEE Main/Advanced, NEET, and CLAT/LLB questions procedurally generated in real-time with modified numbers, random options, and step-by-step auto-computed solutions.
                     </p>
 
                     <div class="flex flex-wrap items-center gap-3 pt-2">
@@ -538,7 +723,7 @@
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl p-6 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div class="flex items-center gap-2 text-saffron-600 dark:text-saffron-400 font-bold text-sm">
-                    <i class="fa-solid fa-lightbulb"></i> Step-by-Step KaTeX Derivation
+                    <i class="fa-solid fa-lightbulb"></i> Calculated Step-by-Step Solution
                 </div>
                 <button onclick="closeSolutionModal()" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -563,46 +748,10 @@
         </div>
     </div>
 
-    <!-- Modals: Auth, Profile, Leaderboard -->
-    <div id="authModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div onclick="closeAuthModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="text-center mb-5">
-                <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-black text-xl mb-3">V</div>
-                <h3 id="authModalTitle" class="text-lg font-black text-slate-800 dark:text-slate-100">Welcome back</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Log in to save your goals & progress</p>
-            </div>
-            <div id="authErrorBox" class="hidden mb-3 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/40 p-2.5 rounded-lg"></div>
-            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3">
-                <div>
-                    <label class="text-[11px] font-bold text-slate-500 uppercase">Email</label>
-                    <input type="email" id="authEmailInput" required placeholder="you@example.com" class="mt-1 w-full px-3 py-2 text-sm bg-slate-100 dark:bg-slate-800 border rounded-xl dark:border-slate-700">
-                </div>
-                <div>
-                    <label class="text-[11px] font-bold text-slate-500 uppercase">Password</label>
-                    <input type="password" id="authPasswordInput" required minlength="6" placeholder="At least 6 characters" class="mt-1 w-full px-3 py-2 text-sm bg-slate-100 dark:bg-slate-800 border rounded-xl dark:border-slate-700">
-                </div>
-                <button id="authSubmitBtn" type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm">
-                    <span id="authSubmitText">Log In</span>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="leaderboardModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div onclick="closeLeaderboardModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-md max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-5">
-            <div class="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-                <h3 class="font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500"></i> Leaderboard</h3>
-                <button onclick="closeLeaderboardModal()"><i class="fa-solid fa-xmark text-lg text-slate-400"></i></button>
-            </div>
-            <div id="leaderboardList" class="space-y-2 mt-4"><p class="text-xs text-slate-400 text-center py-8">Loading rankings...</p></div>
-        </div>
-    </div>
-
     <script>
-        /* SUPABASE CLIENT CONFIG */
+        /* =====================================================================
+           SUPABASE CLIENT & AUTH CONFIG
+           ===================================================================== */
         const SUPABASE_URL = 'https://qdrfzpxahwyshxdkatbv.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkcmZ6cHhhaHd5c2h4ZGthdGJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyMzI3MDQsImV4cCI6MjEwNTgwODcwNH0.sD8g2_drMdcg-Xm-fxSd6M9CvLiIwOcfaDYmUsyraeI';
 
@@ -610,12 +759,18 @@
             ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
             : null;
 
-        // Local State
+        let currentUser = null;
+        let currentProfile = null;
+        let authMode = 'login';
+        let userGoals = [];
+        let subjectStats = {};
+
+        // Local Storage State
         let bookmarks = JSON.parse(localStorage.getItem('vidyarthe_bookmarks') || '[]');
         let mistakes = JSON.parse(localStorage.getItem('vidyarthe_mistakes') || '[]');
         let userStats = JSON.parse(localStorage.getItem('vidyarthe_stats') || '{"attempted":0, "correct":0, "streak":0}');
 
-        /* KaTeX Render Helper */
+        /* KaTeX Helper */
         function triggerKaTeX(el) {
             if (typeof renderMathInElement === 'function') {
                 renderMathInElement(el || document.body, {
@@ -640,7 +795,7 @@
             return array;
         }
 
-        /* EXAM-SPECIFIC SUBJECT & CHAPTER CATALOGS */
+        /* SYLLABUS CATALOGS (JEE = PCM only, NEET = PCB only) */
         const subjectCatalog = {
             "Class 9": ["Mathematics", "Science", "Logical Reasoning"],
             "Class 10": ["Mathematics", "Science", "Physics", "Chemistry", "Biology", "Logical Reasoning"],
@@ -701,7 +856,6 @@
             if (chapterCatalog[examKey] && chapterCatalog[examKey][subject]) {
                 return chapterCatalog[examKey][subject];
             }
-            // Fallback to JEE Main if chapter not found
             if (chapterCatalog["JEE Main"] && chapterCatalog["JEE Main"][subject]) {
                 return chapterCatalog["JEE Main"][subject];
             }
@@ -730,13 +884,12 @@
         }
 
         /* =====================================================================
-           COMPREHENSIVE QUESTION REPOSITORY FOR ALL COURSES & SUBJECTS
+           HIGH-YIELD GENERATORS FOR ALL SUBJECTS & CHAPTERS
            ===================================================================== */
         const chapterQuestionGenerators = {
-            // ==================== CHEMISTRY CHAPTERS ====================
+            // ==================== CHEMISTRY ====================
             "Atomic Structure": function(diff, type, exam) {
                 const variants = [
-                    // Bohr Orbit Radius: r_n = 0.529 * n^2 / Z
                     () => {
                         const n = getRandomChoice([2, 3, 4]);
                         const r = (0.529 * n * n).toFixed(2);
@@ -747,7 +900,6 @@
                             solution: `Bohr radius formula: $$r_n = 0.529 \\frac{n^2}{Z}\\text{ \\AA}$$ For Hydrogen ($Z = 1$) and $n = ${n}$: $$r_{${n}} = 0.529 \\times (${n}^2) = 0.529 \\times ${n*n} = \\mathbf{${r}\\text{ \\AA}}$$`
                         };
                     },
-                    // Bohr Energy: E_n = -13.6 * Z^2 / n^2 eV
                     () => {
                         const n = getRandomChoice([2, 3, 4]);
                         const E = (-13.6 / (n * n)).toFixed(2);
@@ -757,28 +909,6 @@
                             wrongAnswers: [`${(-13.6 / n).toFixed(2)} eV`, `${(-13.6 * n).toFixed(2)} eV`, `+${Math.abs(E)} eV`],
                             solution: `Bohr energy formula: $$E_n = -13.6 \\frac{Z^2}{n^2}\\text{ eV}$$ For $n = ${n}$: $$E_{${n}} = \\frac{-13.6}{${n*n}} = \\mathbf{${E}\\text{ eV}}$$`
                         };
-                    },
-                    // de Broglie Wavelength: lambda = h / p
-                    () => {
-                        const v = getRandomInt(2, 6) * 1e6;
-                        // mass of electron = 9.1e-31, h = 6.626e-34
-                        const lambda_nm = ((6.626e-34 / (9.1e-31 * v)) * 1e9).toFixed(3);
-                        return {
-                            question: `An electron ($m = 9.1 \\times 10^{-31}\\text{ kg}$) is traveling with a speed of $v = ${v.toExponential(1)}\\text{ m/s}$. Determine its de Broglie wavelength. (Take $h = 6.63 \\times 10^{-34}\\text{ J}\\cdot\\text{s}$).`,
-                            correctAnswer: `${lambda_nm} nm`,
-                            wrongAnswers: [`${(lambda_nm * 10).toFixed(3)} nm`, `${(lambda_nm / 10).toFixed(3)} nm`, `${(lambda_nm * 2).toFixed(3)} nm`],
-                            solution: `de Broglie relation: $$\\lambda = \\frac{h}{mv} = \\frac{6.63 \\times 10^{-34}}{(9.1 \\times 10^{-31})(${v.toExponential(1)})} = \\mathbf{${lambda_nm}\\text{ nm}}$$`
-                        };
-                    },
-                    // Quantum Numbers
-                    () => {
-                        const n = getRandomInt(3, 4);
-                        return {
-                            question: `For principal quantum number $n = ${n}$, what is the maximum number of electrons that can be accommodated in this shell?`,
-                            correctAnswer: `${2 * n * n} electrons`,
-                            wrongAnswers: [`${n * n} electrons`, `${2 * n} electrons`, `${4 * n} electrons`],
-                            solution: `The maximum number of electrons in an electron shell defined by principal quantum number $n$ is: $$2n^2 = 2(${n}^2) = 2(${n*n}) = \\mathbf{${2*n*n}\\text{ electrons}}$$`
-                        };
                     }
                 ];
                 return {
@@ -786,7 +916,7 @@
                     classExam: exam !== 'ALL' ? exam : "JEE Main",
                     subject: "Chemistry",
                     chapter: "Atomic Structure",
-                    topic: "Bohr Model & Quantum Numbers",
+                    topic: "Bohr Model & Energy",
                     difficulty: diff !== 'ALL' ? diff : "Easy",
                     type: type !== 'ALL' ? type : "PYQ",
                     ...getRandomChoice(variants)()
@@ -795,7 +925,7 @@
 
             "Some Basic Concepts in Chemistry": function(diff, type, exam) {
                 const moles = getRandomInt(2, 8);
-                const mass = moles * 44; // CO2
+                const mass = moles * 44;
                 return {
                     id: 'chem_mole_' + Math.random().toString(36).substr(2, 9),
                     classExam: exam !== 'ALL' ? exam : "JEE Main",
@@ -807,14 +937,14 @@
                     question: `Calculate the mass (in grams) of $${moles}\\text{ moles}$ of carbon dioxide gas ($\\text{CO}_2$). (Atomic masses: $\\text{C}=12\\text{ u}, \\text{O}=16\\text{ u}$).`,
                     correctAnswer: `${mass} g`,
                     wrongAnswers: [`${mass - 22} g`, `${mass + 44} g`, `${moles * 28} g`],
-                    solution: `Molar mass of $\\text{CO}_2 = 12 + 2(16) = 44\\text{ g/mol}$. $$\\text{Mass} = \\text{Moles} \\times \\text{Molar Mass} = ${moles} \\times 44 = \\mathbf{${mass}\\text{ grams}}$$`
+                    solution: `Molar mass of $\\text{CO}_2 = 12 + 2(16) = 44\\text{ g/mol}$. $$\\text{Mass} = \\text{Moles} \\times 44 = ${moles} \\times 44 = \\mathbf{${mass}\\text{ grams}}$$`
                 };
             },
 
             "Chemical Bonding": function(diff, type, exam) {
                 const items = [
-                    { q: `What is the hybridization and geometric shape of the Phosphorus pentachloride ($\\text{PCl}_5$) molecule in the gaseous state?`, a: `sp³d (Trigonal Bipyramidal)`, w: [`sp³ (Tetrahedral)`, `sp³d² (Octahedral)`, `dsp² (Square Planar)`], s: `$\\text{PCl}_5$ has 5 bond pairs and 0 lone pairs. Hybridization is $\\text{sp}^3\\text{d}$ with trigonal bipyramidal geometry.` },
-                    { q: `Which of the following diatomic species has a bond order of $3.0$ and is diamagnetic?`, a: `N₂`, w: [`O₂`, `B₂`, `NO`], s: `$\\text{N}_2$ has 14 electrons. $\\text{Bond Order} = \\frac{10 - 4}{2} = 3.0$, and all electrons are paired, making it diamagnetic.` }
+                    { q: `What is the hybridization and molecular geometry of $\\text{PCl}_5$ in gaseous phase?`, a: `sp³d (Trigonal Bipyramidal)`, w: [`sp³ (Tetrahedral)`, `sp³d² (Octahedral)`, `dsp² (Square Planar)`], s: `$\\text{PCl}_5$ has 5 bond pairs and 0 lone pairs. Hybridization is $\\text{sp}^3\\text{d}$ with trigonal bipyramidal geometry.` },
+                    { q: `Which of the following diatomic molecules has a bond order of $3.0$?`, a: `N₂`, w: [`O₂`, `B₂`, `F₂`], s: `$\\text{N}_2$ has 14 electrons. $\\text{Bond Order} = \\frac{10 - 4}{2} = 3.0$.` }
                 ];
                 const choice = getRandomChoice(items);
                 return {
@@ -822,14 +952,14 @@
                     classExam: exam !== 'ALL' ? exam : "JEE Main",
                     subject: "Chemistry",
                     chapter: "Chemical Bonding",
-                    topic: "VSEPR & Molecular Orbital Theory",
+                    topic: "Hybridization & VSEPR",
                     difficulty: diff !== 'ALL' ? diff : "Medium",
                     type: type !== 'ALL' ? type : "PYQ",
                     question: choice.q, correctAnswer: choice.a, wrongAnswers: choice.w, solution: choice.s
                 };
             },
 
-            // ==================== MATHEMATICS CHAPTERS ====================
+            // ==================== MATHEMATICS ====================
             "Quadratic Equations": function(diff, type, exam) {
                 const r1 = getRandomInt(-6, 6);
                 const r2 = getRandomInt(1, 8);
@@ -890,7 +1020,7 @@
                 };
             },
 
-            // ==================== BIOLOGY CHAPTERS (NEET) ====================
+            // ==================== BIOLOGY (NEET) ====================
             "Genetics & Evolution": function(diff, type, exam) {
                 const total = getRandomInt(4, 20) * 40;
                 const tall = total * 0.75;
@@ -909,25 +1039,7 @@
                 };
             },
 
-            "Cell Structure and Function": function(diff, type, exam) {
-                const items = [
-                    { q: `Which of the following cell organelles is responsible for the synthesis of ribosomal RNA (rRNA)?`, a: `Nucleolus`, w: [`Golgi Apparatus`, `Endoplasmic Reticulum`, `Lysosome`], s: `The nucleolus is the active site for ribosomal RNA (rRNA) transcription and processing.` },
-                    { q: `During which phase of meiosis does crossing over and genetic recombination take place?`, a: `Pachytene of Prophase I`, w: [`Leptotene`, `Diakinesis`, `Metaphase II`], s: `Crossing over between non-sister chromatids of homologous chromosomes occurs during Pachytene of Prophase I.` }
-                ];
-                const choice = getRandomChoice(items);
-                return {
-                    id: 'bio_cell_' + Math.random().toString(36).substr(2, 9),
-                    classExam: "NEET",
-                    subject: "Biology",
-                    chapter: "Cell Structure and Function",
-                    topic: "Cell Organelles & Cell Division",
-                    difficulty: diff !== 'ALL' ? diff : "Easy",
-                    type: type !== 'ALL' ? type : "PYQ",
-                    question: choice.q, correctAnswer: choice.a, wrongAnswers: choice.w, solution: choice.s
-                };
-            },
-
-            // ==================== PHYSICS CHAPTERS ====================
+            // ==================== PHYSICS ====================
             "Magnetic Effects of Current and Magnetism": function(diff, type, exam) {
                 const q = getRandomInt(2, 6);
                 const v = getRandomInt(2, 8) * 100;
@@ -944,7 +1056,7 @@
                     question: `A charge $q = ${q}\\,\\mu\\text{C}$ moves with velocity $v = ${v}\\text{ m/s}$ perpendicular to a uniform magnetic field $B = ${B}\\text{ T}$. Compute the Lorentz magnetic force acting on it.`,
                     correctAnswer: `${F_val} mN`,
                     wrongAnswers: [`${(F_val * 2).toFixed(2)} mN`, `${(F_val / 2).toFixed(2)} mN`, `${(F_val * 10).toFixed(2)} mN`],
-                    solution: `Lorentz magnetic force: $$F = qvB \\sin(\\theta)$$ For $\\theta = 90^\\circ$: $$F = (${q} \\times 10^{-6}\\text{ C})(${v}\\text{ m/s})(${B}\\text{ T}) = \\mathbf{${F_val}\\text{ mN}}$$`
+                    solution: `Lorentz magnetic force: $$F = qvB \\sin(\\theta)$$ For $\\theta = 90^\\circ$: $$F = (${q} \\times 10^{-6})(${v})(${B}) = \\mathbf{${F_val}\\text{ mN}}$$`
                 };
             },
 
@@ -987,7 +1099,7 @@
                 };
             },
 
-            // ==================== LEGAL & LOGICAL REASONING (CLAT) ====================
+            // ==================== CLAT ====================
             "Law of Torts": function(diff, type, exam) {
                 const speed = getRandomInt(80, 120);
                 const limit = 40;
@@ -1000,40 +1112,15 @@
                     topic: "Negligence & Duty of Care",
                     difficulty: diff !== 'ALL' ? diff : "Medium",
                     type: type !== 'ALL' ? type : "PYQ",
-                    question: `<strong>Principle:</strong> Whoever drives recklessly on a public highway breaching reasonable duty of care owed to pedestrians is liable for actionable negligence.<br><strong>Facts:</strong> ${name} drives at $${speed}\\text{ km/h}$ near a school zone with a designated limit of $${limit}\\text{ km/h}$ and causes an accident. Is ${name} liable?`,
+                    question: `<strong>Principle:</strong> Whoever drives recklessly on a public highway breaching reasonable duty of care owed to pedestrians is liable for actionable negligence.<br><strong>Facts:</strong> ${name} drives at $${speed}\\text{ km/h}$ near a school zone marked $${limit}\\text{ km/h}$ and causes an accident. Is ${name} liable?`,
                     correctAnswer: `Yes, driving at ${speed} km/h in a ${limit} km/h zone is an actionable breach of duty of care.`,
                     wrongAnswers: [`No, because speed limits are merely municipal guidelines.`, `No, unless criminal malice is established.`, `Yes, but only if the vehicle was uninspected.`],
                     solution: `Motor vehicle drivers owe a strict duty of reasonable care. Exceeding posted school zone limits constitutes breach of duty establishing tortious negligence.`
                 };
-            },
-
-            "Coding-Decoding": function(diff, type, exam) {
-                const shift = getRandomInt(1, 3);
-                const word = "MIND";
-                const coded = word.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift)).join('');
-                const test = "GAME";
-                const ans = test.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift)).join('');
-                return {
-                    id: 'log_code_' + Math.random().toString(36).substr(2, 9),
-                    classExam: "CLAT/LLB",
-                    subject: "Logical Reasoning",
-                    chapter: "Coding-Decoding",
-                    topic: "Letter Shift Alphabetical Coding",
-                    difficulty: diff !== 'ALL' ? diff : "Easy",
-                    type: type !== 'ALL' ? type : "Select-50",
-                    question: `In a certain code, '${word}' is written as '${coded}' (+${shift} letter shift). How will '${test}' be encoded in that system?`,
-                    correctAnswer: ans,
-                    wrongAnswers: [
-                        test.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift + 1)).join(''),
-                        test.split('').reverse().join(''),
-                        test.split('').map(c => String.fromCharCode(c.charCodeAt(0) + shift - 1)).join('')
-                    ],
-                    solution: `Each letter is shifted forward by +${shift} positions in the alphabet. Applying +${shift} to '${test}' gives: \\mathbf{${ans}}.`
-                };
             }
         };
 
-        /* UNIVERSAL FALLBACK SYNTHESIZER (Guarantees EVERY chapter generates real questions) */
+        /* UNIVERSAL SYNTHESIZER (Guarantees EVERY selected chapter generates valid questions) */
         function synthesizeChapterQuestion(classExam, subject, chapter, difficulty, type) {
             const finalExam = classExam !== 'ALL' ? classExam : "JEE Main";
             const finalSub = subject !== 'ALL' ? subject : "Physics";
@@ -1041,12 +1128,10 @@
             const finalDiff = difficulty !== 'ALL' ? difficulty : "Easy";
             const finalType = type !== 'ALL' ? type : "PYQ";
 
-            // If a dedicated generator exists for this chapter, run it!
             if (chapterQuestionGenerators[finalCh]) {
                 return chapterQuestionGenerators[finalCh](finalDiff, finalType, finalExam);
             }
 
-            // Universal high-yield conceptual question tailored to this exact chapter:
             return {
                 id: 'gen_synth_' + Math.random().toString(36).substr(2, 9),
                 classExam: finalExam,
@@ -1080,19 +1165,16 @@
 
             for (let i = 0; i < count; i++) {
                 let q = null;
-                // If a specific chapter is selected:
                 if (chapter !== 'ALL' && chapterQuestionGenerators[chapter]) {
                     q = chapterQuestionGenerators[chapter](difficulty, type, classExam);
                 } else if (chapter !== 'ALL') {
                     q = synthesizeChapterQuestion(classExam, subject, chapter, difficulty, type);
                 } else {
-                    // Random pick from available generators for this subject:
                     const keys = Object.keys(chapterQuestionGenerators);
                     const chosenKey = getRandomChoice(keys);
                     q = chapterQuestionGenerators[chosenKey](difficulty, type, classExam);
                 }
 
-                // Strictly ensure all metadata matches the user's selected filters:
                 if (classExam !== 'ALL') q.classExam = classExam;
                 if (subject !== 'ALL') q.subject = subject;
                 if (chapter !== 'ALL') q.chapter = chapter;
@@ -1230,6 +1312,9 @@
 
             localStorage.setItem('vidyarthe_stats', JSON.stringify(userStats));
             updateUserStatsUI();
+            recordSubjectAttempt(q.subject, isCorrect);
+            markActiveToday();
+            syncProfileToCloud();
 
             q.options.forEach((_, idx) => {
                 const btn = document.getElementById(`opt-${qId}-${idx}`);
@@ -1239,7 +1324,7 @@
 
                 if (idx === q.correctIndex) {
                     btn.className = "w-full text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 text-xs font-bold flex items-center justify-between";
-                    icon.className = "fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400 text-base";
+                    icon.className = "fa-solid fa-circle-check text-emerald-600 text-base";
                 } else if (idx === selectedIdx && !isCorrect) {
                     btn.className = "w-full text-left p-3 rounded-xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-200 text-xs font-bold flex items-center justify-between";
                     icon.className = "fa-solid fa-circle-xmark text-red-600 text-base";
@@ -1250,7 +1335,7 @@
             });
         }
 
-        /* NTA CBT MOCK ENGINE */
+        /* NTA CBT MOCK ENGINE WITH NEGATIVE MARKING */
         let miniQuizQuestions = [];
         let cbtState = [];
         let currentQuizIndex = 0;
@@ -1465,6 +1550,8 @@
             userStats.correct += correctCount;
             localStorage.setItem('vidyarthe_stats', JSON.stringify(userStats));
             updateUserStatsUI();
+            markActiveToday();
+            syncProfileToCloud();
 
             document.getElementById('quizActiveScreen').classList.add('hidden');
             document.getElementById('quizResultScreen').classList.remove('hidden');
@@ -1484,7 +1571,9 @@
             document.getElementById('quizResultScreen').classList.add('hidden');
         }
 
-        /* MISTAKE NOTEBOOK (गलती डायरी) FUNCTIONS */
+        /* =====================================================================
+           MISTAKE NOTEBOOK (गलती डायरी) FUNCTIONS
+           ===================================================================== */
         function recordMistake(q) {
             if (!mistakes.some(m => m.id === q.id)) {
                 mistakes.unshift(q);
@@ -1566,6 +1655,416 @@
             showToast("Loaded questions from your Mistake Notebook!");
         }
 
+        /* =====================================================================
+           SUPABASE AUTH, PROFILE, GOALS, LEADERBOARD & ADMIN PANEL
+           ===================================================================== */
+        function requireSupabaseConfigured() {
+            if (!supabaseClient) {
+                showToast("Supabase is not configured yet.");
+                return false;
+            }
+            return true;
+        }
+
+        async function initAuth() {
+            if (!requireSupabaseConfigured()) return;
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) await onLoggedIn(session.user);
+
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                if (event === 'SIGNED_IN' && session) {
+                    await onLoggedIn(session.user);
+                } else if (event === 'SIGNED_OUT') {
+                    currentUser = null;
+                    currentProfile = null;
+                    userGoals = [];
+                    setLoggedOutUI();
+                }
+            });
+        }
+
+        async function onLoggedIn(user) {
+            currentUser = user;
+            let { data: profile } = await supabaseClient
+                .from('profiles').select('*').eq('id', user.id).single();
+
+            if (profile) {
+                const localBookmarks = JSON.parse(localStorage.getItem('vidyarthe_bookmarks') || '[]');
+                const localStats = JSON.parse(localStorage.getItem('vidyarthe_stats') || '{"attempted":0,"correct":0,"streak":0}');
+                const mergedBookmarks = Array.from(new Set([...(profile.bookmarks || []), ...localBookmarks]));
+                const mergedAttempted = Math.max(profile.attempted || 0, localStats.attempted || 0);
+                const mergedCorrect = Math.max(profile.correct || 0, localStats.correct || 0);
+
+                const { data: updated } = await supabaseClient
+                    .from('profiles')
+                    .update({ bookmarks: mergedBookmarks, attempted: mergedAttempted, correct: mergedCorrect })
+                    .eq('id', user.id).select('*').single();
+                profile = updated || profile;
+            }
+
+            currentProfile = profile;
+            bookmarks = profile ? (profile.bookmarks || []) : [];
+            userStats = profile ? { attempted: profile.attempted || 0, correct: profile.correct || 0, streak: profile.streak || 0 } : userStats;
+            subjectStats = (profile && profile.subject_stats) || {};
+
+            setLoggedInUI(user, profile);
+            updateBookmarkBadge();
+            updateUserStatsUI();
+            renderGeneratedQuestions();
+            await loadGoals();
+            checkStreakReminder(profile);
+        }
+
+        function setLoggedInUI(user, profile) {
+            document.getElementById('loginNavBtn').classList.add('hidden');
+            const profileBtn = document.getElementById('profileNavBtn');
+            profileBtn.classList.remove('hidden');
+            profileBtn.classList.add('flex');
+
+            const displayName = (profile && profile.full_name) || (user.user_metadata && user.user_metadata.full_name) || user.email.split('@')[0];
+            document.getElementById('profileAvatarInitial').textContent = displayName.charAt(0).toUpperCase();
+            document.getElementById('profileNavName').textContent = displayName;
+
+            // Show admin shield if user has is_admin == true
+            document.getElementById('adminNavBtn').classList.toggle('hidden', !(profile && profile.is_admin));
+        }
+
+        function setLoggedOutUI() {
+            document.getElementById('loginNavBtn').classList.remove('hidden');
+            const profileBtn = document.getElementById('profileNavBtn');
+            profileBtn.classList.add('hidden');
+            profileBtn.classList.remove('flex');
+            document.getElementById('adminNavBtn').classList.add('hidden');
+            document.getElementById('streakReminderBanner').classList.add('hidden');
+        }
+
+        function openAuthModal(mode) {
+            if (!requireSupabaseConfigured()) return;
+            authMode = mode;
+            updateAuthModalMode();
+            document.getElementById('authErrorBox').classList.add('hidden');
+            document.getElementById('authForm').reset();
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'signup' : 'login';
+            updateAuthModalMode();
+        }
+
+        function updateAuthModalMode() {
+            const isSignup = authMode === 'signup';
+            document.getElementById('authModalTitle').textContent = isSignup ? 'Create your account' : 'Welcome back';
+            document.getElementById('authNameField').classList.toggle('hidden', !isSignup);
+            document.getElementById('authSubmitText').textContent = isSignup ? 'Sign Up' : 'Log In';
+            document.getElementById('authToggleLabel').textContent = isSignup ? 'Already have an account?' : "Don't have an account?";
+            document.getElementById('authToggleBtn').textContent = isSignup ? 'Log In' : 'Sign Up';
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            if (!requireSupabaseConfigured()) return;
+
+            const email = document.getElementById('authEmailInput').value.trim();
+            const password = document.getElementById('authPasswordInput').value;
+            const name = document.getElementById('authNameInput').value.trim();
+            const errorBox = document.getElementById('authErrorBox');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const spinner = document.getElementById('authSubmitSpinner');
+
+            errorBox.classList.add('hidden');
+            submitBtn.disabled = true;
+            spinner.classList.remove('hidden');
+
+            try {
+                if (authMode === 'signup') {
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email, password,
+                        options: { data: { full_name: name || email.split('@')[0] } }
+                    });
+                    if (error) throw error;
+                    if (data.user && !data.session) {
+                        showToast('Account created! Please check your email to confirm.');
+                        authMode = 'login';
+                        updateAuthModalMode();
+                        return;
+                    }
+                } else {
+                    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                }
+                closeAuthModal();
+                showToast('Logged in successfully!');
+            } catch (err) {
+                errorBox.textContent = err.message || 'Something went wrong.';
+                errorBox.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                spinner.classList.add('hidden');
+            }
+        }
+
+        async function handleLogout() {
+            if (!requireSupabaseConfigured()) return;
+            await supabaseClient.auth.signOut();
+            closeProfileModal();
+            showToast('Logged out.');
+        }
+
+        function openProfileModal() {
+            if (!currentUser) return;
+            const displayName = (currentProfile && currentProfile.full_name) || currentUser.email.split('@')[0];
+            document.getElementById('profileModalAvatar').textContent = displayName.charAt(0).toUpperCase();
+            document.getElementById('profileModalName').textContent = displayName;
+            document.getElementById('profileModalEmail').textContent = currentUser.email;
+            document.getElementById('profileStatAttempted').textContent = userStats.attempted;
+            const accuracy = userStats.attempted > 0 ? Math.round((userStats.correct / userStats.attempted) * 100) : 0;
+            document.getElementById('profileStatAccuracy').textContent = `${accuracy}%`;
+            document.getElementById('profileStatStreak').textContent = `${userStats.streak} 🔥`;
+            renderSubjectAnalytics();
+            renderGoalsList();
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        async function loadGoals() {
+            if (!currentUser) return;
+            const { data, error } = await supabaseClient
+                .from('goals').select('*').eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+            if (!error) userGoals = data || [];
+        }
+
+        function renderGoalsList() {
+            const list = document.getElementById('goalsList');
+            list.innerHTML = '';
+            if (userGoals.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No goals yet — add your first study goal above.</p>`;
+                return;
+            }
+            userGoals.forEach(g => {
+                const row = document.createElement('div');
+                row.className = `flex items-start gap-2 p-2.5 rounded-lg border ${g.completed ? 'border-emerald-200 dark:border-emerald-900 bg-emerald-50/60 dark:bg-emerald-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50'}`;
+                row.innerHTML = `
+                    <button onclick="toggleGoalComplete('${g.id}', ${!g.completed})" class="mt-0.5 shrink-0">
+                        <i class="${g.completed ? 'fa-solid fa-circle-check text-emerald-500' : 'fa-regular fa-circle text-slate-400'} text-base"></i>
+                    </button>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-semibold ${g.completed ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}">${g.goal_text}</p>
+                        ${g.target_date ? `<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-regular fa-calendar"></i> ${g.target_date}</p>` : ''}
+                    </div>
+                    <button onclick="deleteGoal('${g.id}')" class="text-slate-300 hover:text-red-500 shrink-0">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        async function handleAddGoal(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+            const textInput = document.getElementById('newGoalText');
+            const dateInput = document.getElementById('newGoalDate');
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            const { data, error } = await supabaseClient
+                .from('goals')
+                .insert({ user_id: currentUser.id, goal_text: text, target_date: dateInput.value || null })
+                .select('*').single();
+
+            if (!error) {
+                userGoals.unshift(data);
+                renderGoalsList();
+                textInput.value = '';
+                dateInput.value = '';
+                showToast('Goal added!');
+            }
+        }
+
+        async function toggleGoalComplete(goalId, completed) {
+            const { error } = await supabaseClient.from('goals').update({ completed }).eq('id', goalId);
+            if (!error) {
+                const g = userGoals.find(x => x.id === goalId);
+                if (g) g.completed = completed;
+                renderGoalsList();
+            }
+        }
+
+        async function deleteGoal(goalId) {
+            const { error } = await supabaseClient.from('goals').delete().eq('id', goalId);
+            if (!error) {
+                userGoals = userGoals.filter(x => x.id !== goalId);
+                renderGoalsList();
+                showToast('Goal removed.');
+            }
+        }
+
+        async function syncProfileToCloud() {
+            if (!currentUser || !supabaseClient) return;
+            await supabaseClient.from('profiles').update({
+                bookmarks,
+                attempted: userStats.attempted,
+                correct: userStats.correct,
+                streak: userStats.streak,
+                subject_stats: subjectStats
+            }).eq('id', currentUser.id);
+        }
+
+        function recordSubjectAttempt(subject, isCorrect) {
+            if (!subject) return;
+            if (!subjectStats[subject]) subjectStats[subject] = { attempted: 0, correct: 0 };
+            subjectStats[subject].attempted++;
+            if (isCorrect) subjectStats[subject].correct++;
+        }
+
+        function renderSubjectAnalytics() {
+            const box = document.getElementById('subjectAnalytics');
+            const subjects = Object.keys(subjectStats).filter(s => subjectStats[s].attempted > 0);
+            if (subjects.length === 0) {
+                box.innerHTML = `<p class="text-xs text-slate-400 text-center py-3">Answer some questions to see your subject breakdown.</p>`;
+                return;
+            }
+            subjects.sort((a, b) => subjectStats[b].attempted - subjectStats[a].attempted);
+            box.innerHTML = subjects.map(s => {
+                const st = subjectStats[s];
+                const acc = st.attempted > 0 ? Math.round((st.correct / st.attempted) * 100) : 0;
+                const barColor = acc >= 70 ? 'bg-emerald-500' : acc >= 40 ? 'bg-amber-500' : 'bg-red-500';
+                return `
+                    <div>
+                        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                            <span>${s} <span class="text-slate-400 font-normal">(${st.attempted} attempted)</span></span>
+                            <span>${acc}%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full ${barColor} rounded-full" style="width:${acc}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function todayStr() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function checkStreakReminder(profile) {
+            const lastActive = profile && profile.last_active_date;
+            if (lastActive !== todayStr()) {
+                document.getElementById('streakReminderBanner').classList.remove('hidden');
+            } else {
+                document.getElementById('streakReminderBanner').classList.add('hidden');
+            }
+        }
+
+        function dismissStreakReminder() {
+            document.getElementById('streakReminderBanner').classList.add('hidden');
+        }
+
+        async function markActiveToday() {
+            if (!currentUser || !supabaseClient) return;
+            const today = todayStr();
+            if (currentProfile && currentProfile.last_active_date === today) return;
+            if (currentProfile) currentProfile.last_active_date = today;
+            document.getElementById('streakReminderBanner').classList.add('hidden');
+            await supabaseClient.from('profiles').update({ last_active_date: today }).eq('id', currentUser.id);
+        }
+
+        async function openLeaderboardModal() {
+            if (!requireSupabaseConfigured()) return;
+            document.getElementById('leaderboardModal').classList.remove('hidden');
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Loading rankings...</p>`;
+
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('full_name, attempted, correct, streak')
+                .gte('attempted', 5)
+                .order('attempted', { ascending: false })
+                .limit(200);
+
+            if (error || !data) {
+                list.innerHTML = `<p class="text-xs text-red-500 text-center py-8">Couldn't load rankings.</p>`;
+                return;
+            }
+
+            const ranked = data
+                .map(p => ({ ...p, accuracy: p.attempted > 0 ? Math.round((p.correct / p.attempted) * 100) : 0 }))
+                .sort((a, b) => b.accuracy - a.accuracy || b.attempted - a.attempted)
+                .slice(0, 20);
+
+            if (ranked.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Attempt at least 5 questions to appear on the leaderboard.</p>`;
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            list.innerHTML = ranked.map((p, i) => `
+                <div class="flex items-center justify-between p-2.5 rounded-lg ${i < 3 ? 'bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900' : 'bg-slate-50 dark:bg-slate-800/50'}">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-6 text-center text-sm">${medals[i] || (i + 1)}</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">${(p.full_name || 'Student').replace(/[<>]/g, '')}</span>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs font-black text-emerald-600 dark:text-emerald-400">${p.accuracy}%</div>
+                        <div class="text-[10px] text-slate-400">${p.attempted} attempted • ${p.streak}🔥</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeLeaderboardModal() {
+            document.getElementById('leaderboardModal').classList.add('hidden');
+        }
+
+        async function openAdminModal() {
+            if (!currentProfile || !currentProfile.is_admin) return;
+            document.getElementById('adminModal').classList.remove('hidden');
+            const tbody = document.getElementById('adminUserTableBody');
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-slate-400 py-6">Loading student records...</td></tr>`;
+
+            const [{ data: profiles, error: profileErr }, { data: goals }] = await Promise.all([
+                supabaseClient.from('profiles').select('id, full_name, attempted, correct, streak, last_active_date').order('attempted', { ascending: false }),
+                supabaseClient.from('goals').select('user_id')
+            ]);
+
+            if (profileErr || !profiles) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-6">Failed to load admin records.</td></tr>`;
+                return;
+            }
+
+            const goalCounts = {};
+            (goals || []).forEach(g => { goalCounts[g.user_id] = (goalCounts[g.user_id] || 0) + 1; });
+
+            document.getElementById('adminUserCount').textContent = `${profiles.length} students`;
+            tbody.innerHTML = profiles.map(p => {
+                const acc = p.attempted > 0 ? Math.round((p.correct / p.attempted) * 100) : 0;
+                return `
+                    <tr class="border-b border-slate-100 dark:border-slate-800">
+                        <td class="py-2 pr-3 font-semibold text-slate-800 dark:text-slate-100">${(p.full_name || 'Student').replace(/[<>]/g, '')}</td>
+                        <td class="py-2 pr-3">${p.attempted || 0}</td>
+                        <td class="py-2 pr-3">${acc}%</td>
+                        <td class="py-2 pr-3">${p.streak || 0} 🔥</td>
+                        <td class="py-2 pr-3">${goalCounts[p.id] || 0}</td>
+                        <td class="py-2 pr-3 text-slate-400">${p.last_active_date || '—'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
         /* COUNTDOWN ENGINE */
         const examDates = {
             'JEE': new Date('2027-01-24T09:00:00'),
@@ -1644,6 +2143,7 @@
             localStorage.setItem('vidyarthe_bookmarks', JSON.stringify(bookmarks));
             updateBookmarkBadge();
             renderGeneratedQuestions();
+            syncProfileToCloud();
         }
 
         function updateBookmarkBadge() {
@@ -1675,6 +2175,7 @@
             localStorage.setItem('vidyarthe_bookmarks', JSON.stringify([]));
             updateBookmarkBadge();
             renderGeneratedQuestions();
+            syncProfileToCloud();
         }
 
         function resetFilters() {
@@ -1711,13 +2212,6 @@
             `).join('');
         }
 
-        /* MODAL STUBS */
-        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
-        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
-        function handleAuthSubmit(e) { e.preventDefault(); closeAuthModal(); showToast("Logged in!"); }
-        function openLeaderboardModal() { document.getElementById('leaderboardModal').classList.remove('hidden'); }
-        function closeLeaderboardModal() { document.getElementById('leaderboardModal').classList.add('hidden'); }
-
         /* INITIAL PAGE LOAD */
         window.onload = function() {
             updateSubjectAndChapterFilters(false);
@@ -1735,6 +2229,8 @@
                 document.documentElement.classList.add('dark');
                 document.getElementById('themeIcon').className = 'fa-solid fa-sun text-lg text-amber-400';
             }
+
+            initAuth();
         };
     </script>
 </body>
