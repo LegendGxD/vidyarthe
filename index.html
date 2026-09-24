@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VidyarthE (विद्यार्थी) - Infinite Practice & NTA CBT Mock Portal</title>
+    <title>VidyarthE (विद्यार्थी) - Infinite Practice & PYQ Portal for Indian Students</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -37,7 +37,6 @@
             }
         }
     </script>
-
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -48,7 +47,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
-    <!-- Supabase JS -->
+    <!-- Supabase (auth + database for login/profile system) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
     <style>
@@ -64,11 +63,19 @@
         .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
+        .math-expr {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            background: rgba(99, 102, 241, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
         /* NTA CBT Question Palette Styles */
         .palette-btn {
-            width: 38px;
-            height: 38px;
-            font-size: 12px;
+            width: 36px;
+            height: 36px;
+            font-size: 11px;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
@@ -88,8 +95,8 @@
             position: absolute;
             bottom: 2px;
             right: 2px;
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
             background-color: #22c55e;
             border-radius: 50%;
             border: 1.5px solid #ffffff;
@@ -98,29 +105,28 @@
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
 
-    <!-- Top Announcement Bar with Live Exam Countdown -->
-    <div class="bg-gradient-to-r from-saffron-600 via-indigo-600 to-emerald-600 text-white text-xs py-2 px-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
+    <!-- Top Announcement Bar with Target Countdown -->
+    <div class="bg-gradient-to-r from-saffron-600 via-indigo-600 to-emerald-600 text-white text-xs md:text-sm py-2 px-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2 mx-auto sm:mx-0">
-            <span class="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">KaTeX 0.16.9 Active</span>
-            <span>LaTeX Math & CBT Mock Engine Enabled</span>
+            <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">Dynamic Generator Active</span>
+            <span>10,000+ Algorithmic Questions initialized with KaTeX LaTeX Engine!</span>
         </div>
-        <div class="flex items-center gap-2 mx-auto sm:mx-0 text-[11px] font-semibold">
+        <div class="flex items-center gap-2 mx-auto sm:mx-0 text-xs font-semibold">
             <i class="fa-regular fa-clock text-amber-300"></i>
-            <span id="targetExamDisplay">Target Exam:</span>
-            <select id="examCountdownPicker" onchange="updateTargetCountdown()" class="bg-white/20 text-white text-[11px] rounded px-2 py-0.5 border border-white/30 focus:outline-none cursor-pointer">
+            <span class="hidden md:inline">Target:</span>
+            <select id="examCountdownPicker" onchange="updateTargetCountdown()" class="bg-white/20 text-white text-xs rounded px-2 py-0.5 border border-white/30 focus:outline-none cursor-pointer">
                 <option value="JEE" class="text-slate-900">JEE Main 2027 (Jan)</option>
                 <option value="NEET" class="text-slate-900">NEET UG 2027 (May)</option>
-                <option value="CBSE" class="text-slate-900">CBSE Boards 2027 (Feb)</option>
+                <option value="CBSE" class="text-slate-900">CBSE Class 12 Boards (Feb)</option>
                 <option value="CLAT" class="text-slate-900">CLAT 2026 (Dec)</option>
             </select>
-            <span id="examDaysLeft" class="bg-black/30 px-2 py-0.5 rounded-md font-mono text-amber-300 font-bold">---</span>
+            <span id="examDaysLeft" class="bg-black/30 px-2 py-0.5 rounded font-mono text-amber-300 font-bold">---</span>
         </div>
     </div>
 
-    <!-- Navigation Header -->
     <header class="sticky top-0 z-40 glass-nav bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 gap-3">
+            <div class="flex items-center justify-between h-16 gap-4">
                 
                 <!-- Logo -->
                 <div class="flex items-center gap-3 shrink-0">
@@ -132,7 +138,7 @@
                             <span class="text-xl font-black tracking-tight bg-gradient-to-r from-saffron-600 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">VidyarthE</span>
                             <span class="hindi-font text-sm text-saffron-600 dark:text-saffron-400">(विद्यार्थी)</span>
                         </a>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">National Infinite Practice & CBT Mock Portal</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">National Educational Portal • Infinite Practice Portal</p>
                     </div>
                 </div>
 
@@ -140,53 +146,50 @@
                 <div class="flex-1 max-w-md hidden md:block relative">
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="globalSearchInput" placeholder="Search by topic, formula, or law (e.g. Kinematics, Mole, Torts)..." 
+                        <input type="text" id="globalSearchInput" placeholder="Search topics (e.g. Kinematics, Quadratic, Torts, Mole)..." 
                             class="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-transparent dark:border-slate-700/60 rounded-xl focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-500 transition-all text-slate-800 dark:text-slate-100 placeholder-slate-400">
                     </div>
+                    <div id="searchResultsPopup" class="hidden absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto p-2"></div>
                 </div>
 
                 <!-- Header Actions -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 sm:gap-3">
                     
-                    <button onclick="regenerateAllQuestions()" class="px-3 py-2 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-saffron-500/20" title="Regenerate dynamic questions">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                        <span class="hidden sm:inline">Regenerate</span>
+                    <button onclick="regenerateAllQuestions()" class="px-3.5 py-2 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-saffron-500/20">
+                        <i class="fa-solid fa-arrows-rotate animate-spin-hover"></i>
+                        <span class="hidden sm:inline">Regenerate Set</span>
                     </button>
 
-                    <!-- Mistake Notebook Icon -->
+                    <!-- Mistake Notebook Button (गलती डायरी) -->
                     <button id="mistakesBtn" onclick="toggleMistakeDrawer()" class="relative p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Mistake Notebook (गलती डायरी)">
                         <i class="fa-solid fa-book-skull text-lg text-rose-500"></i>
                         <span id="mistakeBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                     </button>
 
-                    <!-- Bookmarks -->
-                    <button id="toggleBookmarksBtn" onclick="toggleBookmarkDrawer()" class="relative p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Saved Questions">
+                    <button id="toggleBookmarksBtn" onclick="toggleBookmarkDrawer()" class="relative p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
                         <i class="fa-regular fa-bookmark text-lg"></i>
                         <span id="bookmarkCountBadge" class="absolute -top-1 -right-1 bg-saffron-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                     </button>
 
-                    <!-- Dark Mode -->
                     <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
                         <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
                     </button>
 
-                    <!-- Leaderboard -->
-                    <button onclick="openLeaderboardModal()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="National Leaderboard">
+                    <button id="leaderboardNavBtn" onclick="openLeaderboardModal()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Leaderboard">
                         <i class="fa-solid fa-trophy text-lg"></i>
                     </button>
 
-                    <!-- Admin Dashboard Button -->
                     <button id="adminNavBtn" onclick="openAdminModal()" class="hidden p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Admin Dashboard">
-                        <i class="fa-solid fa-user-shield text-lg text-indigo-500"></i>
+                        <i class="fa-solid fa-user-shield text-lg"></i>
                     </button>
 
-                    <!-- Login Button -->
+                    <!-- Logged-out state -->
                     <button id="loginNavBtn" onclick="openAuthModal('login')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-indigo-500/20">
                         <i class="fa-solid fa-right-to-bracket"></i>
                         <span>Login</span>
                     </button>
 
-                    <!-- Profile Button -->
+                    <!-- Logged-in state -->
                     <button id="profileNavBtn" onclick="openProfileModal()" class="hidden items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                         <span id="profileAvatarInitial" class="w-7 h-7 rounded-lg bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-bold text-xs">S</span>
                         <span id="profileNavName" class="text-xs font-bold text-slate-700 dark:text-slate-200 max-w-[90px] truncate hidden sm:inline">Student</span>
@@ -199,7 +202,7 @@
 
     <!-- Mistake Notebook Drawer ("गलती डायरी") -->
     <div id="mistakeDrawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-800 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
-        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-rose-50/50 dark:bg-rose-950/20">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-rose-50/60 dark:bg-rose-950/20">
             <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400">
                 <i class="fa-solid fa-book-skull text-lg"></i>
                 <h3 class="font-black text-slate-800 dark:text-slate-100">Mistake Notebook (<span id="drawerMistakeCount">0</span>)</h3>
@@ -209,12 +212,12 @@
             </button>
         </div>
         <div class="p-3 bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-800 dark:text-amber-200">
-            Questions you get wrong are logged here. Master them through repetition.
+            Any question you answer incorrectly is saved here automatically.
         </div>
         <div id="mistakeDrawerList" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
         <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex gap-2">
             <button onclick="practiceMistakesOnly()" class="flex-1 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-repeat"></i> Practice Mistakes Set
+                <i class="fa-solid fa-repeat"></i> Practice Mistakes Only
             </button>
             <button onclick="clearAllMistakes()" class="px-3 py-2 text-xs font-semibold text-slate-500 hover:text-red-500 rounded-lg transition-colors">
                 Clear
@@ -243,7 +246,7 @@
     </div>
     <div id="drawerOverlay" onclick="toggleBookmarkDrawer()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden"></div>
 
-    <!-- Main Container -->
+    <!-- MAIN PAGE CONTENT -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
 
         <!-- Hero Section -->
@@ -254,26 +257,26 @@
             <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div class="lg:col-span-7 space-y-4">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-saffron-300 text-xs font-semibold border border-white/10 backdrop-blur-md">
-                        <i class="fa-solid fa-infinity text-saffron-400"></i> Infinite Procedural Engine & KaTeX
+                        <i class="fa-solid fa-infinity text-saffron-400"></i> Infinite Algorithmic Question Engine & KaTeX
                     </div>
                     <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                        Authentic CBT Mock Tests & <span class="bg-gradient-to-r from-saffron-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent">Infinite Practice.</span>
+                        Never Solve the Same Questions. <span class="bg-gradient-to-r from-saffron-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent"> Endless Practice for India.</span>
                     </h1>
                     <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                        JEE, NEET, CBSE & CLAT questions generated in real-time with authentic negative marking ($+4/-1$), step-by-step mathematical proofs, and NTA Computer-Based Test palettes.
+                        Class 9–12, JEE Main/Advanced, NEET, and CLAT/LLB questions procedurally generated in real-time with modified numbers, random options, and step-by-step auto-computed solutions.
                     </p>
 
                     <div class="flex flex-wrap items-center gap-3 pt-2">
                         <button onclick="regenerateAllQuestions()" class="px-5 py-2.5 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-sm shadow-lg shadow-saffron-500/20 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
-                            <i class="fa-solid fa-arrows-rotate"></i> Generate Fresh Batch
+                            <i class="fa-solid fa-arrows-rotate"></i> Generate Fresh 10-Question Batch
                         </button>
-                        <a href="#mockTestSection" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-desktop text-amber-300"></i> Launch CBT Mock Test
+                        <a href="#mockTestSection" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 backdrop-blur-md transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-stopwatch text-amber-300"></i> Start CBT Mock Test
                         </a>
                     </div>
                 </div>
 
-                <!-- Live User Stats -->
+                <!-- User Real-time Progress Stats -->
                 <div class="lg:col-span-5 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-white grid grid-cols-3 gap-3 text-center">
                     <div class="bg-slate-900/40 p-3 rounded-xl border border-white/5">
                         <div id="statAttempted" class="text-2xl sm:text-3xl font-black text-saffron-400">0</div>
@@ -285,97 +288,103 @@
                     </div>
                     <div class="bg-slate-900/40 p-3 rounded-xl border border-white/5">
                         <div id="statStreak" class="text-2xl sm:text-3xl font-black text-amber-300">0 🔥</div>
-                        <div class="text-[10px] text-slate-300 font-bold uppercase tracking-wider mt-1">Streak</div>
+                        <div class="text-[10px] text-slate-300 font-bold uppercase tracking-wider mt-1">Best Streak</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Filter Controls -->
+        <!-- EXACT ORIGINAL CUSTOM PRACTICE FILTERS (WITH CASCADING EXAM LOGIC) -->
         <section id="explorerHub" class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div>
                     <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-indigo-600 dark:text-indigo-400"></i> Practice Filter System
+                        <i class="fa-solid fa-sliders text-indigo-600 dark:text-indigo-400"></i> Custom Practice Filters
                     </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Filter algorithmic questions by competitive exam, curriculum, or mistake queue</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Filter procedurally generated questions by exam, class, subject, and difficulty</p>
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    <button onclick="practiceMistakesOnly()" class="text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 px-3 py-1.5 rounded-lg border border-rose-300 dark:border-rose-800 transition-colors flex items-center gap-1.5">
-                        <i class="fa-solid fa-skull"></i> Mistakes Mode
+                    <button onclick="regenerateAllQuestions()" class="text-xs font-bold text-saffron-600 dark:text-saffron-400 hover:bg-saffron-50 dark:hover:bg-saffron-950/50 px-3 py-1.5 rounded-lg border border-saffron-200 dark:border-saffron-800 transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-shuffle"></i> Shuffle Variables
                     </button>
                     <button onclick="resetFilters()" class="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                        Reset
+                        Reset Filters
                     </button>
                 </div>
             </div>
 
+            <!-- Filter Controls (Exact 5 Cascading Dropdowns) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                
                 <div class="space-y-1">
-                    <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Target Exam / Class</label>
-                    <select id="filterClassExam" onchange="generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
-                        <option value="ALL">All Classes & Exams</option>
-                        <option value="JEE Main">JEE Main (PCM)</option>
-                        <option value="NEET">NEET UG (PCB)</option>
-                        <option value="Class 10">Class 10 (Board Exam)</option>
-                        <option value="Class 12">Class 12 (Board Exam)</option>
-                        <option value="CLAT/LLB">CLAT / Law Entrance</option>
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Target Class / Exam</label>
+                    <select id="filterClassExam" onchange="updateSubjectAndChapterFilters(true); generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+                        <option value="ALL">All Classes & Entrance Exams</option>
+                        <option value="Class 9">Class 9</option>
+                        <option value="Class 10">Class 10</option>
+                        <option value="Class 11">Class 11</option>
+                        <option value="Class 12">Class 12</option>
+                        <option value="JEE Main">JEE Main / Advanced</option>
+                        <option value="NEET">NEET Medical</option>
+                        <option value="CLAT/LLB">CLAT / LLB Law</option>
                     </select>
                 </div>
 
                 <div class="space-y-1">
                     <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Subject</label>
-                    <select id="filterSubject" onchange="generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+                    <select id="filterSubject" onchange="updateSubjectAndChapterFilters(false); generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
                         <option value="ALL">All Subjects</option>
                         <option value="Physics">Physics</option>
                         <option value="Chemistry">Chemistry</option>
                         <option value="Mathematics">Mathematics</option>
                         <option value="Biology">Biology</option>
+                        <option value="Science">Science (Class 9-10)</option>
                         <option value="Legal Reasoning">Legal Reasoning</option>
                         <option value="Logical Reasoning">Logical Reasoning</option>
                     </select>
                 </div>
 
                 <div class="space-y-1">
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Chapter</label>
+                    <select id="filterChapter" onchange="generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+                        <option value="ALL">All Chapters</option>
+                    </select>
+                </div>
+
+                <div class="space-y-1">
                     <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Difficulty</label>
                     <select id="filterDifficulty" onchange="renderGeneratedQuestions()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
-                        <option value="ALL">All Levels</option>
+                        <option value="ALL">All Difficulties</option>
                         <option value="Easy">Easy (Foundational)</option>
-                        <option value="Medium">Medium (JEE Main / NEET)</option>
-                        <option value="Hard">Hard (JEE Advanced)</option>
+                        <option value="Medium">Medium (Board / JEE Main)</option>
+                        <option value="Hard">Hard (JEE Adv / Exemplar)</option>
                     </select>
                 </div>
 
                 <div class="space-y-1">
-                    <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Marking Scheme</label>
-                    <select id="filterMarking" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
-                        <option value="JEE">+4 / -1 (JEE / NEET)</option>
-                        <option value="CLAT">+1 / -0.25 (CLAT Law)</option>
-                        <option value="CBSE">+1 / 0 (School Boards)</option>
-                    </select>
-                </div>
-
-                <div class="space-y-1">
-                    <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Question Source</label>
-                    <select id="filterSource" onchange="renderGeneratedQuestions()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Type Mode</label>
+                    <select id="filterType" onchange="renderGeneratedQuestions()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
                         <option value="ALL">All Material Types</option>
-                        <option value="PYQ">Official PYQ Variants</option>
-                        <option value="Algorithmic">Procedural Formulas</option>
-                        <option value="MISTAKES">Mistake Notebook Only</option>
+                        <option value="PYQ">Official PYQ Variant</option>
+                        <option value="Select-50">High-Yield "Select-50"</option>
                     </select>
                 </div>
+
             </div>
+
         </section>
 
-        <!-- Dynamic Practice Section -->
+        <!-- Practice Question Stream -->
         <section id="practiceEngine" class="space-y-4">
+            
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-3 h-8 bg-saffron-500 rounded-full"></div>
                     <div>
-                        <h2 class="text-xl font-black text-slate-800 dark:text-slate-100">Practice Question Stream</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Showing <span id="questionCountDisplay" class="font-bold text-saffron-600 dark:text-saffron-400">0</span> mathematical questions</p>
+                        <h2 class="text-xl font-black text-slate-800 dark:text-slate-100">Dynamic Practice Question Set</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Showing <span id="questionCountDisplay" class="font-bold text-saffron-600 dark:text-saffron-400">0</span> unique generated questions</p>
                     </div>
                 </div>
 
@@ -386,187 +395,162 @@
 
             <!-- Questions Container -->
             <div id="questionsContainer" class="space-y-4"></div>
+
         </section>
 
-        <!-- ===================================================================
-             AUTHENTIC NTA CBT COMPUTER-BASED MOCK TEST ENGINE
-             =================================================================== -->
+        <!-- NTA COMPUTER BASED TEST (CBT) MOCK SECTION -->
         <section id="mockTestSection" class="bg-gradient-to-br from-navy-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-slate-800">
-            <div class="max-w-6xl mx-auto space-y-6 relative z-10">
-                
+            <div class="max-w-5xl mx-auto space-y-6 relative z-10">
                 <div class="text-center space-y-2">
                     <span class="px-3 py-1 rounded-full bg-saffron-500/20 text-saffron-300 text-xs font-bold uppercase tracking-wider border border-saffron-500/30">
-                        <i class="fa-solid fa-desktop mr-1"></i> Official NTA CBT Interface Simulation
+                        <i class="fa-solid fa-desktop mr-1"></i> NTA CBT Interface Simulation
                     </span>
-                    <h2 class="text-2xl sm:text-3xl font-black">National CBT Mock Test Engine</h2>
-                    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto">
-                        Practice under true exam conditions with real-time negative marking, authentic Question Palettes, and complete performance analytics.
-                    </p>
+                    <h2 class="text-2xl sm:text-3xl font-black">Dynamic Mock Test Engine</h2>
+                    <p class="text-slate-300 text-xs sm:text-sm">Randomized variables test your true conceptual knowledge under authentic exam timers, palettes and negative marking.</p>
                 </div>
 
-                <!-- Test Launcher Card -->
-                <div id="quizStartScreen" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl backdrop-blur-md text-center max-w-xl mx-auto space-y-5">
-                    <div class="w-16 h-16 bg-saffron-500/20 rounded-full flex items-center justify-center mx-auto text-saffron-400 text-2xl border border-saffron-500/30">
-                        <i class="fa-solid fa-stopwatch-20"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-white">Configure Your Mock Paper</h3>
-                        <p class="text-xs text-slate-400 mt-1">Select duration, paper length, and examination negative marking rules.</p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3 text-left">
-                        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                            <label class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Marking Pattern</label>
-                            <select id="mockTestPatternSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs font-semibold text-white">
-                                <option value="JEE">JEE / NEET (+4, -1)</option>
-                                <option value="CLAT">CLAT (+1, -0.25)</option>
-                                <option value="CBSE">CBSE Board (+1, 0)</option>
-                            </select>
-                        </div>
-                        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                            <label class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Question Count</label>
-                            <select id="mockTestLengthSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs font-semibold text-white">
-                                <option value="5">5 Questions (Quick Test)</option>
-                                <option value="15">15 Questions (Sprint)</option>
-                                <option value="25">25 Questions (Sectional)</option>
-                                <option value="75">75 Questions (Full JEE Main)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button onclick="startCbtMockTest()" class="w-full py-3.5 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-saffron-500/25 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-play"></i> Start Computer Based Test
-                    </button>
-                </div>
-
-                <!-- Active CBT Screen (NTA Layout) -->
-                <div id="quizActiveScreen" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-2xl backdrop-blur-md">
+                <div id="quizBox" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-md">
                     
-                    <!-- Left: Question Area -->
-                    <div class="lg:col-span-8 space-y-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800 pb-5 lg:pb-0 lg:pr-5">
-                        
+                    <!-- Launcher Screen -->
+                    <div id="quizStartScreen" class="text-center py-6 space-y-4">
+                        <div class="w-16 h-16 bg-saffron-500/20 rounded-full flex items-center justify-center mx-auto text-saffron-400 text-2xl border border-saffron-500/30">
+                            <i class="fa-solid fa-vial"></i>
+                        </div>
                         <div>
-                            <!-- Header Info -->
-                            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs font-bold text-saffron-400">Question <span id="cbtCurrentNum">1</span></span>
-                                    <span id="cbtMarkingTag" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-900/80 text-indigo-300 border border-indigo-700">+4, -1</span>
-                                    <span id="cbtSubjectTag" class="text-[10px] font-semibold text-slate-400">Physics</span>
-                                </div>
-                                <div class="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-lg border border-slate-700">
-                                    <i class="fa-regular fa-clock text-amber-400 text-xs"></i>
-                                    <span id="cbtTimerDisplay" class="font-mono font-bold text-sm text-amber-300">00:00</span>
-                                </div>
-                            </div>
-
-                            <!-- Question Text -->
-                            <div class="space-y-4">
-                                <div id="cbtQuestionText" class="text-sm sm:text-base font-medium text-slate-100 leading-relaxed min-h-[80px]">---</div>
-                                <div id="cbtOptionsContainer" class="space-y-2.5 pt-2"></div>
+                            <h3 class="text-lg font-bold text-white">Generate a fresh filtered CBT Mock Test?</h3>
+                            <p class="text-xs text-slate-400 mt-1">The test automatically inherits the active Class/Exam, Subject, and Chapter filters you picked above.</p>
+                        </div>
+                        <div id="quizFilterSummary" class="text-left text-[11px] leading-relaxed bg-slate-800/70 border border-slate-700 rounded-xl px-4 py-3 text-slate-300">Current filters: All</div>
+                        
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="text-[11px] text-slate-400 font-semibold">Test length:</span>
+                            <div id="quizLengthPicker" class="inline-flex bg-slate-800 border border-slate-700 rounded-lg p-1 gap-1">
+                                <button type="button" onclick="setQuizLength(5)" data-len="5" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-white bg-saffron-500">5</button>
+                                <button type="button" onclick="setQuizLength(25)" data-len="25" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-slate-300 hover:bg-slate-700">25</button>
+                                <button type="button" onclick="setQuizLength(50)" data-len="50" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-slate-300 hover:bg-slate-700">50</button>
+                                <button type="button" onclick="setQuizLength(75)" data-len="75" class="quiz-len-btn px-3 py-1 rounded-md text-xs font-bold text-slate-300 hover:bg-slate-700">75 (Full)</button>
                             </div>
                         </div>
 
-                        <!-- Action Buttons (NTA Standard) -->
-                        <div class="pt-5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
-                            <div class="flex items-center gap-2">
-                                <button onclick="saveAndNext()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md">
-                                    Save & Next
-                                </button>
-                                <button onclick="markForReviewAndNext()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-all">
-                                    Mark for Review & Next
-                                </button>
-                                <button onclick="clearResponse()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">
-                                    Clear Response
+                        <button onclick="startMiniQuiz()" class="px-6 py-3 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-saffron-500/20">
+                            Start Computer Based Mock Test
+                        </button>
+                    </div>
+
+                    <!-- Active NTA CBT Test Layout (Question + Palette) -->
+                    <div id="quizActiveScreen" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- Left: Active Question -->
+                        <div class="lg:col-span-8 space-y-4 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-5">
+                            <div>
+                                <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-saffron-400">Question <span id="quizCurrentIndex">1</span> of <span id="quizTotalCount">5</span></span>
+                                        <span id="quizMarkingBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-900/80 text-indigo-300 border border-indigo-700">+4, -1</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-lg border border-slate-700">
+                                        <i class="fa-regular fa-clock text-amber-400 text-xs"></i>
+                                        <span id="quizTimerDisplay" class="font-mono font-bold text-sm text-amber-300">03:00</span>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div id="quizMetaTag" class="text-[10px] uppercase font-extrabold tracking-wider text-indigo-400">---</div>
+                                    <h4 id="quizQuestionText" class="text-sm sm:text-base font-semibold leading-relaxed text-slate-100 min-h-[60px]">---</h4>
+                                    <div id="quizOptionsContainer" class="space-y-2 pt-2"></div>
+                                </div>
+                            </div>
+
+                            <!-- Standard NTA Exam Controls -->
+                            <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="saveAndNext()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md">
+                                        Save & Next
+                                    </button>
+                                    <button onclick="markForReviewAndNext()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-all">
+                                        Mark Review & Next
+                                    </button>
+                                    <button onclick="clearCbtResponse()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">
+                                        Clear Response
+                                    </button>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button id="quizPrevBtn" onclick="navigateQuiz(-1)" class="text-xs font-semibold px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300">Previous</button>
+                                    <button id="quizNextBtn" onclick="navigateQuiz(1)" class="text-xs font-bold px-4 py-2 bg-saffron-500 hover:bg-saffron-600 rounded-lg text-white">Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Question Palette -->
+                        <div class="lg:col-span-4 space-y-4 flex flex-col justify-between">
+                            
+                            <!-- Legend -->
+                            <div class="space-y-1.5 bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-[10px]">
+                                <div class="grid grid-cols-2 gap-1.5">
+                                    <div class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-emerald-500 flex items-center justify-center text-[8px] font-bold text-white" id="countAnswered">0</span> Answered</div>
+                                    <div class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-red-500 flex items-center justify-center text-[8px] font-bold text-white" id="countNotAnswered">0</span> Not Answered</div>
+                                    <div class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-purple-500 flex items-center justify-center text-[8px] font-bold text-white" id="countReview">0</span> Marked Review</div>
+                                    <div class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-slate-700 flex items-center justify-center text-[8px] font-bold text-white" id="countNotVisited">0</span> Not Visited</div>
+                                </div>
+                            </div>
+
+                            <!-- Palette Grid -->
+                            <div class="space-y-2 flex-1">
+                                <h5 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Question Palette</h5>
+                                <div id="cbtPaletteGrid" class="grid grid-cols-5 gap-2 max-h-56 overflow-y-auto p-1"></div>
+                            </div>
+
+                            <!-- Submit Entire Test Button -->
+                            <div class="pt-2 border-t border-slate-800">
+                                <button onclick="finishQuiz()" class="w-full py-2.5 bg-saffron-500 hover:bg-saffron-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-saffron-500/20">
+                                    Submit Test
                                 </button>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="navigateCbt(-1)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">
-                                    Previous
-                                </button>
-                                <button onclick="navigateCbt(1)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">
-                                    Next
-                                </button>
-                            </div>
+
                         </div>
 
                     </div>
 
-                    <!-- Right: Question Palette (NTA Grid) -->
-                    <div class="lg:col-span-4 space-y-4 flex flex-col justify-between">
-                        
-                        <!-- Legend -->
-                        <div class="space-y-2 bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-[11px]">
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-emerald-500 flex items-center justify-center text-[9px] font-bold text-white" id="countLegendAnswered">0</span> Answered</div>
-                                <div class="flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-red-500 flex items-center justify-center text-[9px] font-bold text-white" id="countLegendNotAnswered">0</span> Not Answered</div>
-                                <div class="flex items-center gap-1.5"><span class="w-4 h-4 rounded-full bg-purple-500 flex items-center justify-center text-[9px] font-bold text-white" id="countLegendReview">0</span> Marked for Review</div>
-                                <div class="flex items-center gap-1.5"><span class="w-4 h-4 rounded bg-slate-700 flex items-center justify-center text-[9px] font-bold text-white" id="countLegendNotVisited">0</span> Not Visited</div>
+                    <!-- Result Screen with Accurate Exam Scoring -->
+                    <div id="quizResultScreen" class="hidden text-center py-6 space-y-5">
+                        <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-emerald-500/30">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-xl font-extrabold text-white">CBT Test Complete!</h3>
+                            <p class="text-xs text-slate-400">Authentic competitive scoring breakdown</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto">
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <div id="quizFinalMarks" class="text-2xl font-black text-amber-400">0</div>
+                                <div class="text-[10px] text-slate-400 uppercase font-semibold">Total Marks</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <div id="quizAccuracyText" class="text-2xl font-black text-emerald-400">0%</div>
+                                <div class="text-[10px] text-slate-400 uppercase font-semibold">Accuracy</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <div id="quizNegativeLost" class="text-2xl font-black text-rose-400">-0</div>
+                                <div class="text-[10px] text-slate-400 uppercase font-semibold">Negative Marks</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <div id="quizTimeTakenText" class="text-2xl font-black text-indigo-400">0s</div>
+                                <div class="text-[10px] text-slate-400 uppercase font-semibold">Time Used</div>
                             </div>
                         </div>
 
-                        <!-- Grid -->
-                        <div class="space-y-2 flex-1">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question Palette</h4>
-                            <div id="cbtPaletteGrid" class="grid grid-cols-5 sm:grid-cols-6 lg:grid-cols-5 gap-2 max-h-60 overflow-y-auto p-1"></div>
-                        </div>
-
-                        <!-- Submit Test -->
-                        <div class="pt-3 border-t border-slate-800">
-                            <button onclick="confirmSubmitTest()" class="w-full py-2.5 bg-saffron-500 hover:bg-saffron-600 text-white font-bold rounded-xl text-xs shadow-lg shadow-saffron-500/20">
-                                Submit Entire Test
+                        <div class="flex justify-center gap-2 pt-2">
+                            <button onclick="resetMiniQuiz()" class="px-6 py-2.5 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl font-bold text-xs">
+                                Generate New Quiz Set
+                            </button>
+                            <button onclick="toggleMistakeDrawer()" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold text-xs">
+                                Review Mistakes
                             </button>
                         </div>
-
                     </div>
 
                 </div>
-
-                <!-- CBT Result Screen -->
-                <div id="quizResultScreen" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md max-w-2xl mx-auto space-y-6 text-center">
-                    <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-emerald-500/30">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
-
-                    <div class="space-y-1">
-                        <h3 class="text-2xl font-black text-white">Scorecard & Analytical Breakdown</h3>
-                        <p class="text-xs text-slate-400">Computed via official negative marking formulas</p>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                            <div id="cbtFinalMarks" class="text-2xl font-black text-amber-400">0 / 0</div>
-                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Total Marks</div>
-                        </div>
-                        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                            <div id="cbtFinalAccuracy" class="text-2xl font-black text-emerald-400">0%</div>
-                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Accuracy</div>
-                        </div>
-                        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                            <div id="cbtNegativesLost" class="text-2xl font-black text-rose-400">-0</div>
-                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Negative Loss</div>
-                        </div>
-                        <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                            <div id="cbtTimeUsed" class="text-2xl font-black text-indigo-400">0s</div>
-                            <div class="text-[10px] text-slate-400 uppercase font-semibold">Time Spent</div>
-                        </div>
-                    </div>
-
-                    <div class="text-left text-xs bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                        <div class="flex justify-between"><span>Correct Answers (+ marks):</span> <span id="cbtStatCorrect" class="font-bold text-emerald-400">0</span></div>
-                        <div class="flex justify-between"><span>Incorrect Answers (- marks):</span> <span id="cbtStatWrong" class="font-bold text-rose-400">0</span></div>
-                        <div class="flex justify-between"><span>Unattempted (0 marks):</span> <span id="cbtStatUnattempted" class="font-bold text-slate-400">0</span></div>
-                    </div>
-
-                    <div class="flex gap-3 justify-center pt-2">
-                        <button onclick="resetCbtTest()" class="px-6 py-2.5 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl font-bold text-xs">
-                            Start Another Test
-                        </button>
-                        <button onclick="toggleMistakeDrawer()" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold text-xs">
-                            Review Wrong Answers
-                        </button>
-                    </div>
-                </div>
-
             </div>
         </section>
 
@@ -575,23 +559,23 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div>
                     <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf text-red-500"></i> Official PYQ Paper Repository (2018–2026)
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> Official PYQ Paper Downloads (2018–2026)
                     </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Directly download official NTA/CBSE papers and authentic answer keys</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Download official exam question papers with answer keys</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="pyqMatrixGrid"></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="pyqMatrixGrid"></div>
         </section>
 
     </main>
 
-    <!-- Solution Modal Popup with KaTeX Support -->
+    <!-- Solution Modal with KaTeX Math Rendering -->
     <div id="solutionModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl p-6 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div class="flex items-center gap-2 text-saffron-600 dark:text-saffron-400 font-bold text-sm">
-                    <i class="fa-solid fa-lightbulb"></i> Step-by-Step KaTeX Derivation
+                    <i class="fa-solid fa-lightbulb"></i> Calculated Step-by-Step Solution
                 </div>
                 <button onclick="closeSolutionModal()" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -599,13 +583,13 @@
             </div>
             
             <div id="modalQuestionTitle" class="text-xs font-semibold text-slate-500 dark:text-slate-400">---</div>
-            <div id="modalQuestionBody" class="text-sm font-medium text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-100 dark:border-slate-800">---</div>
+            <div id="modalQuestionBody" class="text-sm font-medium text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">---</div>
             
             <div class="space-y-2">
                 <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                    <i class="fa-solid fa-check-circle"></i> Computed Solution & Formula
+                    <i class="fa-solid fa-check-circle"></i> Computed Solution
                 </div>
-                <div id="modalSolutionText" class="text-xs leading-relaxed text-slate-700 dark:text-slate-300 space-y-2 p-3 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200/50 dark:border-emerald-900/30">---</div>
+                <div id="modalSolutionText" class="text-xs leading-relaxed text-slate-700 dark:text-slate-300 space-y-2">---</div>
             </div>
 
             <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
@@ -616,15 +600,15 @@
         </div>
     </div>
 
-    <!-- Modals: Auth, Profile, Leaderboard, Admin (Intact) -->
+    <!-- Modals: Auth, Profile, Leaderboard, Admin (All Intact) -->
     <div id="authModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
         <div onclick="closeAuthModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
         <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center mb-5">
                 <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-black text-xl mb-3">V</div>
-                <h3 id="authModalTitle" class="text-lg font-black text-slate-800 dark:text-slate-100">Welcome Back</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Log in to sync your progress to cloud</p>
+                <h3 id="authModalTitle" class="text-lg font-black text-slate-800 dark:text-slate-100">Welcome back</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Log in to save your goals & progress</p>
             </div>
             <div id="authErrorBox" class="hidden mb-3 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/40 p-2.5 rounded-lg"></div>
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3">
@@ -687,9 +671,7 @@
     </div>
 
     <script>
-        /* =====================================================================
-           SUPABASE CONFIG & APPLICATION STATE
-           ===================================================================== */
+        /* SUPABASE CLIENT CONFIG */
         const SUPABASE_URL = 'https://qdrfzpxahwyshxdkatbv.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkcmZ6cHhhaHd5c2h4ZGthdGJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyMzI3MDQsImV4cCI6MjEwNTgwODcwNH0.sD8g2_drMdcg-Xm-fxSd6M9CvLiIwOcfaDYmUsyraeI';
 
@@ -701,15 +683,15 @@
         let currentProfile = null;
         let authMode = 'login';
 
-        // Local Storage State
+        // Local state
         let bookmarks = JSON.parse(localStorage.getItem('vidyarthe_bookmarks') || '[]');
         let mistakes = JSON.parse(localStorage.getItem('vidyarthe_mistakes') || '[]');
         let userStats = JSON.parse(localStorage.getItem('vidyarthe_stats') || '{"attempted":0, "correct":0, "streak":0}');
 
-        /* Math rendering helper */
-        function triggerKaTeX(element) {
+        /* KaTeX Render Helper */
+        function triggerKaTeX(el) {
             if (typeof renderMathInElement === 'function') {
-                renderMathInElement(element || document.body, {
+                renderMathInElement(el || document.body, {
                     delimiters: [
                         { left: '$$', right: '$$', display: true },
                         { left: '$', right: '$', display: false }
@@ -719,153 +701,372 @@
             }
         }
 
-        /* Number generators */
+        /* Math utilities */
         function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function getRandomFloat(min, max, decimals = 1) { return parseFloat((Math.random() * (max - min) + min).toFixed(decimals)); }
         function getRandomChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
         function shuffleArray(arr) {
-            const copy = [...arr];
-            for (let i = copy.length - 1; i > 0; i--) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [copy[i], copy[j]] = [copy[j], copy[i]];
+                [array[i], array[j]] = [array[j], array[i]];
             }
-            return copy;
+            return array;
         }
 
-        /* =====================================================================
-           HIGH-YIELD PARAMETERIZED GENERATORS WITH KATEX
-           ===================================================================== */
+        /* EXACT CHAPTER & SUBJECT SYLLABUS CATALOGS (JEE HAS PCM ONLY!) */
+        const chapterCatalog = {
+            "Class 9": {
+                "Mathematics": [
+                    "Number Systems", "Polynomials", "Coordinate Geometry", "Linear Equations in Two Variables",
+                    "Introduction to Euclid's Geometry", "Lines and Angles", "Triangles", "Quadrilaterals",
+                    "Circles", "Heron's Formula", "Surface Areas and Volumes", "Statistics", "Probability"
+                ],
+                "Science": [
+                    "Matter in Our Surroundings", "Is Matter Around Us Pure", "Atoms and Molecules", "Structure of the Atom",
+                    "The Fundamental Unit of Life", "Tissues", "Diversity in Living Organisms", "Motion",
+                    "Force and Laws of Motion", "Gravitation", "Work and Energy", "Sound", "Why Do We Fall Ill",
+                    "Natural Resources", "Improvement in Food Resources"
+                ],
+                "Logical Reasoning": [
+                    "Coding-Decoding", "Analogy", "Classification", "Series", "Blood Relations", "Direction Sense",
+                    "Ranking and Order", "Syllogism", "Venn Diagrams", "Statement and Conclusion"
+                ]
+            },
+            "Class 10": {
+                "Mathematics": [
+                    "Real Numbers", "Polynomials", "Pair of Linear Equations in Two Variables", "Quadratic Equations",
+                    "Arithmetic Progressions", "Triangles", "Coordinate Geometry", "Introduction to Trigonometry",
+                    "Some Applications of Trigonometry", "Circles", "Areas Related to Circles", "Surface Areas and Volumes",
+                    "Statistics", "Probability"
+                ],
+                "Science": [
+                    "Chemical Reactions and Equations", "Acids, Bases and Salts", "Metals and Non-metals",
+                    "Carbon and Its Compounds", "Life Processes", "Control and Coordination", "How Do Organisms Reproduce",
+                    "Heredity and Evolution", "Light - Reflection and Refraction", "The Human Eye and the Colourful World",
+                    "Electricity", "Magnetic Effects of Electric Current", "Our Environment", "Sustainable Management of Natural Resources"
+                ],
+                "Biology": [
+                    "Life Processes", "Control and Coordination", "How Do Organisms Reproduce", "Heredity and Evolution",
+                    "Our Environment", "Sustainable Management of Natural Resources"
+                ],
+                "Physics": [
+                    "Light - Reflection and Refraction", "The Human Eye and the Colourful World", "Electricity",
+                    "Magnetic Effects of Electric Current", "Sources of Energy"
+                ],
+                "Chemistry": [
+                    "Chemical Reactions and Equations", "Acids, Bases and Salts", "Metals and Non-metals",
+                    "Carbon and Its Compounds"
+                ],
+                "Logical Reasoning": [
+                    "Coding-Decoding", "Analogy", "Classification", "Series", "Blood Relations", "Direction Sense",
+                    "Ranking and Order", "Syllogism", "Venn Diagrams", "Statement and Conclusion"
+                ]
+            },
+            "Class 11": {
+                "Physics": [
+                    "Units and Measurements", "Motion in a Straight Line", "Motion in a Plane", "Laws of Motion",
+                    "Work, Energy and Power", "System of Particles and Rotational Motion", "Gravitation", "Mechanical Properties of Solids",
+                    "Mechanical Properties of Fluids", "Thermal Properties of Matter", "Thermodynamics", "Kinetic Theory",
+                    "Oscillations", "Waves"
+                ],
+                "Chemistry": [
+                    "Some Basic Concepts of Chemistry", "Structure of Atom", "Classification of Elements and Periodicity in Properties",
+                    "Chemical Bonding and Molecular Structure", "Thermodynamics", "Equilibrium", "Redox Reactions",
+                    "Organic Chemistry - Some Basic Principles and Techniques", "Hydrocarbons"
+                ],
+                "Mathematics": [
+                    "Sets", "Relations and Functions", "Trigonometric Functions", "Principle of Mathematical Induction",
+                    "Complex Numbers and Quadratic Equations", "Linear Inequalities", "Permutations and Combinations", "Binomial Theorem",
+                    "Sequences and Series", "Straight Lines", "Conic Sections", "Introduction to Three Dimensional Geometry",
+                    "Limits and Derivatives", "Mathematical Reasoning", "Statistics", "Probability"
+                ],
+                "Biology": [
+                    "The Living World", "Biological Classification", "Plant Kingdom", "Animal Kingdom", "Morphology of Flowering Plants",
+                    "Anatomy of Flowering Plants", "Structural Organisation in Animals", "Cell: The Unit of Life", "Biomolecules",
+                    "Cell Cycle and Cell Division", "Transport in Plants", "Mineral Nutrition", "Photosynthesis in Higher Plants",
+                    "Respiration in Plants", "Plant Growth and Development", "Digestion and Absorption", "Breathing and Exchange of Gases",
+                    "Body Fluids and Circulation", "Excretory Products and Their Elimination", "Locomotion and Movement",
+                    "Neural Control and Coordination", "Chemical Coordination and Integration"
+                ]
+            },
+            "Class 12": {
+                "Physics": [
+                    "Electric Charges and Fields", "Electrostatic Potential and Capacitance", "Current Electricity", "Moving Charges and Magnetism",
+                    "Magnetism and Matter", "Electromagnetic Induction", "Alternating Current", "Electromagnetic Waves",
+                    "Ray Optics and Optical Instruments", "Wave Optics", "Dual Nature of Radiation and Matter", "Atoms",
+                    "Nuclei", "Semiconductor Electronics"
+                ],
+                "Chemistry": [
+                    "Solutions", "Electrochemistry", "Chemical Kinetics", "d- and f-Block Elements", "Coordination Compounds",
+                    "Haloalkanes and Haloarenes", "Alcohols, Phenols and Ethers", "Aldehydes, Ketones and Carboxylic Acids",
+                    "Amines", "Biomolecules"
+                ],
+                "Mathematics": [
+                    "Relations and Functions", "Inverse Trigonometric Functions", "Matrices", "Determinants", "Continuity and Differentiability",
+                    "Application of Derivatives", "Integrals", "Application of Integrals", "Differential Equations", "Vector Algebra",
+                    "Three Dimensional Geometry", "Linear Programming", "Probability"
+                ],
+                "Biology": [
+                    "Reproduction in Organisms", "Sexual Reproduction in Flowering Plants", "Human Reproduction", "Reproductive Health",
+                    "Principles of Inheritance and Variation", "Molecular Basis of Inheritance", "Evolution", "Human Health and Disease",
+                    "Strategies for Enhancement in Food Production", "Microbes in Human Welfare", "Biotechnology: Principles and Processes",
+                    "Biotechnology and its Applications", "Organisms and Populations", "Ecosystem", "Biodiversity and Conservation", "Environmental Issues"
+                ]
+            },
+            "JEE Main": {
+                "Physics": [
+                    "Units and Measurements", "Kinematics", "Laws of Motion", "Work, Energy and Power", "Rotational Motion", "Gravitation",
+                    "Properties of Solids and Liquids", "Thermodynamics", "Kinetic Theory of Gases", "Oscillations and Waves",
+                    "Electrostatics", "Current Electricity", "Magnetic Effects of Current and Magnetism", "Electromagnetic Induction and Alternating Currents",
+                    "Electromagnetic Waves", "Optics", "Dual Nature of Matter and Radiation", "Atoms and Nuclei", "Electronic Devices"
+                ],
+                "Chemistry": [
+                    "Some Basic Concepts in Chemistry", "Atomic Structure", "Chemical Bonding", "Chemical Thermodynamics", "Solutions",
+                    "Equilibrium", "Redox Reactions and Electrochemistry", "Chemical Kinetics", "Classification of Elements and Periodicity",
+                    "p-Block Elements", "d- and f-Block Elements", "Coordination Compounds", "Organic Chemistry - Basic Principles",
+                    "Hydrocarbons", "Organic Compounds Containing Halogens", "Alcohols, Phenols and Ethers",
+                    "Aldehydes, Ketones and Carboxylic Acids", "Amines", "Biomolecules"
+                ],
+                "Mathematics": [
+                    "Sets, Relations and Functions", "Complex Numbers", "Quadratic Equations", "Sequences and Series", "Permutations and Combinations",
+                    "Binomial Theorem", "Limits, Continuity and Differentiability", "Integral Calculus", "Differential Equations",
+                    "Coordinate Geometry", "Three Dimensional Geometry", "Vector Algebra", "Matrices and Determinants", "Statistics and Probability",
+                    "Trigonometry"
+                ]
+            },
+            "NEET": {
+                "Physics": [
+                    "Physics and Measurement", "Kinematics", "Laws of Motion", "Work, Energy and Power", "Rotational Motion", "Gravitation",
+                    "Properties of Bulk Matter", "Thermodynamics", "Kinetic Theory", "Oscillations and Waves", "Electrostatics", "Current Electricity",
+                    "Magnetic Effects of Current and Magnetism", "Electromagnetic Induction and Alternating Current", "Electromagnetic Waves",
+                    "Optics", "Dual Nature of Matter and Radiation", "Atoms and Nuclei", "Electronic Devices"
+                ],
+                "Chemistry": [
+                    "Basic Concepts of Chemistry", "Atomic Structure", "Chemical Bonding and Molecular Structure", "Thermodynamics", "Equilibrium",
+                    "Redox Reactions", "Solutions", "Electrochemistry", "Chemical Kinetics", "Periodic Classification", "p-Block Elements",
+                    "d- and f-Block Elements", "Coordination Compounds", "Organic Chemistry Basic Principles", "Hydrocarbons", "Haloalkanes and Haloarenes",
+                    "Alcohols, Phenols and Ethers", "Aldehydes, Ketones and Carboxylic Acids", "Amines", "Biomolecules"
+                ],
+                "Biology": [
+                    "Diversity in Living World", "Structural Organisation in Plants and Animals", "Cell Structure and Function", "Plant Physiology",
+                    "Human Physiology", "Reproduction", "Genetics and Evolution", "Biology and Human Welfare", "Biotechnology and Its Applications",
+                    "Ecology and Environment"
+                ]
+            },
+            "CLAT/LLB": {
+                "Legal Reasoning": [
+                    "Law of Torts", "Law of Contracts", "Constitutional Law", "Criminal Law", "Legal Maxims", "Legal Current Affairs",
+                    "Legal Principles and Facts", "Property Law", "Family Law", "Jurisprudence"
+                ],
+                "Logical Reasoning": [
+                    "Coding-Decoding", "Analogies", "Series", "Syllogisms", "Blood Relations", "Directions and Distance", "Ranking and Order",
+                    "Statement and Assumption", "Statement and Conclusion", "Cause and Effect", "Logical Puzzles", "Critical Reasoning"
+                ]
+            }
+        };
+
+        // Strict mapping: JEE only PCM, NEET only PCB, CLAT only Legal/Logic
+        const subjectCatalog = {
+            "Class 9": ["Mathematics", "Science", "Logical Reasoning"],
+            "Class 10": ["Mathematics", "Science", "Physics", "Chemistry", "Biology", "Logical Reasoning"],
+            "Class 11": ["Physics", "Chemistry", "Mathematics", "Biology"],
+            "Class 12": ["Physics", "Chemistry", "Mathematics", "Biology"],
+            "JEE Main": ["Physics", "Chemistry", "Mathematics"],
+            "NEET": ["Physics", "Chemistry", "Biology"],
+            "CLAT/LLB": ["Legal Reasoning", "Logical Reasoning"]
+        };
+
+        function getAvailableSubjects(classExam) {
+            if (classExam === 'ALL') {
+                return [...new Set(Object.values(subjectCatalog).flat())];
+            }
+            return subjectCatalog[classExam] || [];
+        }
+
+        function getAvailableChapters(classExam, subject) {
+            const classes = classExam === 'ALL' ? Object.keys(chapterCatalog) : [classExam];
+            const chapters = [];
+            classes.forEach(c => {
+                const subjects = subject === 'ALL' ? Object.keys(chapterCatalog[c] || {}) : [subject];
+                subjects.forEach(sub => {
+                    (chapterCatalog[c]?.[sub] || []).forEach(ch => chapters.push(ch));
+                });
+            });
+            return [...new Set(chapters)];
+        }
+
+        function updateSubjectAndChapterFilters(resetSubject = false) {
+            const classSelect = document.getElementById('filterClassExam');
+            const subjectSelect = document.getElementById('filterSubject');
+            const chapterSelect = document.getElementById('filterChapter');
+            if (!classSelect || !subjectSelect || !chapterSelect) return;
+
+            const currentSubject = resetSubject ? 'ALL' : subjectSelect.value;
+            const subjects = getAvailableSubjects(classSelect.value);
+            subjectSelect.innerHTML = '<option value="ALL">All Subjects</option>' + subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+            subjectSelect.value = subjects.includes(currentSubject) ? currentSubject : 'ALL';
+
+            const chapters = getAvailableChapters(classSelect.value, subjectSelect.value);
+            chapterSelect.innerHTML = '<option value="ALL">All Chapters</option>' + chapters.map(ch => `<option value="${ch}">${ch}</option>`).join('');
+            chapterSelect.value = 'ALL';
+        }
+
+        /* PROCEDURAL QUESTION GENERATORS (USING KATEX) */
         const questionGenerators = [
-            
-            // 1. Physics: Kinematics ($s = ut + \frac{1}{2}at^2$)
+            // 1. Physics: Kinematics
             function generateKinematics() {
-                const u = getRandomInt(2, 15);
-                const a = getRandomInt(2, 8);
-                const t = getRandomInt(3, 10);
+                const u = getRandomInt(0, 20);
+                const a = getRandomInt(2, 10);
+                const t = getRandomInt(3, 12);
                 const s = (u * t) + (0.5 * a * t * t);
 
                 return {
-                    id: 'phys_kin_' + Math.random().toString(36).substr(2, 9),
-                    classExam: "JEE Main",
+                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
+                    category: "Competitive Entrance",
+                    classExam: getRandomChoice(["Class 11", "JEE Main"]),
                     subject: "Physics",
-                    topic: "Kinematics in 1D",
+                    topic: "Kinematics & Motion",
+                    chapter: "Kinematics",
                     difficulty: "Medium",
                     type: "PYQ",
-                    question: `A particle moves with an initial velocity $u = ${u}\\text{ m/s}$ and constant acceleration $a = ${a}\\text{ m/s}^2$. Calculate the displacement $s$ in $t = ${t}\\text{ s}$.`,
-                    correctAnswer: `${s} m`,
-                    wrongAnswers: [`${s + 12} m`, `${Math.max(1, s - 14)} m`, `${(u * t) + a * t} m`],
-                    solution: `Using Newton's equation: $$s = ut + \\frac{1}{2}at^2$$ Substitute values: $$s = (${u})(${t}) + \\frac{1}{2}(${a})(${t}^2) = ${u*t} + ${0.5*a*t*t} = \\mathbf{${s}\\text{ m}}$$`
+                    question: `A particle starts moving with an initial velocity $u = ${u}\\text{ m/s}$ and accelerates uniformly at $a = ${a}\\text{ m/s}^2$. Find the total distance traveled in $t = ${t}\\text{ seconds}$.`,
+                    correctAnswer: `${s} meters`,
+                    wrongAnswers: [`${s + getRandomInt(5, 15)} meters`, `${Math.max(1, s - getRandomInt(5, 20))} meters`, `${(u * t) + a * t} meters`],
+                    solution: `Using Newton's second kinematic relation: $$s = ut + \\frac{1}{2}at^2$$ Given: $u = ${u}\\text{ m/s}, a = ${a}\\text{ m/s}^2, t = ${t}\\text{ s}$.<br>Calculation: $$s = (${u} \\times ${t}) + \\frac{1}{2}(${a})(${t}^2) = ${u * t} + ${0.5 * a * t * t} = \\mathbf{${s}\\text{ meters}}$$`
                 };
             },
 
-            // 2. Physics: Projectile Motion ($R = \frac{u^2 \sin 2\theta}{g}$)
-            function generateProjectile() {
-                const u = getRandomChoice([20, 30, 40]);
-                const g = 10;
-                // theta = 45 deg => sin(90) = 1
-                const R = (u * u) / g;
-
-                return {
-                    id: 'phys_proj_' + Math.random().toString(36).substr(2, 9),
-                    classExam: "JEE Main",
-                    subject: "Physics",
-                    topic: "Motion in a Plane",
-                    difficulty: "Medium",
-                    type: "PYQ",
-                    question: `A projectile is launched from ground level with speed $u = ${u}\\text{ m/s}$ at an elevation angle $\\theta = 45^\\circ$. What is the horizontal range $R$? (Take $g = 10\\text{ m/s}^2$).`,
-                    correctAnswer: `${R} m`,
-                    wrongAnswers: [`${R / 2} m`, `${R * 2} m`, `${R + 25} m`],
-                    solution: `Horizontal Range formula: $$R = \\frac{u^2 \\sin(2\\theta)}{g}$$ For $\\theta = 45^\\circ$, $\\sin(90^\\circ) = 1$: $$R = \\frac{${u}^2 \\times 1}{10} = \\frac{${u*u}}{10} = \\mathbf{${R}\\text{ m}}$$`
-                };
-            },
-
-            // 3. Mathematics: Quadratic Roots & Discriminant
+            // 2. Mathematics: Quadratic Equations
             function generateQuadratic() {
-                const r1 = getRandomInt(-5, 5);
-                const r2 = getRandomInt(1, 6);
+                const r1 = getRandomInt(-8, 8);
+                const r2 = getRandomInt(1, 9);
                 const b = -(r1 + r2);
                 const c = r1 * r2;
                 const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
                 const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
 
                 return {
-                    id: 'math_quad_' + Math.random().toString(36).substr(2, 9),
-                    classExam: "Class 10",
+                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
+                    category: "School Studies",
+                    classExam: getRandomChoice(["Class 10", "Class 11", "JEE Main"]),
                     subject: "Mathematics",
                     topic: "Quadratic Equations",
+                    chapter: "Quadratic Equations",
                     difficulty: "Easy",
                     type: "Select-50",
-                    question: `Determine the roots of the polynomial equation: $$x^2 ${bStr}x ${cStr} = 0$$`,
+                    question: `Find the real roots of the quadratic equation: $$x^2 ${bStr}x ${cStr} = 0$$`,
                     correctAnswer: `x = ${r1}, x = ${r2}`,
-                    wrongAnswers: [`x = ${-r1}, x = ${r2}`, `x = ${r1 + 1}, x = ${r2 - 2}`, `x = ${r1 * 2}, x = ${r2}`],
-                    solution: `Factoring $x^2 ${bStr}x ${cStr} = 0$: $$(x - (${r1}))(x - (${r2})) = 0 \\implies x = \\mathbf{${r1}}, x = \\mathbf{${r2}}$$`
+                    wrongAnswers: [
+                        `x = ${-r1}, x = ${r2}`,
+                        `x = ${r1 + 2}, x = ${r2 - 1}`,
+                        `x = ${r1 * 2}, x = ${r2}`
+                    ],
+                    solution: `Factoring the quadratic: $$(x - (${r1}))(x - (${r2})) = 0$$ Equating factors to zero gives roots: $\\mathbf{x = ${r1}}$ and $\\mathbf{x = ${r2}}$.`
                 };
             },
 
-            // 4. Chemistry: Mole Concept & Molar Mass
-            function generateMoleConcept() {
-                const moles = getRandomInt(2, 8);
-                const mass = moles * 44; // CO2 = 44 g/mol
+            // 3. Physics: Ohm's Law & Current Electricity
+            function generateOhmsLaw() {
+                const R1 = getRandomInt(2, 20);
+                const R2 = getRandomInt(2, 20);
+                const V = getRandomInt(6, 24) * 2;
+                const Req = R1 + R2;
+                const I = (V / Req).toFixed(2);
 
                 return {
-                    id: 'chem_mole_' + Math.random().toString(36).substr(2, 9),
-                    classExam: "NEET",
+                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
+                    category: "Competitive Entrance",
+                    classExam: getRandomChoice(["Class 12", "JEE Main", "NEET"]),
+                    subject: "Physics",
+                    topic: "Current Electricity",
+                    chapter: "Current Electricity",
+                    difficulty: "Medium",
+                    type: "PYQ",
+                    question: `Two resistors $R_1 = ${R1}\\,\\Omega$ and $R_2 = ${R2}\\,\\Omega$ are in series across a source of $V = ${V}\\text{ V}$. Compute the total circuit current $I$.`,
+                    correctAnswer: `${I} A`,
+                    wrongAnswers: [`${(V / (R1 * R2)).toFixed(2)} A`, `${((R1 + R2) / V).toFixed(2)} A`, `${(V / R1).toFixed(2)} A`],
+                    solution: `For a series combination: $$R_{eq} = R_1 + R_2 = ${R1} + ${R2} = ${Req}\\,\\Omega$$ Applying Ohm's Law: $$I = \\frac{V}{R_{eq}} = \\frac{${V}}{${Req}} = \\mathbf{${I}\\text{ A}}$$`
+                };
+            },
+
+            // 4. Chemistry: Mole Concept
+            function generateMoleConcept() {
+                const moles = getRandomInt(2, 10);
+                const mass = moles * 28; // N2 gas
+
+                return {
+                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
+                    category: "Competitive Entrance",
+                    classExam: getRandomChoice(["Class 11", "JEE Main", "NEET"]),
                     subject: "Chemistry",
                     topic: "Some Basic Concepts of Chemistry",
+                    chapter: "Some Basic Concepts in Chemistry",
                     difficulty: "Easy",
-                    type: "PYQ",
-                    question: `What is the mass in grams of $${moles}\\text{ moles}$ of pure carbon dioxide ($\\text{CO}_2$)? (Atomic weights: $\\text{C}=12, \\text{O}=16$).`,
+                    type: "Select-50",
+                    question: `Calculate the mass (in grams) contained in $${moles}\\text{ moles}$ of pure Nitrogen gas ($\\text{N}_2$). (Atomic mass of $\\text{N} = 14\\text{ u}$).`,
                     correctAnswer: `${mass} g`,
-                    wrongAnswers: [`${mass - 22} g`, `${mass + 44} g`, `${moles * 28} g`],
-                    solution: `Molar mass of $\\text{CO}_2 = 12 + (2 \\times 16) = 44\\text{ g/mol}$. $$\\text{Mass} = \\text{Moles} \\times \\text{Molar Mass} = ${moles} \\times 44 = \\mathbf{${mass}\\text{ grams}}$$`
+                    wrongAnswers: [`${moles * 14} g`, `${mass + 14} g`, `${moles * 32} g`],
+                    solution: `Molar mass of $\\text{N}_2 = 2 \\times 14 = 28\\text{ g/mol}$. $$\\text{Mass} = \\text{Moles} \\times \\text{Molar Mass} = ${moles} \\times 28 = \\mathbf{${mass}\\text{ grams}}$$`
                 };
             },
 
-            // 5. Biology: Mendelian Genetics
+            // 5. Biology: Genetics (NEET Only)
             function generateGenetics() {
-                const total = getRandomInt(3, 10) * 100;
-                const dominant = total * 0.75;
+                const totalOffspring = getRandomInt(4, 20) * 40;
+                const dominantTall = totalOffspring * 0.75;
+                const recessiveDwarf = totalOffspring * 0.25;
 
                 return {
-                    id: 'bio_gen_' + Math.random().toString(36).substr(2, 9),
-                    classExam: "NEET",
+                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
+                    category: "Medical Entrance",
+                    classExam: getRandomChoice(["Class 12", "NEET"]),
                     subject: "Biology",
-                    topic: "Principles of Inheritance",
+                    topic: "Genetics & Inheritance",
+                    chapter: "Principles of Inheritance and Variation",
                     difficulty: "Medium",
                     type: "PYQ",
-                    question: `In an $F_2$ Mendelian monohybrid cross of tall ($Tt$) pea plants yielding $${total}$ total progeny, how many plants are expected to be phenotypically tall?`,
-                    correctAnswer: `${dominant} plants`,
-                    wrongAnswers: [`${total * 0.5} plants`, `${total * 0.25} plants`, `${total} plants`],
-                    solution: `Mendelian monohybrid phenotypic ratio is $3\\text{ Tall} : 1\\text{ Dwarf}$ ($75\\%\\text{ Tall}$). $$\\text{Tall} = 0.75 \\times ${total} = \\mathbf{${dominant}\\text{ plants}}$$`
+                    question: `In a Mendelian $F_2$ monohybrid cross yielding $${totalOffspring}\\text{ seeds}$, how many plants display the dominant tall phenotype?`,
+                    correctAnswer: `${dominantTall} plants`,
+                    wrongAnswers: [`${recessiveDwarf} plants`, `${totalOffspring * 0.5} plants`, `${totalOffspring} plants`],
+                    solution: `The phenotypic ratio in Mendelian monohybrid $F_2$ is $3\\text{ Tall} : 1\\text{ Dwarf}$ ($75\\%$ tall). $$\\text{Tall} = 0.75 \\times ${totalOffspring} = \\mathbf{${dominantTall}\\text{ plants}}$$`
                 };
             },
 
-            // 6. Legal Reasoning: Strict Liability & Duty of Care
-            function generateLegalReasoning() {
-                const speed = getRandomInt(85, 120);
+            // 6. Legal Reasoning (CLAT Only)
+            function generateLegalScenario() {
+                const speed = getRandomInt(80, 120);
+                const limit = 40;
+                const name = getRandomChoice(["Rohan", "Vikram", "Ananya", "Suresh", "Priya"]);
+
                 return {
-                    id: 'clat_tort_' + Math.random().toString(36).substr(2, 9),
+                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
+                    category: "Law Entrance",
                     classExam: "CLAT/LLB",
                     subject: "Legal Reasoning",
-                    topic: "Law of Torts - Negligence",
+                    topic: "Law of Torts",
+                    chapter: "Law of Torts",
                     difficulty: "Medium",
                     type: "PYQ",
-                    question: `<strong>Principle:</strong> Whoever breaches the standard reasonable duty of care owed to public highway pedestrians is liable for actionable negligence.<br><strong>Facts:</strong> A driver accelerates to $${speed}\\text{ km/h}$ inside a $30\\text{ km/h}$ school safety corridor and causes an accident. Is the driver tortiously liable?`,
-                    correctAnswer: `Yes, driving at ${speed} km/h in a 30 km/h corridor is a prima facie breach of reasonable duty of care.`,
+                    question: `<strong>Principle:</strong> Whoever drives recklessly on a public road breaching the reasonable duty of care owed to pedestrians is liable for tortious negligence.<br><strong>Facts:</strong> ${name} drives his vehicle at $${speed}\\text{ km/h}$ near a school zone marked $${limit}\\text{ km/h}$ and hits a pedestrian. Is ${name} liable?`,
+                    correctAnswer: `Yes, driving at ${speed} km/h in a ${limit} km/h school zone is a direct breach of duty of care.`,
                     wrongAnswers: [
-                        `No, because speed limits are merely administrative guidelines without civil tort remedy.`,
-                        `No, unless it is proven the driver possessed specific malice or intent.`,
-                        `Only if the pedestrian had no contributory negligence.`
+                        `No, because speed limits are non-binding municipal guidelines.`,
+                        `No, unless the pedestrian deliberately intended the collision.`,
+                        `Yes, but only if criminal charges are first filed.`
                     ],
-                    solution: `Breach of reasonable duty of care directly constitutes tortious negligence when damages ensue. Traveling at $${speed}\\text{ km/h}$ in a school zone establishes breach of care.`
+                    solution: `A motor vehicle driver owes a strict statutory duty of care to pedestrians. Exceeding speed limits constitutes prima facie actionable negligence.`
                 };
             }
         ];
 
         let generatedPool = [];
 
-        /* =====================================================================
-           MISTAKE NOTEBOOK LOGIC
-           ===================================================================== */
+        function getQuestionChapter(q) {
+            return q.chapter || q.topic || 'General';
+        }
+
+        /* MISTAKE NOTEBOOK (गलती डायरी) FUNCTIONS */
         function recordMistake(q) {
             if (!mistakes.some(m => m.id === q.id)) {
                 mistakes.unshift(q);
@@ -903,7 +1104,7 @@
             const list = document.getElementById('mistakeDrawerList');
             list.innerHTML = '';
             if (mistakes.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Your Mistake Notebook is empty! Great job.</p>`;
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Your Mistake Notebook is empty! Excellent work.</p>`;
                 return;
             }
             mistakes.forEach(q => {
@@ -915,7 +1116,7 @@
                         <button onclick="removeMistake('${q.id}')" class="text-slate-400 hover:text-rose-500">Resolved <i class="fa-solid fa-check"></i></button>
                     </div>
                     <div class="font-medium text-slate-800 dark:text-slate-200">${q.question}</div>
-                    <button onclick="openSolutionModalDirect('${q.id}')" class="text-[11px] font-bold text-indigo-500 hover:underline">View Correct Solution</button>
+                    <button onclick="openSolutionModalDirect('${q.id}')" class="text-[11px] font-bold text-indigo-500 hover:underline">View Computed Solution</button>
                 `;
                 list.appendChild(card);
             });
@@ -938,52 +1139,54 @@
 
         function practiceMistakesOnly() {
             if (mistakes.length === 0) {
-                showToast("No logged mistakes to practice!");
+                showToast("No mistakes logged yet!");
                 return;
             }
             generatedPool = [...mistakes];
             renderGeneratedQuestions();
             toggleMistakeDrawer();
-            showToast("Loaded your Mistake Notebook questions!");
+            showToast("Loaded questions from your Mistake Notebook!");
         }
 
-        /* =====================================================================
-           PRACTICE STREAM & INTERACTIVE CHECKER
-           ===================================================================== */
-        function regenerateAllQuestions(count = 8) {
+        /* GENERATION & RENDERING WITH KATEX */
+        function regenerateAllQuestions(count = 10) {
             generatedPool = [];
             for (let i = 0; i < count; i++) {
-                const gen = getRandomChoice(questionGenerators);
-                const q = gen();
+                const randomGen = getRandomChoice(questionGenerators);
+                const q = randomGen();
                 const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
                 q.options = allOpts;
                 q.correctIndex = allOpts.indexOf(q.correctAnswer);
                 generatedPool.push(q);
             }
             renderGeneratedQuestions();
+            showToast(`Generated ${count} dynamic questions!`);
         }
 
         function loadMoreQuestions() {
             for (let i = 0; i < 5; i++) {
-                const gen = getRandomChoice(questionGenerators);
-                const q = gen();
+                const randomGen = getRandomChoice(questionGenerators);
+                const q = randomGen();
                 const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
                 q.options = allOpts;
                 q.correctIndex = allOpts.indexOf(q.correctAnswer);
                 generatedPool.push(q);
             }
             renderGeneratedQuestions();
-            showToast("Added 5 new dynamic questions.");
+            showToast("Appended 5 new algorithmic questions.");
         }
 
-        function generateQuestionsForCurrentFilters() {
-            regenerateAllQuestions(8);
+        function generateQuestionsForCurrentFilters(count = 10) {
+            regenerateAllQuestions(count);
+            updateQuizFilterSummary();
         }
 
         function renderGeneratedQuestions() {
             const classExam = document.getElementById('filterClassExam').value;
             const subject = document.getElementById('filterSubject').value;
+            const chapter = document.getElementById('filterChapter').value;
             const difficulty = document.getElementById('filterDifficulty').value;
+            const type = document.getElementById('filterType').value;
             const searchVal = document.getElementById('globalSearchInput').value.toLowerCase().trim();
 
             const container = document.getElementById('questionsContainer');
@@ -992,9 +1195,11 @@
             const filtered = generatedPool.filter(q => {
                 if (classExam !== 'ALL' && q.classExam !== classExam) return false;
                 if (subject !== 'ALL' && q.subject !== subject) return false;
+                if (chapter !== 'ALL' && getQuestionChapter(q) !== chapter) return false;
                 if (difficulty !== 'ALL' && q.difficulty !== difficulty) return false;
+                if (type !== 'ALL' && q.type !== type) return false;
                 if (searchVal) {
-                    const matchText = (q.question + ' ' + q.topic + ' ' + q.subject + ' ' + q.classExam).toLowerCase();
+                    const matchText = (q.question + ' ' + q.topic + ' ' + getQuestionChapter(q) + ' ' + q.subject + ' ' + q.classExam).toLowerCase();
                     if (!matchText.includes(searchVal)) return false;
                 }
                 return true;
@@ -1006,8 +1211,8 @@
                 container.innerHTML = `
                     <div class="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-3">
                         <i class="fa-solid fa-arrows-spin text-4xl text-saffron-500"></i>
-                        <p class="text-sm font-bold text-slate-600 dark:text-slate-400">No questions match these filters.</p>
-                        <button onclick="regenerateAllQuestions(8)" class="px-4 py-2 bg-saffron-500 text-white rounded-xl text-xs font-bold">Generate New Batch</button>
+                        <p class="text-sm font-bold text-slate-600 dark:text-slate-400">No questions in current pool match these filters.</p>
+                        <button onclick="regenerateAllQuestions(10)" class="px-4 py-2 bg-saffron-500 text-white rounded-xl text-xs font-bold">Generate Fresh Set</button>
                     </div>
                 `;
                 return;
@@ -1017,12 +1222,13 @@
                 const isBookmarked = bookmarks.includes(q.id);
                 const card = document.createElement('div');
                 card.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4";
+                
                 card.innerHTML = `
                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs border-b border-slate-100 dark:border-slate-800 pb-3">
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="px-2.5 py-1 rounded-md font-extrabold bg-indigo-600 text-white text-[10px] uppercase">${q.classExam}</span>
                             <span class="px-2 py-0.5 rounded font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800">${q.subject}</span>
-                            <span class="px-2 py-0.5 rounded font-semibold text-slate-500 dark:text-slate-400">${q.topic}</span>
+                            <span class="px-2 py-0.5 rounded font-semibold text-slate-500 dark:text-slate-400">Chapter: ${getQuestionChapter(q)}</span>
                             <span class="px-2 py-0.5 rounded bg-saffron-50 dark:bg-saffron-950/60 text-saffron-700 dark:text-saffron-300 font-bold text-[10px]">${q.difficulty}</span>
                         </div>
                         <button onclick="toggleBookmark('${q.id}')" class="p-1.5 text-slate-400 hover:text-saffron-500">
@@ -1036,9 +1242,9 @@
 
                     <div class="space-y-2 pt-1" id="optionsGroup-${q.id}">
                         ${q.options.map((opt, idx) => `
-                            <button onclick="checkPracticeAnswer('${q.id}',${idx})" id="opt-${q.id}-${idx}" 
+                            <button onclick="checkAnswer('${q.id}', ${idx})" id="opt-${q.id}-${idx}" 
                                 class="w-full text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-saffron-400 bg-slate-50/50 dark:bg-slate-800/40 text-xs font-medium transition-all flex items-center justify-between group">
-                                <span><strong class="text-slate-400 mr-2">${String.fromCharCode(65 + idx)}.</strong>${opt}</span>
+                                <span><strong class="text-slate-400 mr-2">${String.fromCharCode(65 + idx)}.</strong> ${opt}</span>
                                 <i class="fa-regular fa-circle text-slate-300 group-hover:text-saffron-500" id="icon-${q.id}-${idx}"></i>
                             </button>
                         `).join('')}
@@ -1056,7 +1262,8 @@
             triggerKaTeX(container);
         }
 
-        function checkPracticeAnswer(qId, selectedIdx) {
+        /* CHECK ANSWER & AUTO-LOG MISTAKES */
+        function checkAnswer(qId, selectedIdx) {
             const q = generatedPool.find(item => item.id === qId);
             if (!q) return;
 
@@ -1067,7 +1274,7 @@
                 userStats.streak++;
             } else {
                 userStats.streak = 0;
-                recordMistake(q); // Auto-log to Mistake Notebook
+                recordMistake(q); // Auto-log into Mistake Notebook
             }
 
             localStorage.setItem('vidyarthe_stats', JSON.stringify(userStats));
@@ -1081,86 +1288,107 @@
 
                 if (idx === q.correctIndex) {
                     btn.className = "w-full text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 text-xs font-bold flex items-center justify-between";
-                    icon.className = "fa-solid fa-circle-check text-emerald-600 text-base";
+                    icon.className = "fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400 text-base";
                 } else if (idx === selectedIdx && !isCorrect) {
                     btn.className = "w-full text-left p-3 rounded-xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-200 text-xs font-bold flex items-center justify-between";
-                    icon.className = "fa-solid fa-circle-xmark text-red-600 text-base";
+                    icon.className = "fa-solid fa-circle-xmark text-red-600 dark:text-red-400 text-base";
+                } else {
+                    btn.className = "w-full text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-900 text-slate-400 text-xs opacity-60";
+                    icon.className = "fa-regular fa-circle text-slate-300";
                 }
             });
         }
 
-        /* =====================================================================
-           AUTHENTIC NTA CBT TEST SIMULATION ENGINE
-           ===================================================================== */
-        let cbtQuestions = [];
+        /* NTA COMPUTER BASED MOCK TEST ENGINE */
+        let miniQuizQuestions = [];
         let cbtState = []; // [{ status: 'not_visited'|'not_answered'|'answered'|'review'|'answered_review', selected: null }]
-        let cbtCurrentIndex = 0;
-        let cbtTimer = null;
-        let cbtSecondsLeft = 0;
-        let cbtTimeSpent = 0;
-        let cbtPattern = 'JEE'; // JEE (+4/-1), CLAT (+1/-0.25), CBSE (+1/0)
+        let currentQuizIndex = 0;
+        let quizTimerInterval = null;
+        let quizTimeSeconds = 180;
+        let quizTimeTaken = 0;
+        let quizLength = 5;
 
-        function startCbtMockTest() {
-            cbtPattern = document.getElementById('mockTestPatternSelect').value;
-            const length = parseInt(document.getElementById('mockTestLengthSelect').value, 10);
+        function setQuizLength(len) {
+            quizLength = len;
+            document.querySelectorAll('.quiz-len-btn').forEach(btn => {
+                const active = parseInt(btn.dataset.len, 10) === len;
+                btn.className = `quiz-len-btn px-3 py-1 rounded-md text-xs font-bold ${active ? 'text-white bg-saffron-500' : 'text-slate-300 hover:bg-slate-700'}`;
+            });
+        }
 
-            cbtQuestions = [];
+        function updateQuizFilterSummary() {
+            const classExam = document.getElementById('filterClassExam').value;
+            const subject = document.getElementById('filterSubject').value;
+            const chapter = document.getElementById('filterChapter').value;
+            const summary = document.getElementById('quizFilterSummary');
+            if (summary) {
+                summary.textContent = `Inherited Filters: Class/Exam: ${classExam} • Subject: ${subject} • Chapter: ${chapter}`;
+            }
+        }
+
+        function startMiniQuiz() {
+            const count = quizLength || 5;
+            miniQuizQuestions = [];
             cbtState = [];
-            for (let i = 0; i < length; i++) {
-                const gen = getRandomChoice(questionGenerators);
-                const q = gen();
+
+            for (let i = 0; i < count; i++) {
+                const randomGen = getRandomChoice(questionGenerators);
+                const q = randomGen();
                 const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
                 q.options = allOpts;
                 q.correctIndex = allOpts.indexOf(q.correctAnswer);
-                cbtQuestions.push(q);
+                miniQuizQuestions.push(q);
                 cbtState.push({ status: i === 0 ? 'not_answered' : 'not_visited', selected: null });
             }
-
-            cbtCurrentIndex = 0;
-            cbtSecondsLeft = length * 90; // 1.5 minutes per question
-            cbtTimeSpent = 0;
 
             document.getElementById('quizStartScreen').classList.add('hidden');
             document.getElementById('quizActiveScreen').classList.remove('hidden');
             document.getElementById('quizResultScreen').classList.add('hidden');
 
-            renderCbtCurrentQuestion();
+            currentQuizIndex = 0;
+            quizTimeSeconds = count * 90; // 1.5 min per question
+            quizTimeTaken = 0;
+
+            renderQuizQuestion();
             renderCbtPalette();
 
-            clearInterval(cbtTimer);
-            cbtTimer = setInterval(() => {
-                cbtSecondsLeft--;
-                cbtTimeSpent++;
-                const mins = Math.floor(cbtSecondsLeft / 60);
-                const secs = cbtSecondsLeft % 60;
-                document.getElementById('cbtTimerDisplay').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-                if (cbtSecondsLeft <= 0) {
-                    clearInterval(cbtTimer);
-                    submitCbtTest();
+            clearInterval(quizTimerInterval);
+            quizTimerInterval = setInterval(() => {
+                quizTimeSeconds--;
+                quizTimeTaken++;
+                const mins = Math.floor(quizTimeSeconds / 60);
+                const secs = quizTimeSeconds % 60;
+                document.getElementById('quizTimerDisplay').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+                if (quizTimeSeconds <= 0) {
+                    clearInterval(quizTimerInterval);
+                    finishQuiz();
                 }
             }, 1000);
         }
 
-        function renderCbtCurrentQuestion() {
-            const q = cbtQuestions[cbtCurrentIndex];
-            const state = cbtState[cbtCurrentIndex];
+        function renderQuizQuestion() {
+            const q = miniQuizQuestions[currentQuizIndex];
+            const state = cbtState[currentQuizIndex];
 
-            document.getElementById('cbtCurrentNum').textContent = cbtCurrentIndex + 1;
-            document.getElementById('cbtSubjectTag').textContent = q.subject;
-            
-            // Set marking badge text
-            const markingMap = { 'JEE': '+4, -1', 'CLAT': '+1, -0.25', 'CBSE': '+1, 0' };
-            document.getElementById('cbtMarkingTag').textContent = markingMap[cbtPattern];
+            document.getElementById('quizCurrentIndex').textContent = currentQuizIndex + 1;
+            document.getElementById('quizTotalCount').textContent = miniQuizQuestions.length;
+            document.getElementById('quizMetaTag').textContent = `${q.classExam} • ${q.subject} • ${q.topic}`;
+            document.getElementById('quizQuestionText').innerHTML = q.question;
 
-            document.getElementById('cbtQuestionText').innerHTML = q.question;
-            const optsContainer = document.getElementById('cbtOptionsContainer');
+            // Accurate exam marking pattern
+            const exam = document.getElementById('filterClassExam').value;
+            const badge = document.getElementById('quizMarkingBadge');
+            badge.textContent = (exam === 'CLAT/LLB') ? '+1, -0.25' : (exam.startsWith('Class')) ? '+1, 0' : '+4, -1';
+
+            const optsContainer = document.getElementById('quizOptionsContainer');
             optsContainer.innerHTML = '';
 
             q.options.forEach((opt, idx) => {
                 const isSelected = state.selected === idx;
                 const btn = document.createElement('button');
-                btn.onclick = () => { state.selected = idx; renderCbtCurrentQuestion(); };
-                btn.className = `w-full text-left p-3.5 rounded-xl border ${isSelected ? 'border-saffron-500 bg-saffron-500/15 text-saffron-300 font-bold' : 'border-slate-800 bg-slate-800/60 text-slate-200'} text-xs font-medium flex items-center justify-between transition-all`;
+                btn.onclick = () => { state.selected = idx; renderQuizQuestion(); };
+                btn.className = `w-full text-left p-3 rounded-xl border ${isSelected ? 'border-saffron-500 bg-saffron-500/10 text-saffron-300 font-bold' : 'border-slate-800 bg-slate-800/60 text-slate-200'} text-xs font-medium flex items-center justify-between transition-all`;
                 btn.innerHTML = `
                     <span><strong class="text-slate-400 mr-2">${String.fromCharCode(65 + idx)}.</strong> ${opt}</span>
                     <i class="${isSelected ? 'fa-solid fa-circle-dot text-saffron-400' : 'fa-regular fa-circle text-slate-500'}"></i>
@@ -1168,74 +1396,73 @@
                 optsContainer.appendChild(btn);
             });
 
-            triggerKaTeX(document.getElementById('cbtQuestionText'));
+            triggerKaTeX(document.getElementById('quizQuestionText'));
             triggerKaTeX(optsContainer);
         }
 
         function saveAndNext() {
-            const state = cbtState[cbtCurrentIndex];
+            const state = cbtState[currentQuizIndex];
             state.status = (state.selected !== null) ? 'answered' : 'not_answered';
             advanceCbt();
         }
 
         function markForReviewAndNext() {
-            const state = cbtState[cbtCurrentIndex];
+            const state = cbtState[currentQuizIndex];
             state.status = (state.selected !== null) ? 'answered_review' : 'review';
             advanceCbt();
         }
 
-        function clearResponse() {
-            cbtState[cbtCurrentIndex].selected = null;
-            cbtState[cbtCurrentIndex].status = 'not_answered';
-            renderCbtCurrentQuestion();
+        function clearCbtResponse() {
+            cbtState[currentQuizIndex].selected = null;
+            cbtState[currentQuizIndex].status = 'not_answered';
+            renderQuizQuestion();
             renderCbtPalette();
         }
 
         function advanceCbt() {
-            if (cbtCurrentIndex < cbtQuestions.length - 1) {
-                cbtCurrentIndex++;
-                if (cbtState[cbtCurrentIndex].status === 'not_visited') {
-                    cbtState[cbtCurrentIndex].status = 'not_answered';
+            if (currentQuizIndex < miniQuizQuestions.length - 1) {
+                currentQuizIndex++;
+                if (cbtState[currentQuizIndex].status === 'not_visited') {
+                    cbtState[currentQuizIndex].status = 'not_answered';
                 }
-                renderCbtCurrentQuestion();
+                renderQuizQuestion();
                 renderCbtPalette();
             } else {
                 renderCbtPalette();
             }
         }
 
-        function navigateCbt(dir) {
-            const target = cbtCurrentIndex + dir;
-            if (target >= 0 && target < cbtQuestions.length) {
-                cbtCurrentIndex = target;
-                if (cbtState[cbtCurrentIndex].status === 'not_visited') {
-                    cbtState[cbtCurrentIndex].status = 'not_answered';
+        function navigateQuiz(dir) {
+            const target = currentQuizIndex + dir;
+            if (target >= 0 && target < miniQuizQuestions.length) {
+                currentQuizIndex = target;
+                if (cbtState[currentQuizIndex].status === 'not_visited') {
+                    cbtState[currentQuizIndex].status = 'not_answered';
                 }
-                renderCbtCurrentQuestion();
+                renderQuizQuestion();
                 renderCbtPalette();
             }
         }
 
-        function jumpToCbt(idx) {
-            cbtCurrentIndex = idx;
-            if (cbtState[cbtCurrentIndex].status === 'not_visited') {
-                cbtState[cbtCurrentIndex].status = 'not_answered';
+        function jumpToQuiz(idx) {
+            currentQuizIndex = idx;
+            if (cbtState[currentQuizIndex].status === 'not_visited') {
+                cbtState[currentQuizIndex].status = 'not_answered';
             }
-            renderCbtCurrentQuestion();
+            renderQuizQuestion();
             renderCbtPalette();
         }
 
         function renderCbtPalette() {
             const grid = document.getElementById('cbtPaletteGrid');
             grid.innerHTML = '';
-
             let answered = 0, notAnswered = 0, review = 0, notVisited = 0;
 
             cbtState.forEach((st, idx) => {
                 const btn = document.createElement('button');
                 btn.textContent = idx + 1;
-                btn.onclick = () => jumpToCbt(idx);
-                
+                btn.onclick = () => jumpToQuiz(idx);
+
                 let css = 'palette-btn ';
                 if (st.status === 'answered') { css += 'palette-answered'; answered++; }
                 else if (st.status === 'not_answered') { css += 'palette-not-answered'; notAnswered++; }
@@ -1243,49 +1470,41 @@
                 else if (st.status === 'answered_review') { css += 'palette-answered-review'; review++; }
                 else { css += 'palette-not-visited'; notVisited++; }
 
-                if (idx === cbtCurrentIndex) css += ' ring-2 ring-saffron-400 ring-offset-2 ring-offset-slate-900';
+                if (idx === currentQuizIndex) css += ' ring-2 ring-saffron-400 ring-offset-2 ring-offset-slate-900';
                 btn.className = css;
                 grid.appendChild(btn);
             });
 
-            document.getElementById('countLegendAnswered').textContent = answered;
-            document.getElementById('countLegendNotAnswered').textContent = notAnswered;
-            document.getElementById('countLegendReview').textContent = review;
-            document.getElementById('countLegendNotVisited').textContent = notVisited;
+            document.getElementById('countAnswered').textContent = answered;
+            document.getElementById('countNotAnswered').textContent = notAnswered;
+            document.getElementById('countReview').textContent = review;
+            document.getElementById('countNotVisited').textContent = notVisited;
         }
 
-        function confirmSubmitTest() {
-            if (confirm("Are you sure you want to finish and submit the test?")) {
-                submitCbtTest();
-            }
-        }
+        function finishQuiz() {
+            clearInterval(quizTimerInterval);
 
-        function submitCbtTest() {
-            clearInterval(cbtTimer);
+            const exam = document.getElementById('filterClassExam').value;
+            const pos = (exam === 'CLAT/LLB') ? 1 : (exam.startsWith('Class')) ? 1 : 4;
+            const neg = (exam === 'CLAT/LLB') ? 0.25 : (exam.startsWith('Class')) ? 0 : 1;
 
             let correctCount = 0;
             let wrongCount = 0;
-            let unattemptedCount = 0;
             let marksObtained = 0;
-            let maxMarks = 0;
             let negativeLoss = 0;
 
-            const posMark = (cbtPattern === 'JEE') ? 4 : 1;
-            const negMark = (cbtPattern === 'JEE') ? 1 : (cbtPattern === 'CLAT') ? 0.25 : 0;
-
-            cbtQuestions.forEach((q, idx) => {
-                maxMarks += posMark;
-                const state = cbtState[idx];
-                if (state.selected === null) {
-                    unattemptedCount++;
-                } else if (state.selected === q.correctIndex) {
-                    correctCount++;
-                    marksObtained += posMark;
-                } else {
-                    wrongCount++;
-                    marksObtained -= negMark;
-                    negativeLoss += negMark;
-                    recordMistake(q); // Auto-add test errors to Mistake Notebook
+            miniQuizQuestions.forEach((q, idx) => {
+                const st = cbtState[idx];
+                if (st.selected !== null) {
+                    if (st.selected === q.correctIndex) {
+                        correctCount++;
+                        marksObtained += pos;
+                    } else {
+                        wrongCount++;
+                        marksObtained -= neg;
+                        negativeLoss += neg;
+                        recordMistake(q); // Auto-log into Mistake Notebook
+                    }
                 }
             });
 
@@ -1297,25 +1516,22 @@
             document.getElementById('quizActiveScreen').classList.add('hidden');
             document.getElementById('quizResultScreen').classList.remove('hidden');
 
-            document.getElementById('cbtFinalMarks').textContent = `${marksObtained} / ${maxMarks}`;
             const attemptedTotal = correctCount + wrongCount;
             const accuracy = attemptedTotal > 0 ? Math.round((correctCount / attemptedTotal) * 100) : 0;
-            document.getElementById('cbtFinalAccuracy').textContent = `${accuracy}%`;
-            document.getElementById('cbtNegativesLost').textContent = `-${negativeLoss}`;
-            document.getElementById('cbtTimeUsed').textContent = `${cbtTimeSpent}s`;
-            document.getElementById('cbtStatCorrect').textContent = `${correctCount} (${correctCount * posMark} marks)`;
-            document.getElementById('cbtStatWrong').textContent = `${wrongCount} (-${negativeLoss} marks)`;
-            document.getElementById('cbtStatUnattempted').textContent = `${unattemptedCount} (0 marks)`;
+
+            document.getElementById('quizFinalMarks').textContent = `${marksObtained} / ${miniQuizQuestions.length * pos}`;
+            document.getElementById('quizAccuracyText').textContent = `${accuracy}%`;
+            document.getElementById('quizNegativeLost').textContent = `-${negativeLoss}`;
+            document.getElementById('quizTimeTakenText').textContent = `${quizTimeTaken}s`;
         }
 
-        function resetCbtTest() {
-            document.getElementById('quizResultScreen').classList.add('hidden');
+        function resetMiniQuiz() {
             document.getElementById('quizStartScreen').classList.remove('hidden');
+            document.getElementById('quizActiveScreen').classList.add('hidden');
+            document.getElementById('quizResultScreen').classList.add('hidden');
         }
 
-        /* =====================================================================
-           TARGET EXAM COUNTDOWN
-           ===================================================================== */
+        /* EXAM COUNTDOWN TICKER */
         const examDates = {
             'JEE': new Date('2027-01-24T09:00:00'),
             'NEET': new Date('2027-05-02T14:00:00'),
@@ -1325,30 +1541,26 @@
 
         function updateTargetCountdown() {
             const picker = document.getElementById('examCountdownPicker');
-            const targetDate = examDates[picker.value];
-            const now = new Date();
-            const diffMs = targetDate - now;
-
-            if (diffMs > 0) {
-                const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-                document.getElementById('examDaysLeft').textContent = `${days}d ${hours}h left`;
+            const target = examDates[picker.value];
+            const diff = target - new Date();
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hrs = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                document.getElementById('examDaysLeft').textContent = `${days}d ${hrs}h`;
             } else {
-                document.getElementById('examDaysLeft').textContent = `Exam Concluded`;
+                document.getElementById('examDaysLeft').textContent = `Active`;
             }
         }
 
-        /* =====================================================================
-           SOLUTION MODAL & TOAST HELPERS
-           ===================================================================== */
+        /* SOLUTION MODAL & TOASTS */
         function openSolutionModalDirect(qId) {
-            const q = generatedPool.find(item => item.id === qId) || mistakes.find(item => item.id === qId) || cbtQuestions.find(item => item.id === qId);
+            const q = generatedPool.find(item => item.id === qId) || mistakes.find(item => item.id === qId) || miniQuizQuestions.find(item => item.id === qId);
             if (!q) return;
 
             document.getElementById('modalQuestionTitle').textContent = `${q.classExam} • ${q.subject} • ${q.topic}`;
             document.getElementById('modalQuestionBody').innerHTML = q.question;
             document.getElementById('modalSolutionText').innerHTML = `
-                <div class="font-bold text-emerald-600 dark:text-emerald-400 mb-1">Correct Answer: ${q.correctAnswer}</div>
+                <p class="font-bold text-emerald-600 dark:text-emerald-400 mb-1">Correct Answer: ${q.correctAnswer}</p>
                 <div>${q.solution}</div>
             `;
             document.getElementById('solutionModal').classList.remove('hidden');
@@ -1433,39 +1645,42 @@
         function resetFilters() {
             document.getElementById('filterClassExam').value = 'ALL';
             document.getElementById('filterSubject').value = 'ALL';
+            updateSubjectAndChapterFilters(false);
+            document.getElementById('filterChapter').value = 'ALL';
             document.getElementById('filterDifficulty').value = 'ALL';
+            document.getElementById('filterType').value = 'ALL';
             document.getElementById('globalSearchInput').value = '';
-            regenerateAllQuestions(8);
+            generateQuestionsForCurrentFilters();
         }
 
         function renderPyqMatrix() {
-            const papers = [
-                { title: "JEE Main 2025 Jan Shift Papers & Keys", sub: "PCM", link: "#" },
-                { title: "NEET UG 2024 Official Paper & Solutions", sub: "PCB", link: "#" },
-                { title: "CBSE Class 12 Physics 2024 Board Exam", sub: "Physics", link: "#" },
-                { title: "CBSE Class 10 Science 2024 Board Exam", sub: "Science", link: "#" },
-                { title: "CLAT 2024 Official Law Entrance Paper", sub: "Legal", link: "#" },
-                { title: "JEE Advanced 2024 Paper 1 & 2 Complete", sub: "PCM", link: "#" }
+            const matrix = [
+                { title: "JEE Main 2025 January Shift Papers & Keys", subject: "PCM", file: "JEE_Main_2025_Jan.pdf" },
+                { title: "NEET-UG 2024 Official Paper & Solution Key", subject: "PCB", file: "NEET_UG_2024_Key.pdf" },
+                { title: "CBSE Class 12 Physics Official Board Paper 2024", subject: "Physics", file: "CBSE_12_Physics_2024.pdf" },
+                { title: "CBSE Class 10 Science Board Paper 2024", subject: "Science", file: "CBSE_10_Science_2024.pdf" },
+                { title: "CLAT 2024 Law Entrance Official Question Paper", subject: "Legal/Logic", file: "CLAT_2024_Official.pdf" },
+                { title: "JEE Advanced 2024 Paper 1 & Paper 2", subject: "PCM", file: "JEE_Adv_2024.pdf" }
             ];
-            document.getElementById('pyqMatrixGrid').innerHTML = papers.map(p => `
+            document.getElementById('pyqMatrixGrid').innerHTML = matrix.map(item => `
                 <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="px-2 py-0.5 rounded bg-red-100 text-red-600 text-[10px] font-bold">OFFICIAL PDF</span>
-                        <span class="text-[10px] text-slate-400 font-semibold">${p.sub}</span>
+                        <span class="px-2 py-0.5 rounded bg-red-100 text-red-600 text-[10px] font-bold">PDF OFFICIAL</span>
+                        <span class="text-[10px] text-slate-400 font-semibold">${item.subject}</span>
                     </div>
-                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100">${p.title}</h4>
-                    <button onclick="showToast('Downloading verified paper: ${p.title}')" class="w-full py-2 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100">${item.title}</h4>
+                    <button onclick="showToast('Simulating official download for ${item.file}')" class="w-full py-2 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-download"></i> Download PDF
                     </button>
                 </div>
             `).join('');
         }
 
-        /* Supabase and Auth Modal Handlers */
+        /* SUPABASE & MODAL STUBS */
         function openAuthModal(m) { authMode = m; document.getElementById('authModal').classList.remove('hidden'); }
         function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
         function toggleAuthMode() { authMode = (authMode === 'login') ? 'signup' : 'login'; }
-        function handleAuthSubmit(e) { e.preventDefault(); closeAuthModal(); showToast("Logged in successfully!"); }
+        function handleAuthSubmit(e) { e.preventDefault(); closeAuthModal(); showToast("Logged in!"); }
         function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
         function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
         function handleLogout() { closeProfileModal(); showToast("Logged out"); }
@@ -1473,9 +1688,10 @@
         function closeLeaderboardModal() { document.getElementById('leaderboardModal').classList.add('hidden'); }
         function openAdminModal() {}
 
-        /* Initial window load */
+        /* INITIALIZATION */
         window.onload = function() {
-            regenerateAllQuestions(8);
+            updateSubjectAndChapterFilters(true);
+            regenerateAllQuestions(10);
             renderPyqMatrix();
             updateBookmarkBadge();
             updateMistakeBadge();
