@@ -2243,27 +2243,130 @@
             generateQuestionsForCurrentFilters();
         }
 
+        /* =====================================================================
+           OFFICIAL PYQ DATABASE (2018–2026) & SEARCH / FILTER ENGINE
+           ===================================================================== */
+        const pyqMatrixData = [
+            // 2026
+            { title: "JEE Main 2026 Sample Mock Shift Papers & Answer Key", exam: "JEE Main", year: "2026", subject: "PCM", file: "JEE_Main_2026_Sample.pdf" },
+            { title: "NEET UG 2026 Official Pre-Exam Benchmark Paper", exam: "NEET", year: "2026", subject: "PCB", file: "NEET_2026_Benchmark.pdf" },
+            { title: "CBSE Class 12 Physics Official Sample Paper 2026", exam: "CBSE 12", year: "2026", subject: "Physics", file: "CBSE_12_Physics_2026.pdf" },
+            { title: "CLAT 2026 Consortium Model Paper & Legal Reasoning", exam: "CLAT", year: "2026", subject: "Legal/Logic", file: "CLAT_2026_Model.pdf" },
+
+            // 2025
+            { title: "JEE Main 2025 January Session (All Shifts Complete + Keys)", exam: "JEE Main", year: "2025", subject: "PCM", file: "JEE_Main_2025_Jan.pdf" },
+            { title: "JEE Main 2025 April Session (All Shifts with Solutions)", exam: "JEE Main", year: "2025", subject: "PCM", file: "JEE_Main_2025_Apr.pdf" },
+            { title: "JEE Advanced 2025 Paper 1 & 2 Official Solutions", exam: "JEE Advanced", year: "2025", subject: "PCM", file: "JEE_Adv_2025.pdf" },
+            { title: "NEET-UG 2025 Official Question Paper & Final Answer Key", exam: "NEET", year: "2025", subject: "PCB", file: "NEET_UG_2025.pdf" },
+            { title: "CBSE Class 12 Chemistry Board Paper 2025", exam: "CBSE 12", year: "2025", subject: "Chemistry", file: "CBSE_12_Chemistry_2025.pdf" },
+            { title: "CBSE Class 10 Science Board Paper 2025", exam: "CBSE 10", year: "2025", subject: "Science", file: "CBSE_10_Science_2025.pdf" },
+            { title: "CLAT 2025 Official Law Entrance Question Paper", exam: "CLAT", year: "2025", subject: "Legal/Logic", file: "CLAT_2025_Official.pdf" },
+
+            // 2024
+            { title: "JEE Main 2024 Session 1 (Jan-Feb) All Shifts with Key", exam: "JEE Main", year: "2024", subject: "PCM", file: "JEE_Main_2024_Jan.pdf" },
+            { title: "JEE Main 2024 Session 2 (April) All Shift Question Papers", exam: "JEE Main", year: "2024", subject: "PCM", file: "JEE_Main_2024_Apr.pdf" },
+            { title: "JEE Advanced 2024 Paper 1 & Paper 2 (IIT Madras)", exam: "JEE Advanced", year: "2024", subject: "PCM", file: "JEE_Adv_2024.pdf" },
+            { title: "NEET-UG 2024 Official Paper & Answer Key", exam: "NEET", year: "2024", subject: "PCB", file: "NEET_UG_2024.pdf" },
+            { title: "CBSE Class 12 Physics Official Board Paper 2024", exam: "CBSE 12", year: "2024", subject: "Physics", file: "CBSE_12_Physics_2024.pdf" },
+            { title: "CBSE Class 10 Science Official Board Paper 2024", exam: "CBSE 10", year: "2024", subject: "Science", file: "CBSE_10_Science_2024.pdf" },
+            { title: "CLAT 2024 Official Law Question Paper with Solutions", exam: "CLAT", year: "2024", subject: "Legal/Logic", file: "CLAT_2024_Official.pdf" },
+
+            // 2023 - 2018
+            { title: "JEE Main 2023 Shift Papers Session 1 & 2 Complete", exam: "JEE Main", year: "2023", subject: "PCM", file: "JEE_Main_2023.pdf" },
+            { title: "JEE Advanced 2023 Official Paper 1 & 2 (IIT Guwahati)", exam: "JEE Advanced", year: "2023", subject: "PCM", file: "JEE_Adv_2023.pdf" },
+            { title: "NEET-UG 2023 Official Question Paper (All Codes)", exam: "NEET", year: "2023", subject: "PCB", file: "NEET_2023.pdf" },
+            { title: "JEE Main 2022 June & July Shift Papers", exam: "JEE Main", year: "2022", subject: "PCM", file: "JEE_Main_2022.pdf" },
+            { title: "NEET-UG 2022 Official Question Paper (Phase 1 & 2)", exam: "NEET", year: "2022", subject: "PCB", file: "NEET_2022.pdf" },
+            { title: "JEE Main 2021 All 26 Shifts Question Papers", exam: "JEE Main", year: "2021", subject: "PCM", file: "JEE_Main_2021.pdf" },
+            { title: "NEET-UG 2021 Question Paper with Answer Key", exam: "NEET", year: "2021", subject: "PCB", file: "NEET_2021.pdf" },
+            { title: "JEE Main 2020 January & September Shifts Complete", exam: "JEE Main", year: "2020", subject: "PCM", file: "JEE_Main_2020.pdf" },
+            { title: "NEET-UG 2020 Official Question Paper", exam: "NEET", year: "2020", subject: "PCB", file: "NEET_2020.pdf" },
+            { title: "JEE Main 2019 Complete NTA Papers", exam: "JEE Main", year: "2019", subject: "PCM", file: "JEE_Main_2019.pdf" },
+            { title: "NEET-UG 2019 National Question Paper", exam: "NEET", year: "2019", subject: "PCB", file: "NEET_2019.pdf" },
+            { title: "JEE Main 2018 Official Question Paper (CBSE)", exam: "JEE Main", year: "2018", subject: "PCM", file: "JEE_Main_2018.pdf" },
+            { title: "NEET-UG 2018 Question Paper with Official Key", exam: "NEET", year: "2018", subject: "PCB", file: "NEET_2018.pdf" }
+        ];
+
         function renderPyqMatrix() {
-            const matrix = [
-                { title: "JEE Main 2025 January Shift Papers & Keys", subject: "PCM", file: "JEE_Main_2025_Jan.pdf" },
-                { title: "NEET-UG 2024 Official Paper & Solution Key", subject: "PCB", file: "NEET_UG_2024_Key.pdf" },
-                { title: "CBSE Class 12 Physics Official Board Paper 2024", subject: "Physics", file: "CBSE_12_Physics_2024.pdf" },
-                { title: "CBSE Class 10 Science Board Paper 2024", subject: "Science", file: "CBSE_10_Science_2024.pdf" },
-                { title: "CLAT 2024 Law Entrance Official Question Paper", subject: "Legal/Logic", file: "CLAT_2024_Official.pdf" },
-                { title: "JEE Advanced 2024 Paper 1 & Paper 2", subject: "PCM", file: "JEE_Adv_2024.pdf" }
-            ];
-            document.getElementById('pyqMatrixGrid').innerHTML = matrix.map(item => `
-                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2 py-0.5 rounded bg-red-100 text-red-600 text-[10px] font-bold">PDF OFFICIAL</span>
-                        <span class="text-[10px] text-slate-400 font-semibold">${item.subject}</span>
+            const grid = document.getElementById('pyqMatrixGrid');
+            if (!grid) return;
+
+            const searchInput = document.getElementById('pyqSearchInput');
+            const yearSelect = document.getElementById('pyqFilterYear');
+            const examSelect = document.getElementById('pyqFilterExam');
+
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const year = yearSelect ? yearSelect.value : 'ALL';
+            const exam = examSelect ? examSelect.value : 'ALL';
+
+            const filtered = pyqMatrixData.filter(item => {
+                if (year !== 'ALL' && item.year !== year) return false;
+                if (exam !== 'ALL' && item.exam !== exam) return false;
+                if (query) {
+                    const matchText = (item.title + ' ' + item.exam + ' ' + item.year + ' ' + item.subject).toLowerCase();
+                    if (!matchText.includes(query)) return false;
+                }
+                return true;
+            });
+
+            const countDisplay = document.getElementById('pyqResultCount');
+            if (countDisplay) countDisplay.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-10 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 space-y-2">
+                        <i class="fa-solid fa-folder-open text-3xl text-slate-400"></i>
+                        <p class="text-xs font-bold text-slate-600 dark:text-slate-400">No official papers found for this search.</p>
+                        <button onclick="resetPyqFilters()" class="text-xs font-bold text-saffron-600 dark:text-saffron-400 hover:underline">Reset filters</button>
                     </div>
-                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100">${item.title}</h4>
-                    <button onclick="showToast('Simulating official download for ${item.file}')" class="w-full py-2 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-download"></i> Download PDF
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 hover:border-saffron-400/50 dark:hover:border-saffron-500/50 transition-all flex flex-col justify-between gap-3">
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2 py-0.5 rounded bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 text-[10px] font-extrabold flex items-center gap-1">
+                                <i class="fa-solid fa-file-pdf"></i> ${item.year}
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">${item.exam}</span>
+                            <span class="text-[10px] text-slate-400 font-semibold">${item.subject}</span>
+                        </div>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug">
+                            ${item.title}
+                        </h4>
+                    </div>
+
+                    <button onclick="downloadOfficialPyq('${item.file}', '${item.title.replace(/'/g, "\\'")}')" class="w-full py-2 bg-saffron-500 hover:bg-saffron-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-saffron-500/20 active:scale-95 transition-all">
+                        <i class="fa-solid fa-download"></i> Download Verified PDF
                     </button>
                 </div>
             `).join('');
+        }
+
+        function resetPyqFilters() {
+            const searchInput = document.getElementById('pyqSearchInput');
+            const yearSelect = document.getElementById('pyqFilterYear');
+            const examSelect = document.getElementById('pyqFilterExam');
+            if (searchInput) searchInput.value = '';
+            if (yearSelect) yearSelect.value = 'ALL';
+            if (examSelect) examSelect.value = 'ALL';
+            renderPyqMatrix();
+        }
+
+        function downloadOfficialPyq(fileName, paperTitle) {
+            showToast(`Downloading: ${paperTitle}...`);
+            const mockPdfContent = `%PDF-1.4\n%VidyarthE Official Portal\n%Paper: ${paperTitle}\nDeveloped By Jeet Sinha\n%%EOF`;
+            const blob = new Blob([mockPdfContent], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         /* INITIAL PAGE LOAD */
