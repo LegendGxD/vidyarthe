@@ -42,12 +42,12 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Rozha+One&display=swap" rel="stylesheet">
 
-    <!-- KaTeX for STEM & Formula Rendering -->
+    <!-- KaTeX for STEM Math Rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
-    <!-- Supabase (auth + database for login/profile system) -->
+    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
     <style>
@@ -62,14 +62,6 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        .math-expr {
-            font-family: 'Times New Roman', Times, serif;
-            font-style: italic;
-            background: rgba(99, 102, 241, 0.08);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
 
         /* NTA CBT Question Palette Styles */
         .palette-btn {
@@ -105,7 +97,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
 
-    <!-- Top Announcement Bar with Target Countdown -->
+    <!-- Top Announcement Bar with Live Exam Countdown -->
     <div class="bg-gradient-to-r from-saffron-600 via-indigo-600 to-emerald-600 text-white text-xs md:text-sm py-2 px-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2 mx-auto sm:mx-0">
             <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">Dynamic Generator Active</span>
@@ -124,6 +116,7 @@
         </div>
     </div>
 
+    <!-- Navigation Header -->
     <header class="sticky top-0 z-40 glass-nav bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 gap-4">
@@ -146,21 +139,19 @@
                 <div class="flex-1 max-w-md hidden md:block relative">
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="globalSearchInput" placeholder="Search topics (e.g. Kinematics, Quadratic, Torts, Mole)..." 
+                        <input type="text" id="globalSearchInput" placeholder="Search topics (e.g. Kinematics, Laws of Motion, Quadratic, Mole)..." 
                             class="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-transparent dark:border-slate-700/60 rounded-xl focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-indigo-500 transition-all text-slate-800 dark:text-slate-100 placeholder-slate-400">
                     </div>
-                    <div id="searchResultsPopup" class="hidden absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto p-2"></div>
                 </div>
 
                 <!-- Header Actions -->
                 <div class="flex items-center gap-2 sm:gap-3">
-                    
-                    <button onclick="regenerateAllQuestions()" class="px-3.5 py-2 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-saffron-500/20">
-                        <i class="fa-solid fa-arrows-rotate animate-spin-hover"></i>
+                    <button onclick="generateQuestionsForCurrentFilters()" class="px-3.5 py-2 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-saffron-500/20">
+                        <i class="fa-solid fa-arrows-rotate"></i>
                         <span class="hidden sm:inline">Regenerate Set</span>
                     </button>
 
-                    <!-- Mistake Notebook Button (गलती डायरी) -->
+                    <!-- Mistake Notebook (गलती डायरी) -->
                     <button id="mistakesBtn" onclick="toggleMistakeDrawer()" class="relative p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Mistake Notebook (गलती डायरी)">
                         <i class="fa-solid fa-book-skull text-lg text-rose-500"></i>
                         <span id="mistakeBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
@@ -177,22 +168,6 @@
 
                     <button id="leaderboardNavBtn" onclick="openLeaderboardModal()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Leaderboard">
                         <i class="fa-solid fa-trophy text-lg"></i>
-                    </button>
-
-                    <button id="adminNavBtn" onclick="openAdminModal()" class="hidden p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Admin Dashboard">
-                        <i class="fa-solid fa-user-shield text-lg"></i>
-                    </button>
-
-                    <!-- Logged-out state -->
-                    <button id="loginNavBtn" onclick="openAuthModal('login')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-indigo-500/20">
-                        <i class="fa-solid fa-right-to-bracket"></i>
-                        <span>Login</span>
-                    </button>
-
-                    <!-- Logged-in state -->
-                    <button id="profileNavBtn" onclick="openProfileModal()" class="hidden items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                        <span id="profileAvatarInitial" class="w-7 h-7 rounded-lg bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-bold text-xs">S</span>
-                        <span id="profileNavName" class="text-xs font-bold text-slate-700 dark:text-slate-200 max-w-[90px] truncate hidden sm:inline">Student</span>
                     </button>
                 </div>
 
@@ -212,7 +187,7 @@
             </button>
         </div>
         <div class="p-3 bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-800 dark:text-amber-200">
-            Any question you answer incorrectly is saved here automatically.
+            Questions you get wrong in practice or tests are automatically logged here for revision.
         </div>
         <div id="mistakeDrawerList" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
         <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex gap-2">
@@ -246,7 +221,7 @@
     </div>
     <div id="drawerOverlay" onclick="toggleBookmarkDrawer()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden"></div>
 
-    <!-- MAIN PAGE CONTENT -->
+    <!-- MAIN BODY CONTENT -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
 
         <!-- Hero Section -->
@@ -263,12 +238,12 @@
                         Never Solve the Same Questions. <span class="bg-gradient-to-r from-saffron-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent"> Endless Practice for India.</span>
                     </h1>
                     <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                        Class 9–12, JEE Main/Advanced, NEET, and CLAT/LLB questions procedurally generated in real-time with modified numbers, random options, and step-by-step auto-computed solutions.
+                        JEE Main/Advanced, NEET, Class 9–12, and CLAT questions procedurally generated in real-time with modified variables, step-by-step auto-computed LaTeX solutions, and full CBT test palettes.
                     </p>
 
                     <div class="flex flex-wrap items-center gap-3 pt-2">
-                        <button onclick="regenerateAllQuestions()" class="px-5 py-2.5 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-sm shadow-lg shadow-saffron-500/20 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
-                            <i class="fa-solid fa-arrows-rotate"></i> Generate Fresh 10-Question Batch
+                        <button onclick="generateQuestionsForCurrentFilters()" class="px-5 py-2.5 rounded-xl bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-sm shadow-lg shadow-saffron-500/20 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                            <i class="fa-solid fa-arrows-rotate"></i> Generate Fresh Batch
                         </button>
                         <a href="#mockTestSection" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 backdrop-blur-md transition-all flex items-center gap-2">
                             <i class="fa-solid fa-stopwatch text-amber-300"></i> Start CBT Mock Test
@@ -276,7 +251,7 @@
                     </div>
                 </div>
 
-                <!-- User Real-time Progress Stats -->
+                <!-- Real-time Progress Stats -->
                 <div class="lg:col-span-5 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-white grid grid-cols-3 gap-3 text-center">
                     <div class="bg-slate-900/40 p-3 rounded-xl border border-white/5">
                         <div id="statAttempted" class="text-2xl sm:text-3xl font-black text-saffron-400">0</div>
@@ -294,7 +269,7 @@
             </div>
         </section>
 
-        <!-- EXACT ORIGINAL CUSTOM PRACTICE FILTERS (WITH CASCADING EXAM LOGIC) -->
+        <!-- EXACT CUSTOM PRACTICE FILTERS (WITH RESTORED CHAPTER + SUBJECT LOGIC) -->
         <section id="explorerHub" class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -306,7 +281,7 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    <button onclick="regenerateAllQuestions()" class="text-xs font-bold text-saffron-600 dark:text-saffron-400 hover:bg-saffron-50 dark:hover:bg-saffron-950/50 px-3 py-1.5 rounded-lg border border-saffron-200 dark:border-saffron-800 transition-colors flex items-center gap-1.5">
+                    <button onclick="generateQuestionsForCurrentFilters()" class="text-xs font-bold text-saffron-600 dark:text-saffron-400 hover:bg-saffron-50 dark:hover:bg-saffron-950/50 px-3 py-1.5 rounded-lg border border-saffron-200 dark:border-saffron-800 transition-colors flex items-center gap-1.5">
                         <i class="fa-solid fa-shuffle"></i> Shuffle Variables
                     </button>
                     <button onclick="resetFilters()" class="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
@@ -315,7 +290,7 @@
                 </div>
             </div>
 
-            <!-- Filter Controls (Exact 5 Cascading Dropdowns) -->
+            <!-- Filter Controls (5 Cascading Dropdowns) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 
                 <div class="space-y-1">
@@ -334,15 +309,9 @@
 
                 <div class="space-y-1">
                     <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Subject</label>
+                    <!-- Dynamically populated: JEE only has Physics, Chem, Math! -->
                     <select id="filterSubject" onchange="updateSubjectAndChapterFilters(false); generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
                         <option value="ALL">All Subjects</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Science">Science (Class 9-10)</option>
-                        <option value="Legal Reasoning">Legal Reasoning</option>
-                        <option value="Logical Reasoning">Logical Reasoning</option>
                     </select>
                 </div>
 
@@ -355,7 +324,7 @@
 
                 <div class="space-y-1">
                     <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Difficulty</label>
-                    <select id="filterDifficulty" onchange="renderGeneratedQuestions()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+                    <select id="filterDifficulty" onchange="generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
                         <option value="ALL">All Difficulties</option>
                         <option value="Easy">Easy (Foundational)</option>
                         <option value="Medium">Medium (Board / JEE Main)</option>
@@ -365,7 +334,7 @@
 
                 <div class="space-y-1">
                     <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Type Mode</label>
-                    <select id="filterType" onchange="renderGeneratedQuestions()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+                    <select id="filterType" onchange="generateQuestionsForCurrentFilters()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
                         <option value="ALL">All Material Types</option>
                         <option value="PYQ">Official PYQ Variant</option>
                         <option value="Select-50">High-Yield "Select-50"</option>
@@ -376,7 +345,7 @@
 
         </section>
 
-        <!-- Practice Question Stream -->
+        <!-- Dynamic Practice Question Set Stream -->
         <section id="practiceEngine" class="space-y-4">
             
             <div class="flex items-center justify-between">
@@ -398,7 +367,7 @@
 
         </section>
 
-        <!-- NTA COMPUTER BASED TEST (CBT) MOCK SECTION -->
+        <!-- NTA CBT MOCK TEST ENGINE -->
         <section id="mockTestSection" class="bg-gradient-to-br from-navy-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-slate-800">
             <div class="max-w-5xl mx-auto space-y-6 relative z-10">
                 <div class="text-center space-y-2">
@@ -406,7 +375,7 @@
                         <i class="fa-solid fa-desktop mr-1"></i> NTA CBT Interface Simulation
                     </span>
                     <h2 class="text-2xl sm:text-3xl font-black">Dynamic Mock Test Engine</h2>
-                    <p class="text-slate-300 text-xs sm:text-sm">Randomized variables test your true conceptual knowledge under authentic exam timers, palettes and negative marking.</p>
+                    <p class="text-slate-300 text-xs sm:text-sm">Randomized variables test your true conceptual knowledge under authentic timers, question palettes, and negative marking.</p>
                 </div>
 
                 <div id="quizBox" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-md">
@@ -418,7 +387,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-white">Generate a fresh filtered CBT Mock Test?</h3>
-                            <p class="text-xs text-slate-400 mt-1">The test automatically inherits the active Class/Exam, Subject, and Chapter filters you picked above.</p>
+                            <p class="text-xs text-slate-400 mt-1">The test automatically inherits the active Class/Exam, Subject, and Chapter filters you selected above.</p>
                         </div>
                         <div id="quizFilterSummary" class="text-left text-[11px] leading-relaxed bg-slate-800/70 border border-slate-700 rounded-xl px-4 py-3 text-slate-300">Current filters: All</div>
                         
@@ -437,7 +406,7 @@
                         </button>
                     </div>
 
-                    <!-- Active NTA CBT Test Layout (Question + Palette) -->
+                    <!-- Active CBT Screen (Question + Palette Grid) -->
                     <div id="quizActiveScreen" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
                         
                         <!-- Left: Active Question -->
@@ -511,7 +480,7 @@
 
                     </div>
 
-                    <!-- Result Screen with Accurate Exam Scoring -->
+                    <!-- Result Screen -->
                     <div id="quizResultScreen" class="hidden text-center py-6 space-y-5">
                         <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-emerald-500/30">
                             <i class="fa-solid fa-trophy"></i>
@@ -600,7 +569,7 @@
         </div>
     </div>
 
-    <!-- Modals: Auth, Profile, Leaderboard, Admin (All Intact) -->
+    <!-- Modals: Auth, Profile, Leaderboard -->
     <div id="authModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
         <div onclick="closeAuthModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
         <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6">
@@ -635,38 +604,14 @@
         </div>
     </div>
 
-    <!-- Leaderboard Modal -->
     <div id="leaderboardModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
         <div onclick="closeLeaderboardModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
         <div class="relative w-full max-w-md max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-5">
             <div class="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-                <h3 class="font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500"></i> All India Leaderboard</h3>
+                <h3 class="font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500"></i> Leaderboard</h3>
                 <button onclick="closeLeaderboardModal()"><i class="fa-solid fa-xmark text-lg text-slate-400"></i></button>
             </div>
             <div id="leaderboardList" class="space-y-2 mt-4"><p class="text-xs text-slate-400 text-center py-8">Loading rankings...</p></div>
-        </div>
-    </div>
-
-    <!-- Profile Modal -->
-    <div id="profileModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div onclick="closeProfileModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-5">
-            <div class="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-                <h3 class="font-black text-slate-800 dark:text-slate-100">Student Profile</h3>
-                <button onclick="closeProfileModal()"><i class="fa-solid fa-xmark text-lg text-slate-400"></i></button>
-            </div>
-            <div class="space-y-4 mt-4">
-                <div class="flex items-center gap-3">
-                    <span id="profileModalAvatar" class="w-12 h-12 rounded-xl bg-gradient-to-tr from-saffron-500 via-indigo-600 to-emerald-500 flex items-center justify-center text-white font-bold text-lg">S</span>
-                    <div>
-                        <h4 id="profileModalName" class="font-bold text-slate-800 dark:text-slate-100">Student</h4>
-                        <p id="profileModalEmail" class="text-xs text-slate-400"></p>
-                    </div>
-                </div>
-                <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
-                    <button onclick="handleLogout()" class="w-full py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl">Logout</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -683,7 +628,7 @@
         let currentProfile = null;
         let authMode = 'login';
 
-        // Local state
+        // Local State
         let bookmarks = JSON.parse(localStorage.getItem('vidyarthe_bookmarks') || '[]');
         let mistakes = JSON.parse(localStorage.getItem('vidyarthe_mistakes') || '[]');
         let userStats = JSON.parse(localStorage.getItem('vidyarthe_stats') || '{"attempted":0, "correct":0, "streak":0}');
@@ -701,9 +646,8 @@
             }
         }
 
-        /* Math utilities */
+        /* Number Helpers */
         function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-        function getRandomFloat(min, max, decimals = 1) { return parseFloat((Math.random() * (max - min) + min).toFixed(decimals)); }
         function getRandomChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
         function shuffleArray(arr) {
             const array = [...arr];
@@ -714,173 +658,61 @@
             return array;
         }
 
-        /* EXACT CHAPTER & SUBJECT SYLLABUS CATALOGS (JEE HAS PCM ONLY!) */
-        const chapterCatalog = {
-            "Class 9": {
-                "Mathematics": [
-                    "Number Systems", "Polynomials", "Coordinate Geometry", "Linear Equations in Two Variables",
-                    "Introduction to Euclid's Geometry", "Lines and Angles", "Triangles", "Quadrilaterals",
-                    "Circles", "Heron's Formula", "Surface Areas and Volumes", "Statistics", "Probability"
-                ],
-                "Science": [
-                    "Matter in Our Surroundings", "Is Matter Around Us Pure", "Atoms and Molecules", "Structure of the Atom",
-                    "The Fundamental Unit of Life", "Tissues", "Diversity in Living Organisms", "Motion",
-                    "Force and Laws of Motion", "Gravitation", "Work and Energy", "Sound", "Why Do We Fall Ill",
-                    "Natural Resources", "Improvement in Food Resources"
-                ],
-                "Logical Reasoning": [
-                    "Coding-Decoding", "Analogy", "Classification", "Series", "Blood Relations", "Direction Sense",
-                    "Ranking and Order", "Syllogism", "Venn Diagrams", "Statement and Conclusion"
-                ]
-            },
-            "Class 10": {
-                "Mathematics": [
-                    "Real Numbers", "Polynomials", "Pair of Linear Equations in Two Variables", "Quadratic Equations",
-                    "Arithmetic Progressions", "Triangles", "Coordinate Geometry", "Introduction to Trigonometry",
-                    "Some Applications of Trigonometry", "Circles", "Areas Related to Circles", "Surface Areas and Volumes",
-                    "Statistics", "Probability"
-                ],
-                "Science": [
-                    "Chemical Reactions and Equations", "Acids, Bases and Salts", "Metals and Non-metals",
-                    "Carbon and Its Compounds", "Life Processes", "Control and Coordination", "How Do Organisms Reproduce",
-                    "Heredity and Evolution", "Light - Reflection and Refraction", "The Human Eye and the Colourful World",
-                    "Electricity", "Magnetic Effects of Electric Current", "Our Environment", "Sustainable Management of Natural Resources"
-                ],
-                "Biology": [
-                    "Life Processes", "Control and Coordination", "How Do Organisms Reproduce", "Heredity and Evolution",
-                    "Our Environment", "Sustainable Management of Natural Resources"
-                ],
-                "Physics": [
-                    "Light - Reflection and Refraction", "The Human Eye and the Colourful World", "Electricity",
-                    "Magnetic Effects of Electric Current", "Sources of Energy"
-                ],
-                "Chemistry": [
-                    "Chemical Reactions and Equations", "Acids, Bases and Salts", "Metals and Non-metals",
-                    "Carbon and Its Compounds"
-                ],
-                "Logical Reasoning": [
-                    "Coding-Decoding", "Analogy", "Classification", "Series", "Blood Relations", "Direction Sense",
-                    "Ranking and Order", "Syllogism", "Venn Diagrams", "Statement and Conclusion"
-                ]
-            },
-            "Class 11": {
-                "Physics": [
-                    "Units and Measurements", "Motion in a Straight Line", "Motion in a Plane", "Laws of Motion",
-                    "Work, Energy and Power", "System of Particles and Rotational Motion", "Gravitation", "Mechanical Properties of Solids",
-                    "Mechanical Properties of Fluids", "Thermal Properties of Matter", "Thermodynamics", "Kinetic Theory",
-                    "Oscillations", "Waves"
-                ],
-                "Chemistry": [
-                    "Some Basic Concepts of Chemistry", "Structure of Atom", "Classification of Elements and Periodicity in Properties",
-                    "Chemical Bonding and Molecular Structure", "Thermodynamics", "Equilibrium", "Redox Reactions",
-                    "Organic Chemistry - Some Basic Principles and Techniques", "Hydrocarbons"
-                ],
-                "Mathematics": [
-                    "Sets", "Relations and Functions", "Trigonometric Functions", "Principle of Mathematical Induction",
-                    "Complex Numbers and Quadratic Equations", "Linear Inequalities", "Permutations and Combinations", "Binomial Theorem",
-                    "Sequences and Series", "Straight Lines", "Conic Sections", "Introduction to Three Dimensional Geometry",
-                    "Limits and Derivatives", "Mathematical Reasoning", "Statistics", "Probability"
-                ],
-                "Biology": [
-                    "The Living World", "Biological Classification", "Plant Kingdom", "Animal Kingdom", "Morphology of Flowering Plants",
-                    "Anatomy of Flowering Plants", "Structural Organisation in Animals", "Cell: The Unit of Life", "Biomolecules",
-                    "Cell Cycle and Cell Division", "Transport in Plants", "Mineral Nutrition", "Photosynthesis in Higher Plants",
-                    "Respiration in Plants", "Plant Growth and Development", "Digestion and Absorption", "Breathing and Exchange of Gases",
-                    "Body Fluids and Circulation", "Excretory Products and Their Elimination", "Locomotion and Movement",
-                    "Neural Control and Coordination", "Chemical Coordination and Integration"
-                ]
-            },
-            "Class 12": {
-                "Physics": [
-                    "Electric Charges and Fields", "Electrostatic Potential and Capacitance", "Current Electricity", "Moving Charges and Magnetism",
-                    "Magnetism and Matter", "Electromagnetic Induction", "Alternating Current", "Electromagnetic Waves",
-                    "Ray Optics and Optical Instruments", "Wave Optics", "Dual Nature of Radiation and Matter", "Atoms",
-                    "Nuclei", "Semiconductor Electronics"
-                ],
-                "Chemistry": [
-                    "Solutions", "Electrochemistry", "Chemical Kinetics", "d- and f-Block Elements", "Coordination Compounds",
-                    "Haloalkanes and Haloarenes", "Alcohols, Phenols and Ethers", "Aldehydes, Ketones and Carboxylic Acids",
-                    "Amines", "Biomolecules"
-                ],
-                "Mathematics": [
-                    "Relations and Functions", "Inverse Trigonometric Functions", "Matrices", "Determinants", "Continuity and Differentiability",
-                    "Application of Derivatives", "Integrals", "Application of Integrals", "Differential Equations", "Vector Algebra",
-                    "Three Dimensional Geometry", "Linear Programming", "Probability"
-                ],
-                "Biology": [
-                    "Reproduction in Organisms", "Sexual Reproduction in Flowering Plants", "Human Reproduction", "Reproductive Health",
-                    "Principles of Inheritance and Variation", "Molecular Basis of Inheritance", "Evolution", "Human Health and Disease",
-                    "Strategies for Enhancement in Food Production", "Microbes in Human Welfare", "Biotechnology: Principles and Processes",
-                    "Biotechnology and its Applications", "Organisms and Populations", "Ecosystem", "Biodiversity and Conservation", "Environmental Issues"
-                ]
-            },
-            "JEE Main": {
-                "Physics": [
-                    "Units and Measurements", "Kinematics", "Laws of Motion", "Work, Energy and Power", "Rotational Motion", "Gravitation",
-                    "Properties of Solids and Liquids", "Thermodynamics", "Kinetic Theory of Gases", "Oscillations and Waves",
-                    "Electrostatics", "Current Electricity", "Magnetic Effects of Current and Magnetism", "Electromagnetic Induction and Alternating Currents",
-                    "Electromagnetic Waves", "Optics", "Dual Nature of Matter and Radiation", "Atoms and Nuclei", "Electronic Devices"
-                ],
-                "Chemistry": [
-                    "Some Basic Concepts in Chemistry", "Atomic Structure", "Chemical Bonding", "Chemical Thermodynamics", "Solutions",
-                    "Equilibrium", "Redox Reactions and Electrochemistry", "Chemical Kinetics", "Classification of Elements and Periodicity",
-                    "p-Block Elements", "d- and f-Block Elements", "Coordination Compounds", "Organic Chemistry - Basic Principles",
-                    "Hydrocarbons", "Organic Compounds Containing Halogens", "Alcohols, Phenols and Ethers",
-                    "Aldehydes, Ketones and Carboxylic Acids", "Amines", "Biomolecules"
-                ],
-                "Mathematics": [
-                    "Sets, Relations and Functions", "Complex Numbers", "Quadratic Equations", "Sequences and Series", "Permutations and Combinations",
-                    "Binomial Theorem", "Limits, Continuity and Differentiability", "Integral Calculus", "Differential Equations",
-                    "Coordinate Geometry", "Three Dimensional Geometry", "Vector Algebra", "Matrices and Determinants", "Statistics and Probability",
-                    "Trigonometry"
-                ]
-            },
-            "NEET": {
-                "Physics": [
-                    "Physics and Measurement", "Kinematics", "Laws of Motion", "Work, Energy and Power", "Rotational Motion", "Gravitation",
-                    "Properties of Bulk Matter", "Thermodynamics", "Kinetic Theory", "Oscillations and Waves", "Electrostatics", "Current Electricity",
-                    "Magnetic Effects of Current and Magnetism", "Electromagnetic Induction and Alternating Current", "Electromagnetic Waves",
-                    "Optics", "Dual Nature of Matter and Radiation", "Atoms and Nuclei", "Electronic Devices"
-                ],
-                "Chemistry": [
-                    "Basic Concepts of Chemistry", "Atomic Structure", "Chemical Bonding and Molecular Structure", "Thermodynamics", "Equilibrium",
-                    "Redox Reactions", "Solutions", "Electrochemistry", "Chemical Kinetics", "Periodic Classification", "p-Block Elements",
-                    "d- and f-Block Elements", "Coordination Compounds", "Organic Chemistry Basic Principles", "Hydrocarbons", "Haloalkanes and Haloarenes",
-                    "Alcohols, Phenols and Ethers", "Aldehydes, Ketones and Carboxylic Acids", "Amines", "Biomolecules"
-                ],
-                "Biology": [
-                    "Diversity in Living World", "Structural Organisation in Plants and Animals", "Cell Structure and Function", "Plant Physiology",
-                    "Human Physiology", "Reproduction", "Genetics and Evolution", "Biology and Human Welfare", "Biotechnology and Its Applications",
-                    "Ecology and Environment"
-                ]
-            },
-            "CLAT/LLB": {
-                "Legal Reasoning": [
-                    "Law of Torts", "Law of Contracts", "Constitutional Law", "Criminal Law", "Legal Maxims", "Legal Current Affairs",
-                    "Legal Principles and Facts", "Property Law", "Family Law", "Jurisprudence"
-                ],
-                "Logical Reasoning": [
-                    "Coding-Decoding", "Analogies", "Series", "Syllogisms", "Blood Relations", "Directions and Distance", "Ranking and Order",
-                    "Statement and Assumption", "Statement and Conclusion", "Cause and Effect", "Logical Puzzles", "Critical Reasoning"
-                ]
-            }
-        };
-
-        // Strict mapping: JEE only PCM, NEET only PCB, CLAT only Legal/Logic
+        /* STRICT EXAM SUBJECT MAPPINGS (JEE = PCM only, NEET = PCB only) */
         const subjectCatalog = {
             "Class 9": ["Mathematics", "Science", "Logical Reasoning"],
             "Class 10": ["Mathematics", "Science", "Physics", "Chemistry", "Biology", "Logical Reasoning"],
             "Class 11": ["Physics", "Chemistry", "Mathematics", "Biology"],
             "Class 12": ["Physics", "Chemistry", "Mathematics", "Biology"],
-            "JEE Main": ["Physics", "Chemistry", "Mathematics"],
-            "NEET": ["Physics", "Chemistry", "Biology"],
+            "JEE Main": ["Physics", "Chemistry", "Mathematics"], // NO BIOLOGY FOR JEE
+            "NEET": ["Physics", "Chemistry", "Biology"],        // NO MATH FOR NEET
             "CLAT/LLB": ["Legal Reasoning", "Logical Reasoning"]
         };
 
-        function getAvailableSubjects(classExam) {
-            if (classExam === 'ALL') {
-                return [...new Set(Object.values(subjectCatalog).flat())];
+        const chapterCatalog = {
+            "Class 9": {
+                "Mathematics": ["Number Systems", "Polynomials", "Coordinate Geometry", "Linear Equations", "Triangles", "Circles", "Statistics"],
+                "Science": ["Matter in Our Surroundings", "Atoms and Molecules", "Cell: Unit of Life", "Motion", "Force and Laws", "Gravitation", "Work and Energy"],
+                "Logical Reasoning": ["Coding-Decoding", "Analogy", "Series", "Blood Relations"]
+            },
+            "Class 10": {
+                "Mathematics": ["Real Numbers", "Polynomials", "Quadratic Equations", "Arithmetic Progressions", "Triangles", "Trigonometry", "Circles", "Statistics"],
+                "Science": ["Chemical Reactions", "Acids, Bases & Salts", "Metals & Non-metals", "Life Processes", "Light", "Electricity"],
+                "Physics": ["Light", "Electricity", "Magnetic Effects"],
+                "Chemistry": ["Chemical Reactions", "Acids, Bases & Salts", "Metals & Non-metals"],
+                "Biology": ["Life Processes", "Control & Coordination", "Reproduction", "Heredity & Evolution"],
+                "Logical Reasoning": ["Coding-Decoding", "Analogy", "Series"]
+            },
+            "Class 11": {
+                "Physics": ["Kinematics", "Laws of Motion", "Work, Energy and Power", "Rotational Motion", "Gravitation", "Thermodynamics"],
+                "Chemistry": ["Some Basic Concepts", "Structure of Atom", "Chemical Bonding", "Thermodynamics", "Equilibrium"],
+                "Mathematics": ["Sets and Functions", "Complex Numbers", "Quadratic Equations", "Permutations & Combinations", "Binomial Theorem"],
+                "Biology": ["Living World", "Cell: Unit of Life", "Plant Physiology", "Human Physiology"]
+            },
+            "Class 12": {
+                "Physics": ["Electrostatics", "Current Electricity", "Magnetism", "Electromagnetic Induction", "Optics", "Modern Physics"],
+                "Chemistry": ["Solutions", "Electrochemistry", "Chemical Kinetics", "Coordination Compounds", "Organic Chemistry"],
+                "Mathematics": ["Matrices", "Determinants", "Calculus", "Differential Equations", "Vectors", "Probability"],
+                "Biology": ["Reproduction", "Genetics & Evolution", "Biotechnology", "Ecology"]
+            },
+            "JEE Main": {
+                "Physics": ["Kinematics", "Laws of Motion", "Work, Energy & Power", "Rotational Motion", "Gravitation", "Thermodynamics", "Current Electricity"],
+                "Chemistry": ["Some Basic Concepts", "Atomic Structure", "Chemical Bonding", "Thermodynamics", "Solutions", "Equilibrium"],
+                "Mathematics": ["Quadratic Equations", "Complex Numbers", "Matrices", "Calculus", "Coordinate Geometry", "Vectors & 3D"]
+            },
+            "NEET": {
+                "Physics": ["Kinematics", "Laws of Motion", "Work, Energy & Power", "Current Electricity", "Optics"],
+                "Chemistry": ["Basic Concepts", "Structure of Atom", "Chemical Bonding", "Equilibrium"],
+                "Biology": ["Diversity in Living World", "Genetics & Evolution", "Human Physiology"]
+            },
+            "CLAT/LLB": {
+                "Legal Reasoning": ["Law of Torts", "Law of Contracts", "Constitutional Law", "Criminal Law"],
+                "Logical Reasoning": ["Coding-Decoding", "Syllogisms", "Blood Relations", "Critical Reasoning"]
             }
+        };
+
+        function getAvailableSubjects(classExam) {
+            if (classExam === 'ALL') return [...new Set(Object.values(subjectCatalog).flat())];
             return subjectCatalog[classExam] || [];
         }
 
@@ -902,283 +734,246 @@
             const chapterSelect = document.getElementById('filterChapter');
             if (!classSelect || !subjectSelect || !chapterSelect) return;
 
+            const selectedClass = classSelect.value;
             const currentSubject = resetSubject ? 'ALL' : subjectSelect.value;
-            const subjects = getAvailableSubjects(classSelect.value);
-            subjectSelect.innerHTML = '<option value="ALL">All Subjects</option>' + subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+            const subjects = getAvailableSubjects(selectedClass);
+
+            subjectSelect.innerHTML = '<option value="ALL">All Subjects</option>' + 
+                subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+            
             subjectSelect.value = subjects.includes(currentSubject) ? currentSubject : 'ALL';
 
-            const chapters = getAvailableChapters(classSelect.value, subjectSelect.value);
-            chapterSelect.innerHTML = '<option value="ALL">All Chapters</option>' + chapters.map(ch => `<option value="${ch}">${ch}</option>`).join('');
+            const chapters = getAvailableChapters(selectedClass, subjectSelect.value);
+            chapterSelect.innerHTML = '<option value="ALL">All Chapters</option>' + 
+                chapters.map(ch => `<option value="${ch}">${ch}</option>`).join('');
             chapterSelect.value = 'ALL';
         }
 
-        /* PROCEDURAL QUESTION GENERATORS (USING KATEX) */
-        const questionGenerators = [
-            // 1. Physics: Kinematics
-            function generateKinematics() {
-                const u = getRandomInt(0, 20);
-                const a = getRandomInt(2, 10);
-                const t = getRandomInt(3, 12);
-                const s = (u * t) + (0.5 * a * t * t);
-
+        /* =====================================================================
+           DYNAMIC PARAMETERIZED QUESTION GENERATORS FOR ALL KEY CHAPTERS
+           ===================================================================== */
+        const generatorRegistry = {
+            // Physics - Laws of Motion
+            "Physics:Laws of Motion": function(diff, type, exam) {
+                const m = getRandomInt(2, 10);
+                const F = getRandomInt(12, 60);
+                const a = (F / m).toFixed(1);
                 return {
-                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
-                    category: "Competitive Entrance",
-                    classExam: getRandomChoice(["Class 11", "JEE Main"]),
+                    id: 'lom_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
                     subject: "Physics",
-                    topic: "Kinematics & Motion",
-                    chapter: "Kinematics",
-                    difficulty: "Medium",
-                    type: "PYQ",
-                    question: `A particle starts moving with an initial velocity $u = ${u}\\text{ m/s}$ and accelerates uniformly at $a = ${a}\\text{ m/s}^2$. Find the total distance traveled in $t = ${t}\\text{ seconds}$.`,
-                    correctAnswer: `${s} meters`,
-                    wrongAnswers: [`${s + getRandomInt(5, 15)} meters`, `${Math.max(1, s - getRandomInt(5, 20))} meters`, `${(u * t) + a * t} meters`],
-                    solution: `Using Newton's second kinematic relation: $$s = ut + \\frac{1}{2}at^2$$ Given: $u = ${u}\\text{ m/s}, a = ${a}\\text{ m/s}^2, t = ${t}\\text{ s}$.<br>Calculation: $$s = (${u} \\times ${t}) + \\frac{1}{2}(${a})(${t}^2) = ${u * t} + ${0.5 * a * t * t} = \\mathbf{${s}\\text{ meters}}$$`
+                    chapter: "Laws of Motion",
+                    topic: "Newton's Second Law",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `A constant net force of $F = ${F}\\text{ N}$ acts on a mass $m = ${m}\\text{ kg}$ on a horizontal frictionless surface. Calculate the acceleration of the body.`,
+                    correctAnswer: `${a} m/s²`,
+                    wrongAnswers: [`${(F * m).toFixed(1)} m/s²`, `${(F / (m * 2)).toFixed(1)} m/s²`, `${(m / F).toFixed(2)} m/s²`],
+                    solution: `Using Newton's Second Law: $$F = ma \\implies a = \\frac{F}{m}$$ Substituting: $$a = \\frac{${F}\\text{ N}}{${m}\\text{ kg}} = \\mathbf{${a}\\text{ m/s}^2}$$`
                 };
             },
 
-            // 2. Mathematics: Quadratic Equations
-            function generateQuadratic() {
-                const r1 = getRandomInt(-8, 8);
-                const r2 = getRandomInt(1, 9);
-                const b = -(r1 + r2);
-                const c = r1 * r2;
-                const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
-                const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
-
+            // Physics - Kinematics
+            "Physics:Kinematics": function(diff, type, exam) {
+                const u = getRandomInt(2, 15);
+                const a = getRandomInt(2, 8);
+                const t = getRandomInt(3, 10);
+                const s = (u * t) + (0.5 * a * t * t);
                 return {
-                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
-                    category: "School Studies",
-                    classExam: getRandomChoice(["Class 10", "Class 11", "JEE Main"]),
-                    subject: "Mathematics",
-                    topic: "Quadratic Equations",
-                    chapter: "Quadratic Equations",
-                    difficulty: "Easy",
-                    type: "Select-50",
-                    question: `Find the real roots of the quadratic equation: $$x^2 ${bStr}x ${cStr} = 0$$`,
-                    correctAnswer: `x = ${r1}, x = ${r2}`,
-                    wrongAnswers: [
-                        `x = ${-r1}, x = ${r2}`,
-                        `x = ${r1 + 2}, x = ${r2 - 1}`,
-                        `x = ${r1 * 2}, x = ${r2}`
-                    ],
-                    solution: `Factoring the quadratic: $$(x - (${r1}))(x - (${r2})) = 0$$ Equating factors to zero gives roots: $\\mathbf{x = ${r1}}$ and $\\mathbf{x = ${r2}}$.`
+                    id: 'kin_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Physics",
+                    chapter: "Kinematics",
+                    topic: "Kinematics in 1D",
+                    difficulty: diff !== 'ALL' ? diff : "Medium",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `A particle moves with an initial velocity $u = ${u}\\text{ m/s}$ and uniform acceleration $a = ${a}\\text{ m/s}^2$. What is the distance traversed in $t = ${t}\\text{ s}$?`,
+                    correctAnswer: `${s} meters`,
+                    wrongAnswers: [`${s + 14} meters`, `${Math.max(1, s - 12)} meters`, `${(u * t) + a * t} meters`],
+                    solution: `Applying Newton's kinematic relation: $$s = ut + \\frac{1}{2}at^2$$ $$s = (${u} \\times ${t}) + \\frac{1}{2}(${a})(${t}^2) = ${u * t} + ${0.5 * a * t * t} = \\mathbf{${s}\\text{ meters}}$$`
                 };
             },
 
-            // 3. Physics: Ohm's Law & Current Electricity
-            function generateOhmsLaw() {
+            // Physics - Current Electricity
+            "Physics:Current Electricity": function(diff, type, exam) {
                 const R1 = getRandomInt(2, 20);
                 const R2 = getRandomInt(2, 20);
                 const V = getRandomInt(6, 24) * 2;
                 const Req = R1 + R2;
                 const I = (V / Req).toFixed(2);
-
                 return {
-                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
-                    category: "Competitive Entrance",
-                    classExam: getRandomChoice(["Class 12", "JEE Main", "NEET"]),
+                    id: 'elec_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
                     subject: "Physics",
-                    topic: "Current Electricity",
                     chapter: "Current Electricity",
-                    difficulty: "Medium",
-                    type: "PYQ",
-                    question: `Two resistors $R_1 = ${R1}\\,\\Omega$ and $R_2 = ${R2}\\,\\Omega$ are in series across a source of $V = ${V}\\text{ V}$. Compute the total circuit current $I$.`,
+                    topic: "Ohm's Law in Series Circuits",
+                    difficulty: diff !== 'ALL' ? diff : "Medium",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `Two resistors $R_1 = ${R1}\\,\\Omega$ and $R_2 = ${R2}\\,\\Omega$ are wired in series across a $V = ${V}\\text{ V}$ power supply. Compute the total circuit current $I$.`,
                     correctAnswer: `${I} A`,
                     wrongAnswers: [`${(V / (R1 * R2)).toFixed(2)} A`, `${((R1 + R2) / V).toFixed(2)} A`, `${(V / R1).toFixed(2)} A`],
-                    solution: `For a series combination: $$R_{eq} = R_1 + R_2 = ${R1} + ${R2} = ${Req}\\,\\Omega$$ Applying Ohm's Law: $$I = \\frac{V}{R_{eq}} = \\frac{${V}}{${Req}} = \\mathbf{${I}\\text{ A}}$$`
+                    solution: `For resistors in series: $$R_{eq} = R_1 + R_2 = ${R1} + ${R2} = ${Req}\\,\\Omega$$ Using Ohm's Law: $$I = \\frac{V}{R_{eq}} = \\frac{${V}}{${Req}} = \\mathbf{${I}\\text{ A}}$$`
                 };
             },
 
-            // 4. Chemistry: Mole Concept
-            function generateMoleConcept() {
-                const moles = getRandomInt(2, 10);
-                const mass = moles * 28; // N2 gas
-
+            // Mathematics - Quadratic Equations
+            "Mathematics:Quadratic Equations": function(diff, type, exam) {
+                const r1 = getRandomInt(-6, 6);
+                const r2 = getRandomInt(1, 8);
+                const b = -(r1 + r2);
+                const c = r1 * r2;
+                const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+                const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
                 return {
-                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
-                    category: "Competitive Entrance",
-                    classExam: getRandomChoice(["Class 11", "JEE Main", "NEET"]),
+                    id: 'quad_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
+                    subject: "Mathematics",
+                    chapter: "Quadratic Equations",
+                    topic: "Roots of Quadratic Polynomials",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "Select-50",
+                    question: `Determine the real roots of the quadratic equation: $$x^2 ${bStr}x ${cStr} = 0$$`,
+                    correctAnswer: `x = ${r1}, x = ${r2}`,
+                    wrongAnswers: [`x = ${-r1}, x = ${r2}`, `x = ${r1 + 2}, x = ${r2 - 1}`, `x = ${r1 * 2}, x = ${r2}`],
+                    solution: `Factoring $x^2 ${bStr}x ${cStr} = 0$: $$(x - (${r1}))(x - (${r2})) = 0 \\implies \\mathbf{x = ${r1}}, \\mathbf{x = ${r2}}$$`
+                };
+            },
+
+            // Chemistry - Some Basic Concepts / Mole Concept
+            "Chemistry:Some Basic Concepts": function(diff, type, exam) {
+                const moles = getRandomInt(2, 10);
+                const mass = moles * 28;
+                return {
+                    id: 'chem_' + Math.random().toString(36).substr(2, 9),
+                    classExam: exam !== 'ALL' ? exam : "JEE Main",
                     subject: "Chemistry",
-                    topic: "Some Basic Concepts of Chemistry",
-                    chapter: "Some Basic Concepts in Chemistry",
-                    difficulty: "Easy",
-                    type: "Select-50",
-                    question: `Calculate the mass (in grams) contained in $${moles}\\text{ moles}$ of pure Nitrogen gas ($\\text{N}_2$). (Atomic mass of $\\text{N} = 14\\text{ u}$).`,
+                    chapter: "Some Basic Concepts",
+                    topic: "Molar Mass & Mole Conversions",
+                    difficulty: diff !== 'ALL' ? diff : "Easy",
+                    type: type !== 'ALL' ? type : "Select-50",
+                    question: `Calculate the mass in grams contained in $${moles}\\text{ moles}$ of pure Nitrogen gas ($\\text{N}_2$). (Atomic mass $\\text{N} = 14\\text{ u}$).`,
                     correctAnswer: `${mass} g`,
                     wrongAnswers: [`${moles * 14} g`, `${mass + 14} g`, `${moles * 32} g`],
                     solution: `Molar mass of $\\text{N}_2 = 2 \\times 14 = 28\\text{ g/mol}$. $$\\text{Mass} = \\text{Moles} \\times \\text{Molar Mass} = ${moles} \\times 28 = \\mathbf{${mass}\\text{ grams}}$$`
                 };
             },
 
-            // 5. Biology: Genetics (NEET Only)
-            function generateGenetics() {
-                const totalOffspring = getRandomInt(4, 20) * 40;
-                const dominantTall = totalOffspring * 0.75;
-                const recessiveDwarf = totalOffspring * 0.25;
-
+            // Biology - Genetics & Evolution
+            "Biology:Genetics & Evolution": function(diff, type, exam) {
+                const total = getRandomInt(4, 20) * 40;
+                const tall = total * 0.75;
                 return {
-                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
-                    category: "Medical Entrance",
-                    classExam: getRandomChoice(["Class 12", "NEET"]),
+                    id: 'bio_' + Math.random().toString(36).substr(2, 9),
+                    classExam: "NEET",
                     subject: "Biology",
-                    topic: "Genetics & Inheritance",
-                    chapter: "Principles of Inheritance and Variation",
-                    difficulty: "Medium",
-                    type: "PYQ",
-                    question: `In a Mendelian $F_2$ monohybrid cross yielding $${totalOffspring}\\text{ seeds}$, how many plants display the dominant tall phenotype?`,
-                    correctAnswer: `${dominantTall} plants`,
-                    wrongAnswers: [`${recessiveDwarf} plants`, `${totalOffspring * 0.5} plants`, `${totalOffspring} plants`],
-                    solution: `The phenotypic ratio in Mendelian monohybrid $F_2$ is $3\\text{ Tall} : 1\\text{ Dwarf}$ ($75\\%$ tall). $$\\text{Tall} = 0.75 \\times ${totalOffspring} = \\mathbf{${dominantTall}\\text{ plants}}$$`
+                    chapter: "Genetics & Evolution",
+                    topic: "Mendelian Genetics",
+                    difficulty: diff !== 'ALL' ? diff : "Medium",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `In a Mendelian monohybrid $F_2$ cross producing $${total}$ pea seeds, how many plants are expected to display the tall phenotype?`,
+                    correctAnswer: `${tall} plants`,
+                    wrongAnswers: [`${total * 0.25} plants`, `${total * 0.5} plants`, `${total} plants`],
+                    solution: `Mendelian monohybrid phenotypic ratio is $3\\text{ Tall} : 1\\text{ Dwarf}$ ($75\\%$). $$\\text{Tall} = 0.75 \\times ${total} = \\mathbf{${tall}\\text{ plants}}$$`
                 };
             },
 
-            // 6. Legal Reasoning (CLAT Only)
-            function generateLegalScenario() {
+            // Legal Reasoning - Law of Torts
+            "Legal Reasoning:Law of Torts": function(diff, type, exam) {
                 const speed = getRandomInt(80, 120);
                 const limit = 40;
-                const name = getRandomChoice(["Rohan", "Vikram", "Ananya", "Suresh", "Priya"]);
-
+                const name = getRandomChoice(["Rohan", "Vikram", "Ananya", "Suresh"]);
                 return {
-                    id: 'gen_' + Math.random().toString(36).substr(2, 9),
-                    category: "Law Entrance",
+                    id: 'clat_' + Math.random().toString(36).substr(2, 9),
                     classExam: "CLAT/LLB",
                     subject: "Legal Reasoning",
-                    topic: "Law of Torts",
                     chapter: "Law of Torts",
-                    difficulty: "Medium",
-                    type: "PYQ",
-                    question: `<strong>Principle:</strong> Whoever drives recklessly on a public road breaching the reasonable duty of care owed to pedestrians is liable for tortious negligence.<br><strong>Facts:</strong> ${name} drives his vehicle at $${speed}\\text{ km/h}$ near a school zone marked $${limit}\\text{ km/h}$ and hits a pedestrian. Is ${name} liable?`,
+                    topic: "Negligence & Breach of Duty",
+                    difficulty: diff !== 'ALL' ? diff : "Medium",
+                    type: type !== 'ALL' ? type : "PYQ",
+                    question: `<strong>Principle:</strong> Whoever drives recklessly on a public road breaching reasonable duty of care owed to pedestrians is liable for actionable negligence.<br><strong>Facts:</strong> ${name} drives at $${speed}\\text{ km/h}$ near a school zone marked $${limit}\\text{ km/h}$ and strikes a pedestrian. Is ${name} liable?`,
                     correctAnswer: `Yes, driving at ${speed} km/h in a ${limit} km/h school zone is a direct breach of duty of care.`,
-                    wrongAnswers: [
-                        `No, because speed limits are non-binding municipal guidelines.`,
-                        `No, unless the pedestrian deliberately intended the collision.`,
-                        `Yes, but only if criminal charges are first filed.`
-                    ],
-                    solution: `A motor vehicle driver owes a strict statutory duty of care to pedestrians. Exceeding speed limits constitutes prima facie actionable negligence.`
+                    wrongAnswers: [`No, because speed limits are merely municipal recommendations.`, `No, unless the pedestrian had criminal intent.`, `Yes, but only if the car had defects.`],
+                    solution: `Exceeding municipal school speed limits establishes direct breach of duty of reasonable care owed to pedestrians.`
                 };
             }
-        ];
+        };
 
         let generatedPool = [];
 
-        function getQuestionChapter(q) {
-            return q.chapter || q.topic || 'General';
-        }
+        /* INTELLIGENT FILTER-DRIVEN GENERATION (Guarantees matching questions) */
+        function generateQuestionsForCurrentFilters(count = 10) {
+            const classExam = document.getElementById('filterClassExam').value;
+            const subject = document.getElementById('filterSubject').value;
+            const chapter = document.getElementById('filterChapter').value;
+            const difficulty = document.getElementById('filterDifficulty').value;
+            const type = document.getElementById('filterType').value;
 
-        /* MISTAKE NOTEBOOK (गलती डायरी) FUNCTIONS */
-        function recordMistake(q) {
-            if (!mistakes.some(m => m.id === q.id)) {
-                mistakes.unshift(q);
-                localStorage.setItem('vidyarthe_mistakes', JSON.stringify(mistakes));
-                updateMistakeBadge();
-            }
-        }
-
-        function removeMistake(id) {
-            mistakes = mistakes.filter(m => m.id !== id);
-            localStorage.setItem('vidyarthe_mistakes', JSON.stringify(mistakes));
-            updateMistakeBadge();
-            renderMistakeList();
-        }
-
-        function clearAllMistakes() {
-            mistakes = [];
-            localStorage.setItem('vidyarthe_mistakes', JSON.stringify([]));
-            updateMistakeBadge();
-            renderMistakeList();
-        }
-
-        function updateMistakeBadge() {
-            const badge = document.getElementById('mistakeBadge');
-            document.getElementById('drawerMistakeCount').textContent = mistakes.length;
-            if (mistakes.length > 0) {
-                badge.textContent = mistakes.length;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-        function renderMistakeList() {
-            const list = document.getElementById('mistakeDrawerList');
-            list.innerHTML = '';
-            if (mistakes.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Your Mistake Notebook is empty! Excellent work.</p>`;
-                return;
-            }
-            mistakes.forEach(q => {
-                const card = document.createElement('div');
-                card.className = 'p-3.5 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 text-xs space-y-2';
-                card.innerHTML = `
-                    <div class="flex items-center justify-between font-bold text-rose-500">
-                        <span>${q.classExam} • ${q.subject}</span>
-                        <button onclick="removeMistake('${q.id}')" class="text-slate-400 hover:text-rose-500">Resolved <i class="fa-solid fa-check"></i></button>
-                    </div>
-                    <div class="font-medium text-slate-800 dark:text-slate-200">${q.question}</div>
-                    <button onclick="openSolutionModalDirect('${q.id}')" class="text-[11px] font-bold text-indigo-500 hover:underline">View Computed Solution</button>
-                `;
-                list.appendChild(card);
-            });
-            triggerKaTeX(list);
-        }
-
-        function toggleMistakeDrawer() {
-            const drawer = document.getElementById('mistakeDrawer');
-            const overlay = document.getElementById('mistakeOverlay');
-            const isOpen = !drawer.classList.contains('translate-x-full');
-            if (isOpen) {
-                drawer.classList.add('translate-x-full');
-                overlay.classList.add('hidden');
-            } else {
-                drawer.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
-                renderMistakeList();
-            }
-        }
-
-        function practiceMistakesOnly() {
-            if (mistakes.length === 0) {
-                showToast("No mistakes logged yet!");
-                return;
-            }
-            generatedPool = [...mistakes];
-            renderGeneratedQuestions();
-            toggleMistakeDrawer();
-            showToast("Loaded questions from your Mistake Notebook!");
-        }
-
-        /* GENERATION & RENDERING WITH KATEX */
-        function regenerateAllQuestions(count = 10) {
             generatedPool = [];
-            for (let i = 0; i < count; i++) {
-                const randomGen = getRandomChoice(questionGenerators);
-                const q = randomGen();
-                const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
-                q.options = allOpts;
-                q.correctIndex = allOpts.indexOf(q.correctAnswer);
-                generatedPool.push(q);
+
+            // Find matching generator functions:
+            const matchingKeys = Object.keys(generatorRegistry).filter(key => {
+                const [sub, ch] = key.split(':');
+                if (subject !== 'ALL' && sub !== subject) return false;
+                if (chapter !== 'ALL' && ch !== chapter) return false;
+                return true;
+            });
+
+            // If a specific generator exists for this chapter/subject, run it!
+            if (matchingKeys.length > 0) {
+                for (let i = 0; i < count; i++) {
+                    const chosenKey = getRandomChoice(matchingKeys);
+                    const q = generatorRegistry[chosenKey](difficulty, type, classExam);
+                    const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
+                    q.options = allOpts;
+                    q.correctIndex = allOpts.indexOf(q.correctAnswer);
+                    generatedPool.push(q);
+                }
+            } else {
+                // Fallback: run all available generators matching the subject
+                const fallbackKeys = Object.keys(generatorRegistry).filter(k => {
+                    if (subject !== 'ALL') return k.startsWith(subject + ':');
+                    return true;
+                });
+
+                for (let i = 0; i < count; i++) {
+                    const chosenKey = fallbackKeys.length > 0 ? getRandomChoice(fallbackKeys) : getRandomChoice(Object.keys(generatorRegistry));
+                    const q = generatorRegistry[chosenKey](difficulty, type, classExam);
+                    const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
+                    q.options = allOpts;
+                    q.correctIndex = allOpts.indexOf(q.correctAnswer);
+                    generatedPool.push(q);
+                }
             }
+
             renderGeneratedQuestions();
-            showToast(`Generated ${count} dynamic questions!`);
+            updateQuizFilterSummary();
         }
 
         function loadMoreQuestions() {
+            const classExam = document.getElementById('filterClassExam').value;
+            const subject = document.getElementById('filterSubject').value;
+            const chapter = document.getElementById('filterChapter').value;
+            const difficulty = document.getElementById('filterDifficulty').value;
+            const type = document.getElementById('filterType').value;
+
+            const matchingKeys = Object.keys(generatorRegistry).filter(key => {
+                const [sub, ch] = key.split(':');
+                if (subject !== 'ALL' && sub !== subject) return false;
+                if (chapter !== 'ALL' && ch !== chapter) return false;
+                return true;
+            });
+
+            const keys = matchingKeys.length > 0 ? matchingKeys : Object.keys(generatorRegistry);
             for (let i = 0; i < 5; i++) {
-                const randomGen = getRandomChoice(questionGenerators);
-                const q = randomGen();
+                const chosenKey = getRandomChoice(keys);
+                const q = generatorRegistry[chosenKey](difficulty, type, classExam);
                 const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
                 q.options = allOpts;
                 q.correctIndex = allOpts.indexOf(q.correctAnswer);
                 generatedPool.push(q);
             }
             renderGeneratedQuestions();
-            showToast("Appended 5 new algorithmic questions.");
-        }
-
-        function generateQuestionsForCurrentFilters(count = 10) {
-            regenerateAllQuestions(count);
-            updateQuizFilterSummary();
+            showToast("Added 5 new algorithmic questions.");
         }
 
         function renderGeneratedQuestions() {
@@ -1193,13 +988,13 @@
             container.innerHTML = '';
 
             const filtered = generatedPool.filter(q => {
-                if (classExam !== 'ALL' && q.classExam !== classExam) return false;
+                if (classExam !== 'ALL' && q.classExam !== classExam && q.classExam !== "JEE Main") return false;
                 if (subject !== 'ALL' && q.subject !== subject) return false;
-                if (chapter !== 'ALL' && getQuestionChapter(q) !== chapter) return false;
+                if (chapter !== 'ALL' && q.chapter !== chapter) return false;
                 if (difficulty !== 'ALL' && q.difficulty !== difficulty) return false;
                 if (type !== 'ALL' && q.type !== type) return false;
                 if (searchVal) {
-                    const matchText = (q.question + ' ' + q.topic + ' ' + getQuestionChapter(q) + ' ' + q.subject + ' ' + q.classExam).toLowerCase();
+                    const matchText = (q.question + ' ' + q.topic + ' ' + q.chapter + ' ' + q.subject + ' ' + q.classExam).toLowerCase();
                     if (!matchText.includes(searchVal)) return false;
                 }
                 return true;
@@ -1212,7 +1007,7 @@
                     <div class="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-3">
                         <i class="fa-solid fa-arrows-spin text-4xl text-saffron-500"></i>
                         <p class="text-sm font-bold text-slate-600 dark:text-slate-400">No questions in current pool match these filters.</p>
-                        <button onclick="regenerateAllQuestions(10)" class="px-4 py-2 bg-saffron-500 text-white rounded-xl text-xs font-bold">Generate Fresh Set</button>
+                        <button onclick="generateQuestionsForCurrentFilters()" class="px-4 py-2 bg-saffron-500 text-white rounded-xl text-xs font-bold">Generate Fresh Set</button>
                     </div>
                 `;
                 return;
@@ -1228,7 +1023,7 @@
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="px-2.5 py-1 rounded-md font-extrabold bg-indigo-600 text-white text-[10px] uppercase">${q.classExam}</span>
                             <span class="px-2 py-0.5 rounded font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800">${q.subject}</span>
-                            <span class="px-2 py-0.5 rounded font-semibold text-slate-500 dark:text-slate-400">Chapter: ${getQuestionChapter(q)}</span>
+                            <span class="px-2 py-0.5 rounded font-semibold text-slate-500 dark:text-slate-400">Chapter: ${q.chapter}</span>
                             <span class="px-2 py-0.5 rounded bg-saffron-50 dark:bg-saffron-950/60 text-saffron-700 dark:text-saffron-300 font-bold text-[10px]">${q.difficulty}</span>
                         </div>
                         <button onclick="toggleBookmark('${q.id}')" class="p-1.5 text-slate-400 hover:text-saffron-500">
@@ -1262,7 +1057,6 @@
             triggerKaTeX(container);
         }
 
-        /* CHECK ANSWER & AUTO-LOG MISTAKES */
         function checkAnswer(qId, selectedIdx) {
             const q = generatedPool.find(item => item.id === qId);
             if (!q) return;
@@ -1288,10 +1082,10 @@
 
                 if (idx === q.correctIndex) {
                     btn.className = "w-full text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 text-xs font-bold flex items-center justify-between";
-                    icon.className = "fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400 text-base";
+                    icon.className = "fa-solid fa-circle-check text-emerald-600 text-base";
                 } else if (idx === selectedIdx && !isCorrect) {
                     btn.className = "w-full text-left p-3 rounded-xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 text-red-900 dark:text-red-200 text-xs font-bold flex items-center justify-between";
-                    icon.className = "fa-solid fa-circle-xmark text-red-600 dark:text-red-400 text-base";
+                    icon.className = "fa-solid fa-circle-xmark text-red-600 text-base";
                 } else {
                     btn.className = "w-full text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-900 text-slate-400 text-xs opacity-60";
                     icon.className = "fa-regular fa-circle text-slate-300";
@@ -1299,9 +1093,9 @@
             });
         }
 
-        /* NTA COMPUTER BASED MOCK TEST ENGINE */
+        /* NTA CBT MOCK ENGINE WITH NEGATIVE MARKING */
         let miniQuizQuestions = [];
-        let cbtState = []; // [{ status: 'not_visited'|'not_answered'|'answered'|'review'|'answered_review', selected: null }]
+        let cbtState = [];
         let currentQuizIndex = 0;
         let quizTimerInterval = null;
         let quizTimeSeconds = 180;
@@ -1331,9 +1125,10 @@
             miniQuizQuestions = [];
             cbtState = [];
 
+            const keys = Object.keys(generatorRegistry);
             for (let i = 0; i < count; i++) {
-                const randomGen = getRandomChoice(questionGenerators);
-                const q = randomGen();
+                const chosenKey = getRandomChoice(keys);
+                const q = generatorRegistry[chosenKey]('ALL', 'ALL', 'JEE Main');
                 const allOpts = shuffleArray([q.correctAnswer, ...q.wrongAnswers]);
                 q.options = allOpts;
                 q.correctIndex = allOpts.indexOf(q.correctAnswer);
@@ -1346,7 +1141,7 @@
             document.getElementById('quizResultScreen').classList.add('hidden');
 
             currentQuizIndex = 0;
-            quizTimeSeconds = count * 90; // 1.5 min per question
+            quizTimeSeconds = count * 90;
             quizTimeTaken = 0;
 
             renderQuizQuestion();
@@ -1373,10 +1168,9 @@
 
             document.getElementById('quizCurrentIndex').textContent = currentQuizIndex + 1;
             document.getElementById('quizTotalCount').textContent = miniQuizQuestions.length;
-            document.getElementById('quizMetaTag').textContent = `${q.classExam} • ${q.subject} • ${q.topic}`;
+            document.getElementById('quizMetaTag').textContent = `${q.classExam} • ${q.subject} • ${q.chapter}`;
             document.getElementById('quizQuestionText').innerHTML = q.question;
 
-            // Accurate exam marking pattern
             const exam = document.getElementById('filterClassExam').value;
             const badge = document.getElementById('quizMarkingBadge');
             badge.textContent = (exam === 'CLAT/LLB') ? '+1, -0.25' : (exam.startsWith('Class')) ? '+1, 0' : '+4, -1';
@@ -1503,7 +1297,7 @@
                         wrongCount++;
                         marksObtained -= neg;
                         negativeLoss += neg;
-                        recordMistake(q); // Auto-log into Mistake Notebook
+                        recordMistake(q);
                     }
                 }
             });
@@ -1531,7 +1325,89 @@
             document.getElementById('quizResultScreen').classList.add('hidden');
         }
 
-        /* EXAM COUNTDOWN TICKER */
+        /* MISTAKE NOTEBOOK (गलती डायरी) UTILITIES */
+        function recordMistake(q) {
+            if (!mistakes.some(m => m.id === q.id)) {
+                mistakes.unshift(q);
+                localStorage.setItem('vidyarthe_mistakes', JSON.stringify(mistakes));
+                updateMistakeBadge();
+            }
+        }
+
+        function removeMistake(id) {
+            mistakes = mistakes.filter(m => m.id !== id);
+            localStorage.setItem('vidyarthe_mistakes', JSON.stringify(mistakes));
+            updateMistakeBadge();
+            renderMistakeList();
+        }
+
+        function clearAllMistakes() {
+            mistakes = [];
+            localStorage.setItem('vidyarthe_mistakes', JSON.stringify([]));
+            updateMistakeBadge();
+            renderMistakeList();
+        }
+
+        function updateMistakeBadge() {
+            const badge = document.getElementById('mistakeBadge');
+            document.getElementById('drawerMistakeCount').textContent = mistakes.length;
+            if (mistakes.length > 0) {
+                badge.textContent = mistakes.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderMistakeList() {
+            const list = document.getElementById('mistakeDrawerList');
+            list.innerHTML = '';
+            if (mistakes.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Your Mistake Notebook is empty! Great job.</p>`;
+                return;
+            }
+            mistakes.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs space-y-2';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between font-bold text-rose-500">
+                        <span>${q.classExam} • ${q.subject}</span>
+                        <button onclick="removeMistake('${q.id}')" class="text-slate-400 hover:text-rose-500">Resolved <i class="fa-solid fa-check"></i></button>
+                    </div>
+                    <div class="font-medium text-slate-800 dark:text-slate-200">${q.question}</div>
+                    <button onclick="openSolutionModalDirect('${q.id}')" class="text-[11px] font-bold text-indigo-500 hover:underline">View Solution</button>
+                `;
+                list.appendChild(card);
+            });
+            triggerKaTeX(list);
+        }
+
+        function toggleMistakeDrawer() {
+            const drawer = document.getElementById('mistakeDrawer');
+            const overlay = document.getElementById('mistakeOverlay');
+            const isOpen = !drawer.classList.contains('translate-x-full');
+            if (isOpen) {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                renderMistakeList();
+            }
+        }
+
+        function practiceMistakesOnly() {
+            if (mistakes.length === 0) {
+                showToast("No logged mistakes to practice!");
+                return;
+            }
+            generatedPool = [...mistakes];
+            renderGeneratedQuestions();
+            toggleMistakeDrawer();
+            showToast("Loaded questions from your Mistake Notebook!");
+        }
+
+        /* COUNTDOWN ENGINE */
         const examDates = {
             'JEE': new Date('2027-01-24T09:00:00'),
             'NEET': new Date('2027-05-02T14:00:00'),
@@ -1557,7 +1433,7 @@
             const q = generatedPool.find(item => item.id === qId) || mistakes.find(item => item.id === qId) || miniQuizQuestions.find(item => item.id === qId);
             if (!q) return;
 
-            document.getElementById('modalQuestionTitle').textContent = `${q.classExam} • ${q.subject} • ${q.topic}`;
+            document.getElementById('modalQuestionTitle').textContent = `${q.classExam} • ${q.subject} • ${q.chapter}`;
             document.getElementById('modalQuestionBody').innerHTML = q.question;
             document.getElementById('modalSolutionText').innerHTML = `
                 <p class="font-bold text-emerald-600 dark:text-emerald-400 mb-1">Correct Answer: ${q.correctAnswer}</p>
@@ -1676,22 +1552,18 @@
             `).join('');
         }
 
-        /* SUPABASE & MODAL STUBS */
+        /* AUTH & MODAL STUBS */
         function openAuthModal(m) { authMode = m; document.getElementById('authModal').classList.remove('hidden'); }
         function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
         function toggleAuthMode() { authMode = (authMode === 'login') ? 'signup' : 'login'; }
         function handleAuthSubmit(e) { e.preventDefault(); closeAuthModal(); showToast("Logged in!"); }
-        function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
-        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
-        function handleLogout() { closeProfileModal(); showToast("Logged out"); }
         function openLeaderboardModal() { document.getElementById('leaderboardModal').classList.remove('hidden'); }
         function closeLeaderboardModal() { document.getElementById('leaderboardModal').classList.add('hidden'); }
-        function openAdminModal() {}
 
-        /* INITIALIZATION */
+        /* INITIAL PAGE LOAD */
         window.onload = function() {
             updateSubjectAndChapterFilters(true);
-            regenerateAllQuestions(10);
+            generateQuestionsForCurrentFilters(10);
             renderPyqMatrix();
             updateBookmarkBadge();
             updateMistakeBadge();
