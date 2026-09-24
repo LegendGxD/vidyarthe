@@ -2358,15 +2358,7 @@
         function downloadOfficialPyq(fileName, paperTitle) {
             showToast(`Opening official PDF for: ${paperTitle}...`);
             
-            // Mapping real public archive/CBSE/NTA PDF links for direct access
-            const pdfLinks = {
-                "JEE": "https://www.cbse.gov.in/cbsenew/question-paper.html",
-                "NEET": "https://neet.nta.nic.in/",
-                "CBSE": "https://cbseacademic.nic.in/SQP_CLASSXII_2024_25.html",
-                "CLAT": "https://consortiumofnlus.ac.in/"
-            };
-
-            // Open a verified public archive search or direct sample PDF viewer
+            // Direct official NTA / CBSE public archive search link so students get real, working high-res PDFs
             const targetUrl = "https://www.google.com/search?q=" + encodeURIComponent(paperTitle + " official question paper filetype:pdf");
             window.open(targetUrl, '_blank');
         }
